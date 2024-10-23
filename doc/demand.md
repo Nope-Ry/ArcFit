@@ -108,7 +108,10 @@ ArcFit 团队在不同时间段内，前往北体育馆和综合体育馆进行�
 
 ## 四、原型设计
 
-采用 Figma 设计原型，实现了 ArcFit 的主要功能模块，包括器械指导、形体计划、训练记录、个人中心等。Figma 原型链接：[ArcFit 原型](https://www.figma.com/design/ZoESjWRlLiXyqdR8nvSmIU/%E5%81%A5%E8%BA%ABapp?node-id=0-1&t=s4qHzg4stx3B1ZWU-1)
+采用 Figma 设计原型，实现了 ArcFit 的主要功能模块，包括器械指导、形体计划、训练记录、个人中心等。
+
+Figma 原型链接：[ArcFit 原型](https://www.figma.com/design/ZoESjWRlLiXyqdR8nvSmIU/%E5%81%A5%E8%BA%ABapp?node-id=0-1&t=s4qHzg4stx3B1ZWU-1)
+
 以下是部分页面的设计效果图：
 
 ![Page 1](page1.png){width=50%}
