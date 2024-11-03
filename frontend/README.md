@@ -1,5 +1,11 @@
 # Welcome to your Expo app 👋
 
+## 说明
+
+手机预览下载 Expo Go App，扫描二维码即可查看
+
+CodeFormat 采用 npx expo lint
+
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
