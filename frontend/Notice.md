@@ -1,0 +1,3 @@
+- npm install
+- npx install-expo-modules@latest
+- npx expo install expo-gl
