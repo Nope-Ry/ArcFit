@@ -1,3 +1,5 @@
 - npm install
-- npx install-expo-modules@latest
-- npx expo install expo-gl
+
+- npx expo start
+
+- code format: prettier
