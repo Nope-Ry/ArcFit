@@ -28,7 +28,7 @@ const FunctionList: React.FC<FunctionListProps> = ({ items }) => {
           <Text style={styles.text}>{item.text}</Text>
           <Ionicons
             name="chevron-forward"
-            size={24}
+            size={width * 0.06}
             color="black"
             style={styles.arrow}
           />

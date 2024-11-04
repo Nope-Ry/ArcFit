@@ -7,20 +7,23 @@ import { DDSLoader } from "three-stdlib";
 import { Asset } from "expo-asset";
 import { StyleSheet, View } from "react-native";
 import * as THREE from "three";
-import * as FileSystem from "expo-file-system";
 
-// import model from '@/assets/models/male.obj';
+import model from "../../assets/models/male.obj";
 
-THREE.DefaultLoadingManager.addHandler(/\.dds$/i, new DDSLoader());
 
 function Model() {
   const [modelPath, setModelPath] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadModel() {
-      const asset = Asset.fromModule(require("../../assets/models/male.obj"));
-      await asset.downloadAsync();
-      setModelPath(asset.uri);
+      try {
+        // const asset = Asset.fromModule(require("../../assets/models/male.obj"));
+        const asset = Asset.fromModule(model);
+        await asset.downloadAsync();
+        setModelPath(asset.uri);
+      } catch (error) {
+        console.log(error);
+      }
     }
     loadModel();
   }, []);
