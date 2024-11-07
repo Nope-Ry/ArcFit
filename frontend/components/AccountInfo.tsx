@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 const { width, height } = Dimensions.get("window");
-
+// TODO: 响应设计
 interface AccountInfoProps {
   avatar: any;
   username: string;
