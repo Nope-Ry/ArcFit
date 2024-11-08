@@ -21,7 +21,7 @@ interface ExerciseCardProps {
   };
 }
 
-export default function ExerciseCard({ exercise }) {
+const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [exerSets, setExerSets] = useState([
     { reps: "10", weight: "60", checked: false },
@@ -134,6 +134,7 @@ export default function ExerciseCard({ exercise }) {
                 step={1}
                 minimumTrackTintColor={getSliderColor(rating)}
                 maximumTrackTintColor="#D3D3D3"
+                thumbTintColor={getSliderColor(rating)}
               />
               <ThemedText type="default" style={styles.ratingText}>
                 {rating.toFixed(0)}
@@ -254,3 +255,5 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
 });
+
+export default ExerciseCard;
