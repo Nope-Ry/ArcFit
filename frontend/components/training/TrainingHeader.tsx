@@ -17,7 +17,7 @@ interface TrainingHeaderProps {
 }
 
 export default function TrainingHeader({ onButtonPress }: TrainingHeaderProps) {
-  const [isPaused, setIsPaused] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
   const [time, setTime] = useState(0);
 
   useEffect(() => {
@@ -44,7 +44,10 @@ export default function TrainingHeader({ onButtonPress }: TrainingHeaderProps) {
     <View style={styles.container}>
       <View style={styles.line1}>
         <ThemedText type="title">{formatTime(time)}</ThemedText>
-        <TouchableOpacity onPress={() => setIsPaused(!isPaused)}>
+        <TouchableOpacity
+          onPress={() => setIsPaused(!isPaused)}
+          style={{ position: "absolute", left: width * 0.26 }}
+        >
           <Ionicons name={isPaused ? "play" : "pause"} size={width * 0.06} />
         </TouchableOpacity>
         <View style={{ flex: 1 }} />
@@ -56,7 +59,9 @@ export default function TrainingHeader({ onButtonPress }: TrainingHeaderProps) {
       </View>
       <View style={styles.line2}>
         {/* <Text>{new Date().toLocaleDateString()}</Text> */}
-        <ThemedText type="default">{new Date().toLocaleDateString()}</ThemedText>
+        <ThemedText type="default">
+          {new Date().toLocaleDateString()}
+        </ThemedText>
         <ThemedText type="default">1/8</ThemedText>
       </View>
     </View>

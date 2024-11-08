@@ -82,7 +82,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise }) => {
         <View style={styles.expandedContent}>
           {/* 训练组信息 */}
           <Divider />
-          <View style={{flex: 1, height: height * 0.01,}}/>
+          <View style={{flex: 1, height: height * 0.015,}}/>
 
           {exerSets.map((set, index) => (
             <View key={index} style={styles.row}>
