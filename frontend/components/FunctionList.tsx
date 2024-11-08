@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+import { ThemedText } from "./ThemedText";
 const { width, height } = Dimensions.get("window");
 
 interface FunctionListProps {
@@ -25,7 +26,7 @@ const FunctionList: React.FC<FunctionListProps> = ({ items }) => {
           onPress={item.onPress}
         >
           <Image source={item.icon} style={styles.icon} />
-          <Text style={styles.text}>{item.text}</Text>
+          <ThemedText type="default" style={styles.text}>{item.text}</ThemedText>
           <Ionicons
             name="chevron-forward"
             size={width * 0.06}
@@ -64,7 +65,6 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    fontSize: width * 0.04, // 4% of screen width
   },
   arrow: {
     marginLeft: width * 0.04, // 4% of screen width

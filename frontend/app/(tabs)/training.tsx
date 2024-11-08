@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, Button } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
+import TrainingHeader from "../../components/training/TrainingHeader";
+import ExerciseCard from "../../components/training/ExerciseCard";
 
 export default function TrainingScreen() {
   // TODO: 更改为useContext
-  const [isTraining, setIsTraining] = useState(false);
+  const [isTraining, setIsTraining] = useState(true);
 
   // 切换显示方式
   const toggleView = () => {
@@ -12,18 +15,32 @@ export default function TrainingScreen() {
 
   if (isTraining) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>训练中...</Text>
-        <Button title="结束训练" onPress={toggleView} />
+      <View style={{ flex: 1 }}>
+        {/* 上部容器 */}
+        <View style={{ padding: 15, backgroundColor: "white" }}>
+          <TrainingHeader onButtonPress={toggleView} />
+        </View>
+
+        {/* 下部滚动容器 */}
+        <ScrollView style={{ flex: 1, padding: 15 }}>
+          {[1, 2, 3].map((item) => (
+            <ExerciseCard
+              key={item}
+              exercise={{
+                name: `练习 ${item}`,
+                image: require("../../assets/images/icon.png"),
+              }}
+            />
+          ))}
+        </ScrollView>
       </View>
     );
   }
 
-  else
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>准备训练</Text>
-        <Button title="开始训练" onPress={toggleView} />
-      </View>
-    );
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>开始训练</Text>
+      <Button title="开始训练" onPress={toggleView} />
+    </View>
+  );
 }

@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
+import { ThemedText } from "./ThemedText";
 
 const { width, height } = Dimensions.get("window");
 // TODO: 响应设计
@@ -27,8 +28,8 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={avatar} style={styles.avatar} />
       <View style={styles.infoContainer}>
-        <Text style={styles.username}>{username}</Text>
-        <Text style={styles.email}>{email}</Text>
+        <ThemedText type='subtitle'>{username}</ThemedText>
+        <ThemedText type='default'>{email}</ThemedText>
       </View>
     </TouchableOpacity>
   );
@@ -56,14 +57,6 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     marginLeft: width * 0.04, // 4% of screen width
-  },
-  username: {
-    fontSize: width * 0.04, // 4% of screen width
-    fontWeight: "bold",
-  },
-  email: {
-    fontSize: width * 0.035, // 3.5% of screen width
-    color: "gray",
   },
 });
 
