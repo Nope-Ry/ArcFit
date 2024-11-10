@@ -3,7 +3,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AccountInfo from "@/components/AccountInfo";
 import FunctionList from "@/components/FunctionList";
 
+import { useNavigation } from "@react-navigation/native";
+
 export default function ProfileScreen() {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
@@ -12,7 +15,7 @@ export default function ProfileScreen() {
           avatar={require("../../assets/images/icon.png")}
           username="Ruchang Yao"
           email="hhh"
-          onPress={() => {}}
+          onPress={() => navigation.navigate("AccountScreen")}
         />
 
         {/* 按钮列表 */}

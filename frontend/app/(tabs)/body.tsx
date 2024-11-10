@@ -7,27 +7,38 @@ import { DDSLoader } from "three-stdlib";
 import { Asset } from "expo-asset";
 import { StyleSheet, View } from "react-native";
 import * as THREE from "three";
-import * as FileSystem from "expo-file-system";
 
-// import model from '@/assets/models/male.obj';
+import model from "../../assets/models/male.obj";
 
-THREE.DefaultLoadingManager.addHandler(/\.dds$/i, new DDSLoader());
+// function Model() {
+//   const [modelPath, setModelPath] = useState<string | null>(null);
+
+//   useEffect(() => {
+//     async function loadModel() {
+//       try {
+//         // const asset = Asset.fromModule(model);
+//         const asset = Asset.fromModule(require("../../assets/models/male.obj"));
+//         await asset.downloadAsync();
+//         setModelPath(asset.uri);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     }
+//     loadModel();
+//   }, []);
+
+//   const obj = modelPath ? useLoader(OBJLoader, modelPath) : null;
+
+//   return obj ? <primitive object={obj} /> : null;
+// }
 
 function Model() {
-  const [modelPath, setModelPath] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function loadModel() {
-      const asset = Asset.fromModule(require("../../assets/models/male.obj"));
-      await asset.downloadAsync();
-      setModelPath(asset.uri);
-    }
-    loadModel();
-  }, []);
-
-  const obj = modelPath ? useLoader(OBJLoader, modelPath) : null;
-
-  return obj ? <primitive object={obj} /> : null;
+  return (
+    <mesh>
+      <boxGeometry args={[1.2, 1, 1]} />
+      <meshBasicMaterial color="yellow" />
+    </mesh>
+  )
 }
 
 function Scene() {

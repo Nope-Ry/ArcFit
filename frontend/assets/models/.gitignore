@@ -1,2 +1,4 @@
 *.OBJ
 *.obj
+*.mtl
+*.gltf
