@@ -24,6 +24,7 @@
     "@gluestack-ui/overlay": "^0.1.15",
     "@gluestack-ui/toast": "^1.0.7",
     "@mui/material": "^6.1.6",
+    "@react-native-community/datetimepicker": "^8.2.0",
     "@react-native-community/slider": "^4.5.5",
     "@react-navigation/native": "^6.0.2",
     "@react-three/drei": "^9.115.0",

@@ -3,10 +3,11 @@ import { View, Text, Button } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
 import ExerciseCard from "../../components/training/ExerciseCard";
+import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
 
 export default function TrainingScreen() {
   // TODO: 更改为useContext
-  const [isTraining, setIsTraining] = useState(true);
+  const [isTraining, setIsTraining] = useState(false);
 
   // 切换显示方式
   const toggleView = () => {
@@ -36,11 +37,12 @@ export default function TrainingScreen() {
       </View>
     );
   }
-
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>开始训练</Text>
-      <Button title="开始训练" onPress={toggleView} />
-    </View>
-  );
+  else{
+    return (
+      <View className="flex">
+        <HistoryRecordHeader />
+        <Button title="返回" onPress={toggleView} />
+      </View>
+    );
+  }
 }
