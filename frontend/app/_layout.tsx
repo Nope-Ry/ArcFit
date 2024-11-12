@@ -41,6 +41,10 @@ export default function RootLayout() {
             name="AccountScreen"
             options={{ headerBackTitle: "hhh", headerTitle: "good" }}
           />
+          <Stack.Screen 
+            name="EquipmentScreen" 
+            options={{ headerBackTitle: "hhh", headerTitle: "s" }}
+          />
         </Stack>
       </ThemeProvider></GluestackUIProvider>
   );
