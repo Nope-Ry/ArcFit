@@ -4,6 +4,9 @@ import { ScrollView, TouchableOpacity } from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
 import ExerciseCard from "../../components/training/ExerciseCard";
 import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
+import RecordList from "@/components/training/RecordCard";
+import MainRecord from "@/components/training/MainRecord";
+import { ThemedText } from "@/components/ThemedText";
 
 export default function TrainingScreen() {
   // TODO: 更改为useContext
@@ -39,9 +42,17 @@ export default function TrainingScreen() {
   }
   else{
     return (
-      <View className="flex">
+      <View style={{flex : 1}}>
         <HistoryRecordHeader />
-        <Button title="返回" onPress={toggleView} />
+        <ScrollView style={{flex : 1, backgroundColor: '#fff',}}>
+          <MainRecord />
+          <RecordList />
+        </ScrollView>
+        <View className="bg-white h-20 px-4 py-4">
+          <TouchableOpacity className="w-full h-full flex justify-center items-center bg-[#007BFF] rounded-md" onPress={toggleView}>
+            <ThemedText type="default" lightColor="white">开始训练</ThemedText>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
