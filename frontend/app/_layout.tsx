@@ -39,7 +39,7 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
           <Stack.Screen
             name="AccountScreen"
-            options={{ headerBackTitle: "hhh", headerTitle: "good" }}
+            options={{ headerBackTitle: "hhh", headerTitle: "Login" }}
           />
         </Stack>
       </ThemeProvider></GluestackUIProvider>
