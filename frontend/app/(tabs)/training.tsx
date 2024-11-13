@@ -4,6 +4,7 @@ import { ScrollView, TouchableOpacity } from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
 import ExerciseCard from "../../components/training/ExerciseCard";
 
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function TrainingScreen() {
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(true);
@@ -15,7 +16,7 @@ export default function TrainingScreen() {
 
   if (isTraining) {
     return (
-      <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         {/* 上部容器 */}
         <View style={{ padding: 15, backgroundColor: "white" }}>
           <TrainingHeader onButtonPress={toggleView} />
@@ -33,7 +34,7 @@ export default function TrainingScreen() {
             />
           ))}
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 

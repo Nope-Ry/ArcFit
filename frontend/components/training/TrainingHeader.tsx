@@ -71,7 +71,7 @@ export default function TrainingHeader({ onButtonPress }: TrainingHeaderProps) {
 const styles = StyleSheet.create({
   container: {
     justifyContent: "space-between",
-    marginTop: height * 0.06,
+    // marginTop: height * 0.01,
   },
   line1: {
     flexDirection: "row",
