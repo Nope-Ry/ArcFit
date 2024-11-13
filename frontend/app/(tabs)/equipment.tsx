@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Button, Image, StyleSheet, ScrollView } from "react-native";
+import { SafeAreaView, Text, Button, Image, StyleSheet, ScrollView } from "react-native";
 import EquipmentHeader from "../../components/equipment/EquipmentHeader";
 import EquipmentCard from "../../components/equipment/EquipmentCard"; 
 
@@ -25,11 +25,11 @@ const cardData = [
 export default function TrainingScreen() {
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       {/* 上部容器 */}
-      <View style={{ padding: 15, backgroundColor: "white" }}>
+      <SafeAreaView style={styles.upContainer}>
         <EquipmentHeader />
-      </View>
+      </SafeAreaView>
 
       {/* 图片卡片容器 */}
       <ScrollView contentContainerStyle={styles.cardContainer}>
@@ -42,7 +42,7 @@ export default function TrainingScreen() {
           />
         ))}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -56,5 +56,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     margin: 20,
     rowGap: 20,
+  },
+  upContainer:{ 
+    padding: 15, 
+    backgroundColor: "white" 
   },
 });

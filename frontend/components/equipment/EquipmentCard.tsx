@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native";
+import { TouchableOpacity, Image, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useNavigation } from "@react-navigation/native";
 
@@ -46,18 +46,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 100,
     borderRadius: 10,
-  },
-  cardText: {
-    marginTop: 10,
-    textAlign: "center",
-    fontSize: 14,
-    color: "#333",
-  },
-  cardDescription: {
-    marginTop: 5,
-    textAlign: "center",
-    fontSize: 12,
-    color: "#777",
   },
 });
 

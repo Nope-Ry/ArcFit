@@ -1,54 +1,42 @@
+import { ThemedText } from '@/components/ThemedText';
 import React from 'react';
-import { StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 
+const Equipment = {
+    description : "高位下拉器主要用于锻炼背部、肩部和手臂的肌肉。它通常由一个高位拉索、滑轮系统和可调节的坐垫组成。使用者可以通过拉动手柄向下拉动拉索，锻炼到主要的背阔肌、斜方肌和肱二头肌。高位下拉器的多样化握柄设计允许用户进行不同的锻炼变体，以达到最佳的肌肉发展效果。",
+    imageUri: "https://via.placeholder.com/150",
+    title: "高位下拉器",
+    recommendedActions: ["宽握高位下拉", "中握高位下拉", "窄握高位下拉"],
+}
 const EquipmentScreen = () => {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* 图片部分 */}
       <Image 
-        source={{ uri: 'https://via.placeholder.com/150' }} 
+        source={{ uri: Equipment.imageUri }} 
         style={styles.picture} 
       />
       
-      {/* 带圆角阴影的白色方框 */}
-      <View style={styles.descriptionBox}>
-        <Text style={styles.descriptionText}>
-        高位下拉器主要用于锻炼背部、肩部和手臂的肌肉。它通常由一个高位拉索、
-        滑轮系统和可调节的坐垫组成。使用者可以通过拉动手柄向下拉动拉索，锻炼
-        到主要的背阔肌、斜方肌和肱二头肌。高位下拉器的多样化握柄设计允许用户
-        进行不同的锻炼变体，以达到最佳的肌肉发展效果。
-        </Text>
-      </View>
+      {/* 描述方框 */}
+      <SafeAreaView style={styles.descriptionBox}>
+        <ThemedText type="default" style={styles.text}> {Equipment.description} </ThemedText>
+      </SafeAreaView>
 
-      {/* 第二个白色方框 */}
-      <View style={styles.recommendedBox}>
-        <Text style={styles.recommendedText}>推荐动作</Text>
-        
-        {/* 扁长带圆角的矩形 */}
-        <View style={styles.actionBox}>
-          <TouchableOpacity style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
-              <Text style={styles.iconText}>+</Text>
-            </View>
-            <Text style={styles.actionText}>ABCDEF</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
-              <Text style={styles.iconText}>+</Text>
-            </View>
-            <Text style={styles.actionText}>ABCDEF</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionItem}>
-            <View style={styles.iconWrapper}>
-              <Text style={styles.iconText}>+</Text>
-            </View>
-            <Text style={styles.actionText}>ABCDEF</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+      {/* 推荐动作方框 */}
+      <SafeAreaView style={styles.recommendedBox}>
+        <ThemedText type="subtitle" style = {{marginBottom: 15, padding: 10}}>推荐动作</ThemedText>
+        {Equipment.recommendedActions.map((action, index) => (
+          <SafeAreaView key={index} style={styles.recommendedAction}>
+            <TouchableOpacity style={styles.plusButton}>
+                <ThemedText type="defaultBold" style={{ color: '#fff' }}>+</ThemedText>
+            </TouchableOpacity>
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', marginRight: '8%' }}>
+                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>{action}</ThemedText>
+            </SafeAreaView>
+          </SafeAreaView>
+        ))}   
+      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 
@@ -59,26 +47,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   picture: {
-    width: 300,
-    height: 300,
+    width: 270,
+    height: 270,
     marginBottom: 20,
     alignSelf: 'center',
   },
   descriptionBox: {
+    width: '80%',
+    alignSelf: 'center',
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 15,
+    padding: 15, 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
     marginBottom: 20,
-  },
-  descriptionText: {
-    fontSize: 16,
-    color: '#333',
   },
   recommendedBox: {
+    width: '80%',
+    alignSelf: 'center',
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
@@ -88,41 +76,28 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     marginBottom: 20,
   },
-  recommendedText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
+  recommendedAction: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginBottom: 20, 
+    backgroundColor: '#f5f5f5', 
+    padding: 10, 
+    borderRadius: 60 
   },
-  actionBox: {
-    flexDirection: 'column',
-    gap: 10,
+  text: {
+    margin: 10, 
+    padding: 5, 
   },
-  actionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    elevation: 5, // Android shadow effect
-  },
-  iconWrapper: {
-    width: 40,
-    height: 40,
-    backgroundColor: '#007BFF',
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  iconText: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  actionText: {
-    fontSize: 16,
-    color: '#333',
+  plusButton: {
+    backgroundColor: '#007bff', 
+    padding: 5, 
+    marginRight: 10, 
+    width: 30, 
+    height: 30, 
+    borderRadius: 
+    20, 
+    justifyContent: 'center', 
+    alignItems: 'center'
   },
 });
 

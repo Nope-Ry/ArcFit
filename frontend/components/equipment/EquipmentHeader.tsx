@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, TextInput, Modal, Text, Animated, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { SafeAreaView, TouchableOpacity, TextInput, Modal, Text, Animated, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { ThemedText } from "../ThemedText";
 
 const EquipmentHeader = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(-300)).current;
+
+  const categories = ["Cardio", "Strength", "Flexibility", "Balance"];
 
   const toggleMenu = () => {
     if (isMenuVisible) {
@@ -26,9 +29,14 @@ const EquipmentHeader = () => {
     }
   };
   
+  const handleCategoryClick = (category) => {
+    // 根据不同的分类
+    // toggleMenu();
+  };
+
   return (
 
-    <View style={styles.headerContainer}>
+    <SafeAreaView style={styles.headerContainer}>
       {/* 左侧菜单按钮 */}
       <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
         <MaterialIcons name="menu" size={30} color="black" />
@@ -43,27 +51,34 @@ const EquipmentHeader = () => {
 
       {/* 右侧相机按钮 */}
       <TouchableOpacity style={styles.iconButton}>
-        <MaterialIcons name="camera-alt" size={30} color="black" />
+        <MaterialIcons name="camera-alt" size={30} color="black" onPress={() => alert("Camera")} />
       </TouchableOpacity>
 
       {/* 菜单弹出框 */}
       <Modal
-      transparent={true}
-      visible={isMenuVisible}
-      animationType="none"
-      onRequestClose={toggleMenu}
-    >
-      <TouchableWithoutFeedback onPress={toggleMenu}>
-        <View style={{ flex: 1 }}>
-          <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
-            <Text style={styles.menuItem}>Menu Item 1</Text>
-            <Text style={styles.menuItem}>Menu Item 2</Text>
-            <Text style={styles.menuItem}>Menu Item 3</Text>
-          </Animated.View>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
-    </View>
+        transparent={true}
+        visible={isMenuVisible}
+        animationType="none"
+        onRequestClose={toggleMenu}
+        >
+        <TouchableWithoutFeedback onPress={toggleMenu}>
+          <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+              {categories.map((category, index) => (
+                <ThemedText
+                  key={index} 
+                  type="defaultBold"
+                  onPress={() => handleCategoryClick(category)}
+                  style={{ marginVertical: 10 }}
+                >
+                  {category}
+                </ThemedText>
+              ))}
+            </Animated.View>
+          </SafeAreaView>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </SafeAreaView>
   );
 };
 
@@ -86,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   menuContainer: {
-    width: "70%",
+    width: "50%",
     height: "100%",
     backgroundColor: "white",
     padding: 20,
