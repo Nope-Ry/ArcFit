@@ -1,0 +1,5 @@
+Django
+django-rest-knox==5.0.2
+djangorestframework
+mysqlclient==2.2.5
+gunicorn

@@ -1,0 +1,44 @@
+services:
+  app:
+    restart: always
+    build: .
+    ports:
+      - "8000:8000"
+    command: >
+      bash -c
+      "export DJANGO_SETTINGS_MODULE=app.settings_prod &&
+      python3 manage.py makemigrations accounts &&
+      python3 manage.py migrate &&
+      gunicorn --timeout=30 --workers=4 --bind 0.0.0.0:8000 app.wsgi:application"
+    volumes:
+      - .:/code
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - db_network
+
+  mysql:
+    image: mysql:8.1
+    volumes:
+      - /home/ubuntu/mysql:/var/lib/mysql
+    expose:
+      - "3306"
+    restart: always
+    env_file: .env
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - TZ=Asia/Shanghai
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    networks:
+      - db_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p${DB_PASSWORD}"]
+      timeout: 5s
+      interval: 10s
+      retries: 5
+
+networks:
+  db_network:
+    driver: bridge
