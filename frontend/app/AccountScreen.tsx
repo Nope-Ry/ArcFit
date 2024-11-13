@@ -5,6 +5,27 @@ function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleLogin = async () => {
+    // Call your API to authenticate the user
+    const response = await fetch('/api/accounts/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+      // Handle successful login
+      const data = await response.json();
+      console.log('Login successful:', data);
+      // Store authentication state (e.g., using context or local storage)
+    } else {
+      // Handle login error
+      console.error('Login failed');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>登录</Text>
@@ -27,7 +48,7 @@ function LoginScreen() {
       />
 
       {/* 登录按钮 */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>登录</Text>
       </TouchableOpacity>
       
