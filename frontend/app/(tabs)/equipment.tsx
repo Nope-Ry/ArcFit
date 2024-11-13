@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { SafeAreaView, Text, Button, Image, StyleSheet, ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  Button,
+  Image,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import EquipmentHeader from "../../components/equipment/EquipmentHeader";
-import EquipmentCard from "../../components/equipment/EquipmentCard"; 
-
+import EquipmentCard from "../../components/equipment/EquipmentCard";
 
 const cardData = [
   {
@@ -23,7 +29,6 @@ const cardData = [
 ];
 
 export default function TrainingScreen() {
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {/* 上部容器 */}
@@ -51,14 +56,14 @@ const styles = StyleSheet.create({
   cardContainer: {
     height: 400,
     width: "90%",
-    flexDirection: "row",  
+    flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     margin: 20,
     rowGap: 20,
   },
-  upContainer:{ 
-    padding: 15, 
-    backgroundColor: "white" 
+  upContainer: {
+    padding: 15,
+    backgroundColor: "white",
   },
 });
