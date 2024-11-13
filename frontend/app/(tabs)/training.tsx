@@ -9,8 +9,6 @@ import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { SafeAreaView } from "react-native-safe-area-context";
 export default function TrainingScreen() {
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
@@ -42,18 +40,22 @@ export default function TrainingScreen() {
         </ScrollView>
       </SafeAreaView>
     );
-  }
-  else{
+  } else {
     return (
-      <SafeAreaView style={{flex : 1, backgroundColor: "white"}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
         <HistoryRecordHeader />
-        <ScrollView style={{flex : 1, backgroundColor: '#fff',}}>
+        <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
           <MainRecord />
           <RecordList />
         </ScrollView>
         <View className="bg-white h-20 px-4 py-4">
-          <TouchableOpacity className="w-full h-full flex justify-center items-center bg-[#007BFF] rounded-md" onPress={toggleView}>
-            <ThemedText type="default" lightColor="white">开始训练</ThemedText>
+          <TouchableOpacity
+            className="w-full h-full flex justify-center items-center bg-[#007BFF] rounded-md"
+            onPress={toggleView}
+          >
+            <ThemedText type="default" lightColor="white">
+              开始训练
+            </ThemedText>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

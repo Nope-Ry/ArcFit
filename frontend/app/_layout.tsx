@@ -33,7 +33,8 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider mode="light"><ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <GluestackUIProvider mode="light">
+      <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
@@ -41,11 +42,12 @@ export default function RootLayout() {
             name="AccountScreen"
             options={{ headerBackTitle: "hhh", headerTitle: "Login" }}
           />
-          <Stack.Screen 
-            name="EquipmentScreen" 
+          <Stack.Screen
+            name="EquipmentScreen"
             options={{ headerBackTitle: "hhh", headerTitle: "s" }}
           />
         </Stack>
-      </ThemeProvider></GluestackUIProvider>
+      </ThemeProvider>
+    </GluestackUIProvider>
   );
 }

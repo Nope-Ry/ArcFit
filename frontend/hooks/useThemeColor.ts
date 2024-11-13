@@ -16,10 +16,6 @@ export function useThemeColor(
   if (colorFromProps) {
     return colorFromProps;
   } else {
-<<<<<<< HEAD
-    return Colors[theme][colorName];
-=======
     return Colors.light[colorName];
->>>>>>> 2e000de2698fafa3508ec8cd1bf8fc33ced3e20b
   }
 }

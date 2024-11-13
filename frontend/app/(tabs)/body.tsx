@@ -8,7 +8,7 @@ import { Asset } from "expo-asset";
 import { StyleSheet, View } from "react-native";
 import * as THREE from "three";
 
-import model from "../../assets/models/male.obj";
+// import model from "../../assets/models/male.obj";
 
 // function Model() {
 //   const [modelPath, setModelPath] = useState<string | null>(null);
