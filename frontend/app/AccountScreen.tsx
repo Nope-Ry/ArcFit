@@ -8,14 +8,16 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     // Call your API to authenticate the user
-    const response = await fetch("/api/accounts/login", {
+    const response = await fetch("http://101.34.70.123:8000/api/accounts/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,11 +28,10 @@ function LoginScreen() {
     if (response.ok) {
       // Handle successful login
       const data = await response.json();
-      console.log("Login successful:", data);
-      // Store authentication state (e.g., using context or local storage)
+      Alert.alert("登录成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);
     } else {
       // Handle login error
-      console.error("Login failed");
+      Alert.alert("登录失败", "用户名或密码错误");
     }
   };
 
