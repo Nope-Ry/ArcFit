@@ -29,10 +29,9 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title, descript
 const styles = StyleSheet.create({
   card: {
     width: "30%",
-    height: 200, 
+    height: "28%", 
     backgroundColor: "#fff",
     borderRadius: 10,
-    borderWidth: 1,
     borderColor: "#ddd",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: "100%",
-    height: 100,
+    height: "60%",
     borderRadius: 10,
   },
 });

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import {
   SafeAreaView,
-  Text,
-  Button,
-  Image,
+  View,
   StyleSheet,
   ScrollView,
 } from "react-native";
@@ -32,9 +30,9 @@ export default function TrainingScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {/* 上部容器 */}
-      <SafeAreaView style={styles.upContainer}>
+      <View style={styles.upContainer}>
         <EquipmentHeader />
-      </SafeAreaView>
+      </View>
 
       {/* 图片卡片容器 */}
       <ScrollView contentContainerStyle={styles.cardContainer}>
@@ -54,7 +52,7 @@ export default function TrainingScreen() {
 // 样式
 const styles = StyleSheet.create({
   cardContainer: {
-    height: 400,
+    height: "100%",
     width: "90%",
     flexDirection: "row",
     flexWrap: "wrap",
