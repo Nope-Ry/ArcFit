@@ -8,6 +8,8 @@ import RecordList from "@/components/training/RecordCard";
 import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
 
+import { SafeAreaView } from "react-native-safe-area-context";
+
 export default function TrainingScreen() {
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
@@ -42,7 +44,7 @@ export default function TrainingScreen() {
   }
   else{
     return (
-      <View style={{flex : 1}}>
+      <SafeAreaView style={{flex : 1, backgroundColor: "white"}}>
         <HistoryRecordHeader />
         <ScrollView style={{flex : 1, backgroundColor: '#fff',}}>
           <MainRecord />
@@ -53,7 +55,7 @@ export default function TrainingScreen() {
             <ThemedText type="default" lightColor="white">开始训练</ThemedText>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }

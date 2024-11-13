@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 export default function HistoryRecordHeader() {
 
     return (
-        <View className="flex flex-col items-center bg-white pt-16" style={styles.container}>
+        <View className="flex flex-col items-center bg-white" style={styles.container}>
             <View className="h-20 justify-center">
                 <ThemedText type="title">历史记录</ThemedText>
             </View>
