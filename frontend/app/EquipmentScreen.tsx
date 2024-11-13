@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
+  ScrollView,
+  View,
 } from "react-native";
 
 const Equipment = {
@@ -16,41 +18,44 @@ const Equipment = {
 };
 const EquipmentScreen = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView style={styles.container}>
       {/* 图片部分 */}
       <Image source={{ uri: Equipment.imageUri }} style={styles.picture} />
 
       {/* 描述方框 */}
-      <SafeAreaView style={styles.descriptionBox}>
+      <View style={styles.descriptionBox}>
         <ThemedText type="default" style={styles.text}>
           {" "}
           {Equipment.description}{" "}
         </ThemedText>
-      </SafeAreaView>
+      </View>
 
       {/* 推荐动作方框 */}
-      <SafeAreaView style={styles.recommendedBox}>
+      <View style={styles.recommendedBox}>
         <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
           推荐动作
         </ThemedText>
         {Equipment.recommendedActions.map((action, index) => (
-          <SafeAreaView key={index} style={styles.recommendedAction}>
+          <View key={index} style={styles.recommendedAction}>
             <TouchableOpacity style={styles.plusButton}>
               <ThemedText type="defaultBold" style={{ color: "#fff" }}>
                 +
               </ThemedText>
             </TouchableOpacity>
-            <SafeAreaView
+            <View
               style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
             >
               <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
                 {action}
               </ThemedText>
-            </SafeAreaView>
-          </SafeAreaView>
+            </View>
+          </View>
         ))}
-      </SafeAreaView>
-    </SafeAreaView>
+      </View>
+      <View className="h-12">
+
+      </View>
+    </ScrollView>
   );
 };
 
@@ -61,13 +66,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   picture: {
-    width: 270,
-    height: 270,
+    width: "60%",
+    height: "40%",
     marginBottom: 20,
     alignSelf: "center",
   },
   descriptionBox: {
-    width: "80%",
+    width: "90%",
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -79,7 +84,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   recommendedBox: {
-    width: "80%",
+    width: "90%",
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -88,11 +93,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
-    marginBottom: 20,
   },
   recommendedAction: {
     flexDirection: "row",
     alignItems: "center",
+    marginLeft: "10%",
+    marginRight: "10%",
     marginBottom: 20,
     backgroundColor: "#f5f5f5",
     padding: 10,
@@ -105,7 +111,7 @@ const styles = StyleSheet.create({
   plusButton: {
     backgroundColor: "#007bff",
     padding: 5,
-    marginRight: 10,
+    marginRight: "5%",
     width: 30,
     height: 30,
     borderRadius: 20,

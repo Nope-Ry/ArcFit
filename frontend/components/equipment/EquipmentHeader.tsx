@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SafeAreaView, TouchableOpacity, TextInput, Modal, Text, Animated, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { SafeAreaView, TouchableOpacity, TextInput, Modal, View, Animated, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "../ThemedText";
 
@@ -62,7 +62,7 @@ const EquipmentHeader = () => {
         onRequestClose={toggleMenu}
         >
         <TouchableWithoutFeedback onPress={toggleMenu}>
-          <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
             <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
               {categories.map((category, index) => (
                 <ThemedText
@@ -75,7 +75,7 @@ const EquipmentHeader = () => {
                 </ThemedText>
               ))}
             </Animated.View>
-          </SafeAreaView>
+          </View>
         </TouchableWithoutFeedback>
       </Modal>
     </SafeAreaView>

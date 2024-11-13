@@ -44,7 +44,7 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="EquipmentScreen"
-            options={{ headerBackTitle: "hhh", headerTitle: "s" }}
+            options={{ headerBackTitle: "Equipment", headerTitle: "高位下拉器" }}
           />
         </Stack>
       </ThemeProvider>
