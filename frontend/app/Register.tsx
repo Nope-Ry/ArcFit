@@ -17,7 +17,7 @@ function LoginScreen() {
 
   const handleLogin = async () => {
     // Call your API to authenticate the user
-    const response = await fetch("http://101.34.70.123:8000/api/accounts/login", {
+    const response = await fetch("http://101.34.70.123:8000/api/accounts/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,16 +28,16 @@ function LoginScreen() {
     if (response.ok) {
       // Handle successful login
       const data = await response.json();
-      Alert.alert("登录成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);
+      Alert.alert("注册成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);
     } else {
       // Handle login error
-      Alert.alert("登录失败", "用户名或密码错误");
+      Alert.alert("注册失败", "用户名或密码错误");
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>登录</Text>
+      <Text style={styles.title}>注册</Text>
 
       {/* 用户名输入框 */}
       <TextInput
@@ -58,16 +58,9 @@ function LoginScreen() {
 
       {/* 登录按钮 */}
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>登录</Text>
+        <Text style={styles.buttonText}>注册</Text>
       </TouchableOpacity>
 
-      {/* 注册提示 */}
-      <View style={styles.registerContainer}>
-        <Text>还没有账号？</Text>
-        <TouchableOpacity>
-          <Text style={styles.registerText} onPress={() => navigation.navigate("Register")}>立即注册</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
