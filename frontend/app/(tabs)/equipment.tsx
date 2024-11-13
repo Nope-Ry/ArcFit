@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import {
-  SafeAreaView,
   View,
   StyleSheet,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import EquipmentHeader from "../../components/equipment/EquipmentHeader";
 import EquipmentCard from "../../components/equipment/EquipmentCard";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+const { width, height } = Dimensions.get("window");
 
 const cardData = [
   {
@@ -24,11 +27,16 @@ const cardData = [
     title: "Card 3",
     description: "Description for Card 3",
   },
+  {
+    imageUri: "https://via.placeholder.com/150",
+    title: "Card 4",
+    description: "Description for Card 4",
+  },
 ];
 
 export default function TrainingScreen() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       {/* 上部容器 */}
       <View style={styles.upContainer}>
         <EquipmentHeader />
@@ -49,16 +57,14 @@ export default function TrainingScreen() {
   );
 }
 
-// 样式
 const styles = StyleSheet.create({
   cardContainer: {
-    height: "100%",
-    width: "90%",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    margin: 20,
-    rowGap: 20,
+    margin: width * 0.05,
+    rowGap: height * 0.02,
+    columnGap: width * 0.04,
   },
   upContainer: {
     padding: 15,
