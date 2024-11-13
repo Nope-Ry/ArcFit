@@ -10,6 +10,7 @@ import { ThemedText } from "@/components/ThemedText";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function TrainingScreen() {
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
@@ -21,7 +22,7 @@ export default function TrainingScreen() {
 
   if (isTraining) {
     return (
-      <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
         {/* 上部容器 */}
         <View style={{ padding: 15, backgroundColor: "white" }}>
           <TrainingHeader onButtonPress={toggleView} />
@@ -39,7 +40,7 @@ export default function TrainingScreen() {
             />
           ))}
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
   else{
