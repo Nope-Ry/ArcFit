@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
   ScrollView,
   View,
+  Dimensions,
 } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 const Equipment = {
   description:
@@ -16,48 +19,48 @@ const Equipment = {
   title: "高位下拉器",
   recommendedActions: ["宽握高位下拉", "中握高位下拉", "窄握高位下拉"],
 };
-const EquipmentScreen = () => {
+
+export default function EquipmentScreen() {
   return (
-    <ScrollView style={styles.container}>
-      {/* 图片部分 */}
-      <Image source={{ uri: Equipment.imageUri }} style={styles.picture} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <ScrollView style={styles.container}>
+        {/* 图片部分 */}
+        <Image source={{ uri: Equipment.imageUri }} style={styles.picture} />
 
-      {/* 描述方框 */}
-      <View style={styles.descriptionBox}>
-        <ThemedText type="default" style={styles.text}>
-          {" "}
-          {Equipment.description}{" "}
-        </ThemedText>
-      </View>
+        {/* 描述方框 */}
+        <View style={styles.descriptionBox}>
+          <ThemedText type="default" style={styles.text}>
+            {Equipment.description}
+          </ThemedText>
+        </View>
 
-      {/* 推荐动作方框 */}
-      <View style={styles.recommendedBox}>
-        <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
-          推荐动作
-        </ThemedText>
-        {Equipment.recommendedActions.map((action, index) => (
-          <View key={index} style={styles.recommendedAction}>
-            <TouchableOpacity style={styles.plusButton}>
-              <ThemedText type="defaultBold" style={{ color: "#fff" }}>
-                +
-              </ThemedText>
-            </TouchableOpacity>
-            <View
-              style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
-            >
-              <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-                {action}
-              </ThemedText>
+        {/* 推荐动作方框 */}
+        <View style={styles.recommendedBox}>
+          <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
+            推荐动作
+          </ThemedText>
+          {Equipment.recommendedActions.map((action, index) => (
+            <View key={index} style={styles.recommendedAction}>
+              <TouchableOpacity style={styles.plusButton}>
+                <ThemedText type="defaultBold" style={{ color: "#fff" }}>
+                  +
+                </ThemedText>
+              </TouchableOpacity>
+              <View
+                style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
+              >
+                <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
+                  {action}
+                </ThemedText>
+              </View>
             </View>
-          </View>
-        ))}
-      </View>
-      <View className="h-12">
-
-      </View>
-    </ScrollView>
+          ))}
+        </View>
+        <View style={{ height: 35 }} />
+      </ScrollView>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -66,13 +69,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   picture: {
-    width: "60%",
-    height: "40%",
+    width: width * 0.6,
+    height: height * 0.3,
     marginBottom: 20,
     alignSelf: "center",
   },
   descriptionBox: {
-    width: "90%",
+    width: width * 0.8,
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -84,7 +87,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   recommendedBox: {
-    width: "90%",
+    width: width * 0.8,
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -97,8 +100,8 @@ const styles = StyleSheet.create({
   recommendedAction: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: "10%",
-    marginRight: "10%",
+    marginLeft: width * 0.1,
+    marginRight: width * 0.1,
     marginBottom: 20,
     backgroundColor: "#f5f5f5",
     padding: 10,
@@ -119,5 +122,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-export default EquipmentScreen;

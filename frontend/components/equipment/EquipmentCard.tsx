@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Image, StyleSheet } from "react-native";
+import { TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useNavigation } from "@react-navigation/native";
 
@@ -9,6 +9,8 @@ interface EquipmentCardProps {
   title: string;
   description: string;
 }
+
+const { width, height } = Dimensions.get("window");
 
 // 使用接口定义组件的 props 类型
 const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title, description }) => {
@@ -28,22 +30,22 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title, descript
 // 卡片样式
 const styles = StyleSheet.create({
   card: {
-    width: "30%",
-    height: "28%", 
+    width: width * 0.25,
+    height: height * 0.3,
     backgroundColor: "#fff",
-    borderRadius: 10,
-    borderColor: "#ddd",
+    borderRadius: width * 0.02, // 2% of screen width
+    marginVertical: height * 0.003, // 1% of screen height
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: height * 0.01 }, // 1% of screen height
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: width * 0.02, // 2% of screen width
     elevation: 5,
     alignItems: "center",
     padding: 10,
   },
   cardImage: {
-    width: "100%",
-    height: "60%",
+    width: width * 0.2,
+    height: height * 0.1,
     borderRadius: 10,
   },
 });
