@@ -1,3 +1,325 @@
-from django.test import TestCase
+from django.test import Client, TestCase
+from django.urls import reverse
 
-# Create your tests here.
+from .models import User
+from .views import user_register, user_login, user_update, user_logout
+
+
+class AccountTestCases(TestCase):
+    def setUp(self):
+        # Create a temporary user for testing login
+        user = User(
+            username="testuser",
+            first_name="test",
+            last_name="user",
+            phone_number="16645678901",
+            age=20,
+            gender=0,
+            email="test@abc.com",
+        )
+
+        user.set_password("Mndhuh&#76512")
+        user.save()
+
+        self.client = Client()
+
+    def test_register(self):
+        # required fields missing
+        REQUIRED_FIELD_MISSING_MSG = "This field is required."
+
+        data = {}
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(
+            json_data,
+            {
+                "username": [REQUIRED_FIELD_MISSING_MSG],
+                "password": [REQUIRED_FIELD_MISSING_MSG],
+            },
+        )
+
+        # required field blank
+        REQUIRED_FIELD_BLANK_MSG = "This field may not be blank."
+        data = {"username": "", "password": ""}
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(
+            json_data,
+            {
+                "username": [REQUIRED_FIELD_BLANK_MSG],
+                "password": [REQUIRED_FIELD_BLANK_MSG],
+            },
+        )
+
+        # password too weak
+        PASSWORD_TOO_SHORT_MSG = "Password must be more than 7 characters."
+        PASSWORD_REQUIRED_CHARTYPE_MISSING_MSG = "Password must contain upper/lowercase letters, digits and special characters."
+        data = {"username": "abcgd", "password": "67A8asd"}
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(
+            json_data,
+            {
+                "password": [
+                    PASSWORD_TOO_SHORT_MSG,
+                    PASSWORD_REQUIRED_CHARTYPE_MISSING_MSG,
+                ]
+            },
+        )
+
+        data = {"username": "asdvcvv", "password": "Ahuds%Vasd"}
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(
+            json_data, {"password": [PASSWORD_REQUIRED_CHARTYPE_MISSING_MSG]}
+        )
+
+        # string fields too long
+        FIELD_TOO_LONG_FMT = "Ensure this field has no more than {} characters."
+        data = {
+            "username": "a" * 151,
+            "password": "66ASD*&^as".ljust(151, "a"),
+            "first_name": "c" * 151,
+            "last_name": "d" * 151,
+            "email": "@m.com".rjust(255, "e"),
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(
+            json_data,
+            {
+                "username": [FIELD_TOO_LONG_FMT.format(150)],
+                "password": [FIELD_TOO_LONG_FMT.format(128)],
+                "first_name": [FIELD_TOO_LONG_FMT.format(150)],
+                "last_name": [FIELD_TOO_LONG_FMT.format(150)],
+                "email": [FIELD_TOO_LONG_FMT.format(254)],
+            },
+        )
+
+        # invalid email
+        INVALID_EMAIL_MSG = "Invalid email address.|Enter a valid email address."
+        data = {
+            "username": "usss",
+            "password": "78612HHasxd*((&))",
+            "email": "jasxpop2dd",
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {"email": INVALID_EMAIL_MSG.split("|")})
+
+        # invalid age
+        NOT_INTEGER_MSG = "A valid integer is required."
+        data = {
+            "username": "xxxjx",
+            "password": "e83988u3HGH7!",
+            "age": "asdbwf",
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {"age": [NOT_INTEGER_MSG]})
+
+        NEGATIVE_AGE_MSG = "Age cannot be negative."
+        data = {
+            "username": "xxxjx",
+            "password": "*&^hasdasuhHGG777",
+            "age": -1,
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {"age": [NEGATIVE_AGE_MSG]})
+
+        # invalid gender option
+        INVALID_OPTION_FMT = '"{}" is not a valid choice.'
+        data = {
+            "username": "xxxjx",
+            "password": "iuhIUYAG889^",
+            "gender": 3,
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {"gender": [INVALID_OPTION_FMT.format("3")]})
+
+        # invalid phone number
+        INVALID_PHONE_NUMBER_MSG = "Invalid phone number."
+        data = {
+            "username": "xxxjx",
+            "password": "iuhIUYAG889^",
+            "phone_number": "66811234320",
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {"phone_number": [INVALID_PHONE_NUMBER_MSG]})
+
+        # manipulate unexposed fields
+        data = {
+            "username": "abcde",
+            "password": "Abcx674*h&ah",
+            "is_superuser": True,
+            "is_staff": True,
+            "is_active": False,
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        queryset = User.objects.filter(username="abcde")
+        self.assertEqual(queryset.count(), 1)
+        user = queryset.first()
+        assert user is not None
+        self.assertFalse(user.is_superuser)
+        self.assertFalse(user.is_staff)
+        self.assertTrue(user.is_active)
+
+        # username collision
+        USERNAME_COLLISION_MSG = "A user with that username already exists."
+        data = {
+            "username": "abcde",
+            "password": "asd33aFGfew*",
+        }
+        response = self.client.post(
+            reverse(user_register), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {"username": [USERNAME_COLLISION_MSG]})
+
+    def test_login_and_logout(self):
+        # wrong username or password
+        LOGIN_FAILED_MSG = "Invalid username or password."
+        data = {"username": "testuser", "password": "aas87y123gd"}
+        response = self.client.post(
+            reverse(user_login), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 400)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {"error": LOGIN_FAILED_MSG})
+
+        # successful login
+        data = {"username": "testuser", "password": "Mndhuh&#76512"}
+        response = self.client.post(
+            reverse(user_login), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        json_data = response.json()
+        self.assertSetEqual(set(json_data.keys()), {"expiry", "token"})
+        self.assertRegex(
+            json_data["expiry"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$"
+        )
+        self.assertRegex(json_data["token"], r"^[0-9a-f]{64}$")
+
+        token = json_data["token"]
+
+        # unauthorized logout
+        response = self.client.post(
+            reverse(user_logout), data={}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 401)
+
+        # normal logout
+        response = self.client.post(
+            reverse(user_logout),
+            data={},
+            content_type="application/json",
+            headers={"Authorization": f"Token {token}"},
+        )
+        self.assertEqual(response.status_code, 200)
+        json_data = response.json()
+        self.assertDictEqual(json_data, {})
+
+        # token used after logout
+        response = self.client.post(
+            reverse(user_logout),
+            data={},
+            content_type="application/json",
+            headers={"Authorization": f"Token {token}"},
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_update(self):
+        # unauthorized update
+        response = self.client.post(
+            reverse(user_update), data={}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 401)
+
+        # login
+        data = {"username": "testuser", "password": "Mndhuh&#76512"}
+        response = self.client.post(
+            reverse(user_login), data=data, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        json_data = response.json()
+        token = json_data["token"]
+
+        # allow no-op (all fields optional)
+        response = self.client.post(
+            reverse(user_update), data={}, content_type="application/json", headers={
+                "Authorization": f"Token {token}"
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # change personal information
+        data = {
+            "first_name": "hello",
+            "last_name": "world",
+            "email": "hello@abc.com",
+            "age": 18,
+            "gender": 1,
+            "phone_number": "15576653524"
+        }
+        response = self.client.post(
+            reverse(user_update), data=data, content_type="application/json", headers={
+                "Authorization": f"Token {token}"
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        queryset = User.objects.filter(username="testuser")
+        self.assertEqual(queryset.count(), 1)
+        user = queryset.first()
+        assert user is not None
+        self.assertEqual(user.first_name, "hello")
+        self.assertEqual(user.last_name, "world")
+        self.assertEqual(user.email, "hello@abc.com")
+        self.assertEqual(user.age, 18)
+        self.assertEqual(user.gender, 1)
+        self.assertEqual(user.phone_number, "15576653524")
+
+        # logout
+        response = self.client.post(
+            reverse(user_logout),
+            data={},
+            content_type="application/json",
+            headers={"Authorization": f"Token {token}"},
+        )
+        self.assertEqual(response.status_code, 200)
