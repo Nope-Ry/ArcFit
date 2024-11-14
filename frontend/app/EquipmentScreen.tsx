@@ -15,7 +15,8 @@ const { width, height } = Dimensions.get("window");
 const Equipment = {
   description:
     "高位下拉器主要用于锻炼背部、肩部和手臂的肌肉。它通常由一个高位拉索、滑轮系统和可调节的坐垫组成。使用者可以通过拉动手柄向下拉动拉索，锻炼到主要的背阔肌、斜方肌和肱二头肌。高位下拉器的多样化握柄设计允许用户进行不同的锻炼变体，以达到最佳的肌肉发展效果。",
-  imageUri: "https://via.placeholder.com/150",
+  // imageUri: "https://via.placeholder.com/150",
+  imagePath: require("../assets/images/body.png"),
   title: "高位下拉器",
   recommendedActions: ["宽握高位下拉", "中握高位下拉", "窄握高位下拉"],
 };
@@ -25,7 +26,8 @@ export default function EquipmentScreen() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
         {/* 图片部分 */}
-        <Image source={{ uri: Equipment.imageUri }} style={styles.picture} />
+        {/* <Image source={{ uri: Equipment.imageUri }} style={styles.picture} /> */}
+        <Image source={Equipment.imagePath} style={styles.picture} />
 
         {/* 描述方框 */}
         <View style={styles.descriptionBox}>

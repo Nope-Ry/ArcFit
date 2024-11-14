@@ -20,7 +20,7 @@ export default function TrainingScreen() {
 
   if (isTraining) {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
         {/* 上部容器 */}
         <View style={{ padding: 15, backgroundColor: "white" }}>
           <TrainingHeader onButtonPress={toggleView} />
