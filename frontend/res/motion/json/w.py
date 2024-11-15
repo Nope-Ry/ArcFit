@@ -3,12 +3,13 @@ import json
 
 
 name_list = []
-
-for i in range(1, 16):
+info_list = []
+for i in range(1, 54):
     with open(f'motion/json/{i}.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
         data['img_path'] = f'res/motion/img/{i}.gif'
         data["m_id"] = i
+        data["info"] = info_list[i-1]
         name_list.append(data['name'])
     with open(f'motion/json/{i}.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
