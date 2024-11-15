@@ -1,7 +1,7 @@
 {
     "e_id": 4,
     "name": "哑铃",
-    "description": "",
+    "description": "哑铃是基础器材，可用于各种自由重量训练，如弯举、飞鸟和肩推，能够有效锻炼手臂、胸部、肩部和背部肌肉。",
     "img_path": "res/equipment/img/4.jpg",
     "m_id": [
         5,

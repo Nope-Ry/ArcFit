@@ -1,7 +1,7 @@
 {
     "e_id": 29,
     "name": "伸腿训练器",
-    "description": "",
+    "description": "伸腿训练器用于腿部前侧伸展训练，调节负重后抬起小腿，主要锻炼股四头肌。",
     "img_path": "res/equipment/img/29.jpg",
     "m_id": [
         9,
