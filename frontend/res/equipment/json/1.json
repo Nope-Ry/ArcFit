@@ -1,0 +1,11 @@
+{
+    "e_id": 1,
+    "name": "卧推架",
+    "description": "",
+    "img_path": "string",
+    "m_id": [
+        1,
+        "number",
+        "number"
+    ]
+}

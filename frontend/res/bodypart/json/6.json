@@ -1,0 +1,9 @@
+{
+    "b_id": 6,
+    "name": "臀部",
+    "description": "string",
+    "img_path": "string",
+    "m_id": [
+        1
+    ]
+}
