@@ -3,8 +3,5 @@
     "name": "坐式拉背器",
     "description": "坐式拉背器用于划船动作，坐姿握把后拉至背部，再慢慢还原，主要锻炼背阔肌、菱形肌和斜方肌，增强背部力量。",
     "img_path": "res/equipment/img/9.jpg",
-    "m_id": [
-        9,
-        "number"
-    ]
+    "m_id": []
 }

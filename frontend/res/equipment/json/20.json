@@ -3,8 +3,5 @@
     "name": "腹背臀腿伸展训练器",
     "description": "腹背臀腿伸展训练器通过多角度调整，可完成腹部、背部、臀部及腿部综合性训练，特别适合锻炼核心和下背部。",
     "img_path": "res/equipment/img/20.jpg",
-    "m_id": [
-        9,
-        "number"
-    ]
+    "m_id": []
 }

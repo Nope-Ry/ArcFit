@@ -3,8 +3,5 @@
     "name": "坐式提小腿训练器",
     "description": "坐式提小腿训练器用于小腿提踵训练，坐姿将负重向上顶起再缓慢还原，强化腓肠肌和比目鱼肌。",
     "img_path": "res/equipment/img/19.jpg",
-    "m_id": [
-        9,
-        "number"
-    ]
+    "m_id": []
 }

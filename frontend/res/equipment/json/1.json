@@ -4,8 +4,6 @@
     "description": "卧推架用于卧推训练，配合杠铃使用。调整好卧推架的高度后，卧姿握住杠铃推起，再缓慢下降，主要锻炼胸大肌、三角肌前束和肱三头肌。",
     "img_path": "res/equipment/img/1.jpg",
     "m_id": [
-        1,
-        "number",
-        "number"
+        1
     ]
 }
