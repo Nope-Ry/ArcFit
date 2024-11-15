@@ -1,0 +1,10 @@
+{
+    "e_id": 28,
+    "name": "助力式单双杠训练器",
+    "description": "",
+    "img_path": "res/equipment/img/28.jpg",
+    "m_id": [
+        9,
+        "number"
+    ]
+}

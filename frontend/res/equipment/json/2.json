@@ -2,7 +2,7 @@
     "e_id": 2,
     "name": "史密斯架",
     "description": "",
-    "img_path": "string",
+    "img_path": "res/equipment/img/2.jpg",
     "m_id": [
         2,
         3,

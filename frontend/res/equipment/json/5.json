@@ -1,0 +1,10 @@
+{
+    "e_id": 5,
+    "name": "杠铃片",
+    "description": "",
+    "img_path": "res/equipment/img/5.jpg",
+    "m_id": [
+        9,
+        "number"
+    ]
+}

@@ -2,7 +2,7 @@
     "e_id": 3,
     "name": "上斜卧推架",
     "description": "",
-    "img_path": "string",
+    "img_path": "res/equipment/img/3.jpg",
     "m_id": [
         4,
         "number"

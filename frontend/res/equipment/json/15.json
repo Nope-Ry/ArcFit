@@ -1,0 +1,10 @@
+{
+    "e_id": 15,
+    "name": "分动直立大腿肌训练器",
+    "description": "",
+    "img_path": "res/equipment/img/15.jpg",
+    "m_id": [
+        9,
+        "number"
+    ]
+}

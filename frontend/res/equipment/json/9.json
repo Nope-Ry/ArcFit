@@ -1,0 +1,10 @@
+{
+    "e_id": 9,
+    "name": "坐式拉背器",
+    "description": "",
+    "img_path": "res/equipment/img/9.jpg",
+    "m_id": [
+        9,
+        "number"
+    ]
+}

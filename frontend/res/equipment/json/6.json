@@ -1,0 +1,10 @@
+{
+    "e_id": 6,
+    "name": "多功能蝴蝶机",
+    "description": "",
+    "img_path": "res/equipment/img/6.jpg",
+    "m_id": [
+        9,
+        "number"
+    ]
+}

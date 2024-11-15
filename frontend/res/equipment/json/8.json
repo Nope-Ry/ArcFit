@@ -1,0 +1,10 @@
+{
+    "e_id": 8,
+    "name": "上斜推胸器",
+    "description": "",
+    "img_path": "res/equipment/img/8.jpg",
+    "m_id": [
+        9,
+        "number"
+    ]
+}

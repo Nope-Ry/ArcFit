@@ -1,0 +1,10 @@
+{
+    "e_id": 25,
+    "name": "龙门架",
+    "description": "",
+    "img_path": "res/equipment/img/25.jpg",
+    "m_id": [
+        9,
+        "number"
+    ]
+}
