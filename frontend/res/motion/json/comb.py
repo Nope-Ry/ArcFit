@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 lst = []
-for i in range(1, 61):
+for i in range(1, 92):
     path = Path(f"motion/json/{i}.json")
     with path.open() as f:
         data = json.load(f)
