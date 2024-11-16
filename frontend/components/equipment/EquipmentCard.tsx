@@ -7,13 +7,12 @@ import { useNavigation } from "@react-navigation/native";
 interface EquipmentCardProps {
   imageUri: string;
   title: string;
-  description: string;
 }
 
 const { width, height } = Dimensions.get("window");
 
 // 使用接口定义组件的 props 类型
-const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title, description }) => {
+const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title}) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity 
@@ -21,8 +20,7 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title, descript
       onPress={() => navigation.navigate("EquipmentScreen", { title : title })}
     >
       <Image source={{ uri: imageUri }} style={styles.cardImage} />
-      <ThemedText type="subtitle">{title}</ThemedText>
-      <ThemedText type="small">{description}</ThemedText>
+      <ThemedText type="defaultBold">{title}</ThemedText>
     </TouchableOpacity>
   );
 };
@@ -42,6 +40,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: "center",
     padding: 10,
+    gap: 4,
+    textAlign: "center",
   },
   cardImage: {
     width: width * 0.2,
