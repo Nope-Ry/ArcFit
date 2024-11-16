@@ -3,5 +3,7 @@
     "name": "水平蹬腿器",
     "description": "水平蹬腿器模拟蹬腿动作，通过调节座椅和负重完成训练，主要锻炼股四头肌、臀部和小腿肌群。",
     "img_path": "res/equipment/img/26.jpg",
-    "m_id": []
+    "m_id": [
+        55
+    ]
 }

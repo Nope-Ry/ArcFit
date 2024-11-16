@@ -1,15 +1,13 @@
 {
-    "m_id": 53,
-    "name": "硬拉",
+    "m_id": 56,
+    "name": "坐姿提踵",
     "info": "硬拉：从地面拉起杠铃至站立。注意避免背部弯曲。主要发力臀部和背部肌群。",
     "steps": [],
-    "img_path": "res/motion/img/53.gif",
+    "img_path": "res/motion/img/56.gif",
     "b_id": [
-        4,
-        5,
-        6
+        5
     ],
     "e_id": [
-        5
+        19
     ]
 }

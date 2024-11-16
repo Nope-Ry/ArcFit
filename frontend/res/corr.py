@@ -8,7 +8,7 @@ import json
 import numpy as np
 
 equipment_cnt = 34
-motion_cnt = 53
+motion_cnt = 60
 bodypart_cnt = 8
 
 e_id_list_all = np.empty((equipment_cnt, 0)).tolist()
@@ -29,7 +29,7 @@ for i in range(1, equipment_cnt+1):
             json.dump(data, f, ensure_ascii=False, indent=4)
             
 
-b_id_list_all = np.empty((equipment_cnt, 0)).tolist()
+b_id_list_all = np.empty((bodypart_cnt, 0)).tolist()
     
 for j in range(1, motion_cnt+1):
     with open(f'motion/json/{j}.json', 'r', encoding='utf-8') as f:

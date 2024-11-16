@@ -3,5 +3,8 @@
     "name": "臀桥训练器",
     "description": "臀桥训练器用于臀桥动作的专用器材，能够有效增强臀大肌、核心肌群和腿后肌群。",
     "img_path": "res/equipment/img/21.jpg",
-    "m_id": []
+    "m_id": [
+        58,
+        59
+    ]
 }
