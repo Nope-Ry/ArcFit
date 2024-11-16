@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
+import motionData from "@/res/motion/json/comb.json";
 
 const { width, height } = Dimensions.get("window");
 
@@ -33,7 +34,6 @@ type RouteParams = {
 export default function EquipmentScreen() {
   const route = useRoute<RouteProp<RouteParams, 'params'>>();
   const {information} = route.params;
-  console.log(information);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
@@ -66,7 +66,7 @@ export default function EquipmentScreen() {
                   style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
                 >
                   <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-                    {action}
+                    {motionData[action-1].name}
                   </ThemedText>
                 </View>
               </View>

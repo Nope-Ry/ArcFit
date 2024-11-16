@@ -13,7 +13,6 @@ import cardData from "../../res/equipment/json/comb.json";
 const { width, height } = Dimensions.get("window");
 
 export default function TrainingScreen() {
-  console.log(cardData[1]);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       {/* 上部容器 */}
