@@ -40,11 +40,10 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
           <Stack.Screen
             name="AccountScreen"
-            options={{ headerBackTitle: "hhh", headerTitle: "Login" }}
+            // options={{ headerBackTitle: "hhh", headerTitle: "Login" }}
           />
-          <Stack.Screen
+          <Stack.Screen 
             name="EquipmentScreen"
-            options={{ headerBackTitle: "Equipment", headerTitle: "高位下拉器" }}
           />
         </Stack>
       </ThemeProvider>

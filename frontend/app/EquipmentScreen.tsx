@@ -9,6 +9,8 @@ import {
   View,
   Dimensions,
 } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import motionData from "@/res/motion/json/comb.json";
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,18 +23,28 @@ const Equipment = {
   recommendedActions: ["宽握高位下拉", "中握高位下拉", "窄握高位下拉"],
 };
 
+import { RouteProp } from "@react-navigation/native";
+
+type RouteParams = {
+  params: {
+    information: any;
+  };
+};
+
 export default function EquipmentScreen() {
+  const route = useRoute<RouteProp<RouteParams, 'params'>>();
+  const {information} = route.params;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
         {/* 图片部分 */}
         {/* <Image source={{ uri: Equipment.imageUri }} style={styles.picture} /> */}
-        <Image source={Equipment.imagePath} style={styles.picture} />
+        <Image source={information.img_path} style={styles.picture} />
 
         {/* 描述方框 */}
         <View style={styles.descriptionBox}>
           <ThemedText type="default" style={styles.text}>
-            {Equipment.description}
+            {information.description}
           </ThemedText>
         </View>
 
@@ -41,22 +53,25 @@ export default function EquipmentScreen() {
           <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
             推荐动作
           </ThemedText>
-          {Equipment.recommendedActions.map((action, index) => (
-            <View key={index} style={styles.recommendedAction}>
-              <TouchableOpacity style={styles.plusButton}>
-                <ThemedText type="defaultBold" style={{ color: "#fff" }}>
-                  +
-                </ThemedText>
-              </TouchableOpacity>
-              <View
-                style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
-              >
-                <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-                  {action}
-                </ThemedText>
+          {information.m_id.map((action, index) => {
+            
+            return (
+              <View key={index} style={styles.recommendedAction}>
+                <TouchableOpacity style={styles.plusButton}>
+                  <ThemedText type="defaultBold" style={{ color: "#fff" }}>
+                    +
+                  </ThemedText>
+                </TouchableOpacity>
+                <View
+                  style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
+                >
+                  <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
+                    {motionData[action-1].name}
+                  </ThemedText>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
         <View style={{ height: 35 }} />
       </ScrollView>
