@@ -5,22 +5,22 @@ import { useNavigation } from "@react-navigation/native";
 
 // 定义单个卡片组件
 interface EquipmentCardProps {
-  imageUri: string;
-  title: string;
+  information: any;
 }
 
 const { width, height } = Dimensions.get("window");
 
 // 使用接口定义组件的 props 类型
-const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title}) => {
+const EquipmentCard: React.FC<EquipmentCardProps> = ({ information:card }) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity 
       style={styles.card}
-      onPress={() => navigation.navigate("EquipmentScreen", { title : title })}
+      onPress={() => {
+        navigation.navigate("EquipmentScreen", { information: card })}}
     >
-      <Image source={{ uri: imageUri }} style={styles.cardImage} />
-      <ThemedText type="defaultBold">{title}</ThemedText>
+      <Image source={{ uri: card.img_path }} style={styles.cardImage} />
+      <ThemedText type="defaultBold">{card.name}</ThemedText>
     </TouchableOpacity>
   );
 };
