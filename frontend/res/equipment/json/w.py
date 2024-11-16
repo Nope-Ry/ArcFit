@@ -4,7 +4,7 @@ import json
 
 name_list = []
 
-for i in range(1, 32):
+for i in range(1, 36):
     with open(f'equipment/json/{i}.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
         # data["description"] = des_list[i-1]
