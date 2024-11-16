@@ -31,8 +31,8 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ imageUri, title, descript
 const styles = StyleSheet.create({
   card: {
     width: width * 0.25,
-    height: height * 0.3,
-    backgroundColor: "#fff",
+    height: height * 0.2,
+    backgroundColor: "#F5F5F5",
     borderRadius: width * 0.02, // 2% of screen width
     marginVertical: height * 0.003, // 1% of screen height
     shadowColor: "#000",
