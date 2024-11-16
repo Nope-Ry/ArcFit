@@ -3,6 +3,8 @@ import { TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useNavigation } from "@react-navigation/native";
 
+import { equipment_imgs } from "../../assets/res/equipment_img";
+
 // 定义单个卡片组件
 interface EquipmentCardProps {
   information: any;
@@ -19,7 +21,7 @@ const EquipmentCard: React.FC<EquipmentCardProps> = ({ information:card }) => {
       onPress={() => {
         navigation.navigate("EquipmentScreen", { information: card })}}
     >
-      <Image source={{ uri: card.img_path }} style={styles.cardImage} />
+      <Image source={equipment_imgs[card.e_id]} style={styles.cardImage} />
       <ThemedText type="defaultBold">{card.name}</ThemedText>
     </TouchableOpacity>
   );
