@@ -30,13 +30,15 @@ export default function EquipmentScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
+        {/* 标题 */}
+        <ThemedText type="title" style={{ textAlign: "center" }}>
+          {cardData[id].name}
+        </ThemedText>
+        
         {/* 图片部分 */}
         {/* <Image source={{ uri: Equipment.imageUri }} style={styles.picture} /> */}
         {/* <Image source={information.img_path} style={styles.picture} /> */}
         <Image source={equipment_imgs[id + 1]} style={styles.picture} />
-
-        {/* 标题 */}
-        
 
         {/* 描述方框 */}
         <View style={styles.descriptionBox}>
@@ -80,13 +82,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
   },
   picture: {
     width: width * 0.6,
     height: height * 0.3,
+    marginTop: 20,
     marginBottom: 20,
     alignSelf: "center",
+
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
   },
   descriptionBox: {
     width: width * 0.8,
@@ -114,8 +121,8 @@ const styles = StyleSheet.create({
   recommendedAction: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: width * 0.1,
-    marginRight: width * 0.1,
+    marginLeft: width * 0.05,
+    marginRight: width * 0.05,
     marginBottom: 20,
     backgroundColor: "#f5f5f5",
     padding: 10,
