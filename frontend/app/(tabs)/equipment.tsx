@@ -37,10 +37,11 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "center",
     margin: width * 0.05,
     rowGap: height * 0.02,
     columnGap: width * 0.04,
+    gap: width * 0.05,
   },
   upContainer: {
     padding: 15,

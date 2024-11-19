@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import motionData from "@/res/motion/json/comb.json";
+import cardData from "@/res/equipment/json/comb.json";
 
 const { width, height } = Dimensions.get("window");
 
@@ -19,27 +20,28 @@ import { equipment_imgs } from "@/assets/res/equipment_img";
 
 type RouteParams = {
   params: {
-    information: any;
+    id: number;
   };
 };
 
 export default function EquipmentScreen() {
   const route = useRoute<RouteProp<RouteParams, 'params'>>();
-  const {information} = route.params;
+  const {id} = route.params;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
         {/* 图片部分 */}
         {/* <Image source={{ uri: Equipment.imageUri }} style={styles.picture} /> */}
         {/* <Image source={information.img_path} style={styles.picture} /> */}
-        <Image source={equipment_imgs[information.e_id]} style={styles.picture} />
+        <Image source={equipment_imgs[id + 1]} style={styles.picture} />
 
         {/* 标题 */}
+        
 
         {/* 描述方框 */}
         <View style={styles.descriptionBox}>
           <ThemedText type="default" style={styles.text}>
-            {information.description}
+            {cardData[id].description}
           </ThemedText>
         </View>
 
@@ -48,7 +50,7 @@ export default function EquipmentScreen() {
           <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
             推荐动作
           </ThemedText>
-          {information.m_id.map((action, index) => {
+          {cardData[id].m_id.map((action, index) => {
             
             return (
               <View key={index} style={styles.recommendedAction}>
