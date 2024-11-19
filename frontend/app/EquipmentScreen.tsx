@@ -12,10 +12,9 @@ import {
 import { useRoute } from "@react-navigation/native";
 import motionData from "@/res/motion/json/comb.json";
 
-const { width, height } = Dimensions.get("window");
-
 import { RouteProp } from "@react-navigation/native";
 import { equipment_imgs } from "@/assets/res/equipment_img";
+const { width, height } = Dimensions.get("window");
 
 type RouteParams = {
   params: {
