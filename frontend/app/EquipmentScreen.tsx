@@ -14,7 +14,7 @@ import motionData from "@/res/motion/json/comb.json";
 import cardData from "@/res/equipment/json/comb.json";
 
 import { RouteProp } from "@react-navigation/native";
-import { equipment_imgs } from "@/assets/res/equipment_img";
+import { equipment_imgs } from "@/res/equipment/equipment_img";
 const { width, height } = Dimensions.get("window");
 
 type RouteParams = {
