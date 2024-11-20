@@ -3,7 +3,7 @@ import { TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useNavigation } from "@react-navigation/native";
 
-import { equipment_imgs } from "../../assets/res/equipment_img";
+import { equipment_imgs } from "../../res/equipment/equipment_img";
 
 // 定义单个卡片组件
 interface EquipmentCardProps {
