@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Alert, Switch, Text } from "react-native";
-import Svg, {
-  G,
-  Defs,
-  RadialGradient,
-  Stop,
-  Path,
-  Line,
-} from "react-native-svg";
+import {
+  StyleSheet,
+  View,
+  Alert,
+  Switch,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import { Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
 
 import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
+import { FrontFemaleSimple } from "./FrontFemaleSimple";
+import { BackFemaleSimple } from "./BackFemaleSimple";
 const { width, height } = Dimensions.get("window");
-
 
 const InteractBody = () => {
   const [pageView, setPageView] = useState("FrontMaleSimple");
@@ -55,6 +57,24 @@ const InteractBody = () => {
           handleClick={handleClick}
         />
       );
+    } else if (pageView === "FrontFemaleSimple") {
+      return (
+        <FrontFemaleSimple
+          color={color}
+          activeColor={activeColor}
+          activeGroup={activeGroup}
+          handleClick={handleClick}
+        />
+      );
+    } else if (pageView === "BackFemaleSimple") {
+      return (
+        <BackFemaleSimple
+          color={color}
+          activeColor={activeColor}
+          activeGroup={activeGroup}
+          handleClick={handleClick}
+        />
+      );
     } else {
       return <Text>Not Found</Text>;
     }
@@ -62,33 +82,64 @@ const InteractBody = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {currentPage()}
-      <View
+      <SafeAreaView
         style={{
           flexDirection: "row",
           justifyContent: "space-around",
-          marginTop: 10,
-          marginBottom: 10,
         }}
       >
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isMale ? "Male" : "Female"}
           </ThemedText>
-          <Switch value={isMale} onValueChange={setIsMale} disabled />
+          <Switch
+            value={isMale}
+            onValueChange={setIsMale}
+            thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
+            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
+          />
         </View>
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isSimple ? "Simple" : "Complex"}
           </ThemedText>
-          <Switch value={isSimple} onValueChange={setIsSimple} disabled />
+          <Switch
+            value={isSimple}
+            onValueChange={setIsSimple}
+            disabled
+            thumbColor={isSimple ? "#FFFFFF" : "#FFA07A"}
+            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
+          />
         </View>
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isFront ? "Front" : "Back"}
           </ThemedText>
-          <Switch value={isFront} onValueChange={setIsFront} />
+          <Switch
+            value={isFront}
+            onValueChange={setIsFront}
+            thumbColor={isFront ? "#FFFFFF" : "#FFA07A"}
+            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
+          />
         </View>
+      </SafeAreaView>
+      {currentPage()}
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert("Clicked on Save");
+          }}
+          style={{
+            backgroundColor: "#FFA07A",
+            width: width,
+            height: height * 0.05,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: height * 0.04,
+          }}
+        >
+          <ThemedText type="defaultBold">{activeGroup}</ThemedText>
+        </TouchableOpacity>
       </View>
     </View>
   );
