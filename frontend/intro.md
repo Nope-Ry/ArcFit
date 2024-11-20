@@ -34,3 +34,10 @@ https://spin.atomicobject.com/not-assignable-parameter-never/
 详见文档
 https://gluestack.io/ui/docs/home/overview/introduction
 
+## IOS simulator
+
+参阅
+https://www.waldo.com/blog/react-native-run-ios
+https://docs.expo.dev/develop/development-builds/create-a-build/#create-a-build-for-emulatorsimulator
+
+不更新版本

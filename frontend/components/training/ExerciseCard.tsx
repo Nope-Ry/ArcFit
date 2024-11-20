@@ -19,23 +19,22 @@ interface ExerciseCardProps {
     name: string;
     image: any;
   };
+  exerSets: { reps: string; weight: string; checked: boolean }[];
+  setExerSets: (sets: { reps: string; weight: string; checked: boolean }[]) => void;
+  rating: number;
+  setRating: (rating: number) => void;
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise }) => {
+const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExerSets, rating, setRating }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [exerSets, setExerSets] = useState([
-    { reps: "10", weight: "60", checked: false },
-    { reps: "10", weight: "60", checked: false },
-    { reps: "12", weight: "50", checked: false },
-  ]);
-  const [rating, setRating] = useState(3);
+  // const [rating, setRating] = useState(3);
 
   const getSliderColor = (value) => {
     if (value <= 2) return "#4CAF50"; // 绿色
     if (value <= 4) return "#FFC107"; // 黄色
     return "#FF5252"; // 红色
   };
-
+  
   const addSet = () => {
     const lastSet = exerSets[exerSets.length - 1];
     setExerSets([...exerSets, { ...lastSet, checked: false }]);
