@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import motionData from "@/res/motion/json/comb.json";
+import cardData from "@/res/equipment/json/comb.json";
 
 import { RouteProp } from "@react-navigation/native";
 import { equipment_imgs } from "@/assets/res/equipment_img";
@@ -18,27 +19,30 @@ const { width, height } = Dimensions.get("window");
 
 type RouteParams = {
   params: {
-    information: any;
+    id: number;
   };
 };
 
 export default function EquipmentScreen() {
   const route = useRoute<RouteProp<RouteParams, 'params'>>();
-  const {information} = route.params;
+  const {id} = route.params;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
+        {/* 标题 */}
+        <ThemedText type="title" style={{ textAlign: "center" }}>
+          {cardData[id].name}
+        </ThemedText>
+        
         {/* 图片部分 */}
         {/* <Image source={{ uri: Equipment.imageUri }} style={styles.picture} /> */}
         {/* <Image source={information.img_path} style={styles.picture} /> */}
-        <Image source={equipment_imgs[information.e_id]} style={styles.picture} />
-
-        {/* 标题 */}
+        <Image source={equipment_imgs[id + 1]} style={styles.picture} />
 
         {/* 描述方框 */}
         <View style={styles.descriptionBox}>
           <ThemedText type="default" style={styles.text}>
-            {information.description}
+            {cardData[id].description}
           </ThemedText>
         </View>
 
@@ -47,7 +51,7 @@ export default function EquipmentScreen() {
           <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
             推荐动作
           </ThemedText>
-          {information.m_id.map((action, index) => {
+          {cardData[id].m_id.map((action, index) => {
             
             return (
               <View key={index} style={styles.recommendedAction}>
@@ -77,13 +81,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
   },
   picture: {
     width: width * 0.6,
     height: height * 0.3,
+    marginTop: 20,
     marginBottom: 20,
     alignSelf: "center",
+
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
   },
   descriptionBox: {
     width: width * 0.8,
@@ -111,8 +120,8 @@ const styles = StyleSheet.create({
   recommendedAction: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: width * 0.1,
-    marginRight: width * 0.1,
+    marginLeft: width * 0.05,
+    marginRight: width * 0.05,
     marginBottom: 20,
     backgroundColor: "#f5f5f5",
     padding: 10,

@@ -13,13 +13,13 @@ interface EquipmentCardProps {
 const { width, height } = Dimensions.get("window");
 
 // 使用接口定义组件的 props 类型
-const EquipmentCard: React.FC<EquipmentCardProps> = ({ information:card }) => {
+const EquipmentCard: React.FC<EquipmentCardProps> = ({ information: card }) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity 
       style={styles.card}
       onPress={() => {
-        navigation.navigate("EquipmentScreen", { information: card })}}
+        navigation.navigate("EquipmentScreen", { id: card.e_id - 1 });}}
     >
       <Image source={equipment_imgs[card.e_id]} style={styles.cardImage} />
       <ThemedText type="defaultBold">{card.name}</ThemedText>
