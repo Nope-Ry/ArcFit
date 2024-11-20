@@ -22,7 +22,7 @@ export const BackMaleSimple = ({
       <Svg
         viewBox="0 0 660.46 1206.46"
         width={width * 0.8}
-        height={width * 1.6}
+        height={height * 0.7}
         fill={null}
       >
         <Defs>
@@ -36,12 +36,12 @@ export const BackMaleSimple = ({
           >
             <Stop
               offset="0%"
-              stop-colo=" rgb(254, 91, 127)"
+              stopColor=" rgb(254, 91, 127)"
               stopOpacity="1"
             ></Stop>
             <Stop
               offset="100%"
-              stop-color="rgb(231, 236, 239)"
+              stopColor="rgb(231, 236, 239)"
               stopOpacity="1"
             ></Stop>
           </RadialGradient>
