@@ -50,6 +50,7 @@ const TrainingStatistics: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
       padding: 20,
+      flex: 1,
     },
     toggleContainer: {
       flexDirection: 'row', 
