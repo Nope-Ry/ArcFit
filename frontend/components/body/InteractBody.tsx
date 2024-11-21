@@ -18,6 +18,29 @@ import { FrontFemaleSimple } from "./FrontFemaleSimple";
 import { BackFemaleSimple } from "./BackFemaleSimple";
 const { width, height } = Dimensions.get("window");
 
+const mapBodyPart = (group) => {
+  const bodyParts = {
+    "chest": "胸部",
+    "front-shoulders": "前肩",
+    "traps": "斜方肌",
+    "biceps": "肱二头肌",
+    "forearms": "前臂",
+    "hands": "手",
+    "obliques": "腹外斜肌",
+    "abdominals": "腹肌",
+    "quads": "股四头肌",
+    "calves": "小腿",
+    "rear-shoulders": "后肩",
+    "triceps": "肱三头肌",
+    "lats": "背阔肌",
+    "glutes": "臀部",
+    "traps-middle": "斜方肌中部",
+    "lower-back": "下背",
+    "hamstrings": "腿后肌",
+  };
+  return bodyParts[group];
+};
+
 const InteractBody = () => {
   const [pageView, setPageView] = useState("FrontMaleSimple");
   const [isMale, setIsMale] = useState(true);
@@ -138,7 +161,8 @@ const InteractBody = () => {
             marginTop: height * 0.04,
           }}
         >
-          <ThemedText type="defaultBold">{activeGroup}</ThemedText>
+          <ThemedText type="defaultBold">{mapBodyPart(activeGroup)}</ThemedText>
+          {/* <ThemedText type="defaultBold">{activeGroup}</ThemedText> */}
         </TouchableOpacity>
       </View>
     </View>
