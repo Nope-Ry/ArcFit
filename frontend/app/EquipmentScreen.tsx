@@ -133,7 +133,6 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     backgroundColor: "#007bff",
-    padding: 5,
     marginRight: "5%",
     width: 30,
     height: 30,
