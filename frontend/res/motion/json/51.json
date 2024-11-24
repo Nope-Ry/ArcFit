@@ -5,8 +5,10 @@
     "steps": [],
     "img_path": "res/motion/img/51.gif",
     "b_id": [
-        4,
-        6
+        9,
+        14,
+        17,
+        16
     ],
     "e_id": [
         5

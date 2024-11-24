@@ -36,7 +36,7 @@ const mapBodyPart = (group) => {
     "lats": "背阔肌",
     "glutes": "臀部",
     "traps-middle": "斜方肌中部",
-    "lower-back": "下背",
+    "lowerback": "下背",
     "hamstrings": "腿后肌",
   };
   return bodyParts[group];
