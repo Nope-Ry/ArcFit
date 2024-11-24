@@ -26,6 +26,7 @@ from .serializers import UserSerializer
 @api_view(["POST"])
 @json_request
 def user_register(request, json_data):
+    """Register a new user."""
     serializer = UserSerializer(data=json_data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -37,6 +38,7 @@ def user_register(request, json_data):
 @api_view(["POST"])
 @json_request
 def user_login(request, json_data):
+    """Try to login with given username and password. Return a access token on success."""
     username = json_data.get("username", None)
     password = json_data.get("password", None)
 
@@ -53,7 +55,7 @@ def user_login(request, json_data):
     token_limit_per_user = knox_settings.TOKEN_LIMIT_PER_USER
     if token_limit_per_user is not None:
         now = timezone.now()
-        token = user.auth_token_set.filter(expiry__gt=now) # type: ignore
+        token = user.auth_token_set.filter(expiry__gt=now)  # type: ignore
         if token.count() >= token_limit_per_user:
             return Response(
                 {"error": "Maximum amount of tokens allowed per user exceeded."},
@@ -73,11 +75,13 @@ def user_login(request, json_data):
         status=HTTP_200_OK,
     )
 
+
 @api_view(["POST"])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 @json_request
 def user_update(request, json_data):
+    """Update user information. Only accessible to authenticated users."""
     serializer = UserSerializer(instance=request.user, data=json_data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -90,6 +94,7 @@ def user_update(request, json_data):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def user_logout(request):
+    """Invalidate current token."""
     request.auth.delete()
 
     return Response(status=HTTP_204_NO_CONTENT)
