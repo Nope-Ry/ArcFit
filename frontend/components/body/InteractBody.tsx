@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
@@ -60,6 +61,8 @@ const InteractBody = () => {
     // Alert.alert(`Clicked on ${group}`);
     setActiveGroup(group);
   };
+
+  const navigation = useNavigation();
 
   const currentPage = () => {
     if (pageView === "FrontMaleSimple") {
@@ -150,7 +153,7 @@ const InteractBody = () => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            Alert.alert("Clicked on Save");
+            navigation.navigate("BodyInfoScreen", {name: mapBodyPart(activeGroup)});
           }}
           style={{
             backgroundColor: "#FFA07A",

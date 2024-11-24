@@ -42,9 +42,13 @@ export default function RootLayout() {
             name="AccountScreen"
             options={{ headerBackTitle: "hhh", headerTitle: "Login" }}
           />
-          <Stack.Screen 
+          <Stack.Screen
             name="EquipmentScreen"
             options={{ headerTitle: "Equipment" }}
+          />
+          <Stack.Screen
+            name="BodyInfoScreen"
+            options={{ headerTitle: "Body Info" }}
           />
         </Stack>
       </ThemeProvider>
