@@ -116,7 +116,7 @@ const InteractBody = () => {
       >
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
-            {isMale ? "Male" : "Female"}
+            {isMale ? "男性" : "女性"}
           </ThemedText>
           <Switch
             value={isMale}
@@ -127,7 +127,7 @@ const InteractBody = () => {
         </View>
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
-            {isSimple ? "Simple" : "Complex"}
+            {isSimple ? "简单" : "复杂"}
           </ThemedText>
           <Switch
             value={isSimple}
@@ -139,7 +139,7 @@ const InteractBody = () => {
         </View>
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
-            {isFront ? "Front" : "Back"}
+            {isFront ? "前面" : "后面"}
           </ThemedText>
           <Switch
             value={isFront}
