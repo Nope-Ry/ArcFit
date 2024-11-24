@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 import { Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
@@ -35,7 +36,7 @@ const mapBodyPart = (group) => {
     "lats": "背阔肌",
     "glutes": "臀部",
     "traps-middle": "斜方肌中部",
-    "lower-back": "下背",
+    "lowerback": "下背",
     "hamstrings": "腿后肌",
   };
   return bodyParts[group];
@@ -60,6 +61,8 @@ const InteractBody = () => {
     // Alert.alert(`Clicked on ${group}`);
     setActiveGroup(group);
   };
+
+  const navigation = useNavigation();
 
   const currentPage = () => {
     if (pageView === "FrontMaleSimple") {
@@ -150,7 +153,7 @@ const InteractBody = () => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            Alert.alert("Clicked on Save");
+            navigation.navigate("BodyInfoScreen", {name: mapBodyPart(activeGroup)});
           }}
           style={{
             backgroundColor: "#FFA07A",

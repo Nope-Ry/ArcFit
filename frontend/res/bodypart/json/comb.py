@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 lst = []
-for i in range(1, 9):
+for i in range(1, 18):
     path = Path(f"bodypart/json/{i}.json")
     with path.open() as f:
         data = json.load(f)

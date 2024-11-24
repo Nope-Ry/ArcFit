@@ -9,6 +9,8 @@ import {
   View,
   Dimensions,
 } from "react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import { useRoute } from "@react-navigation/native";
 import motionData from "@/res/motion/json/comb.json";
 import cardData from "@/res/equipment/json/comb.json";
@@ -24,8 +26,8 @@ type RouteParams = {
 };
 
 export default function EquipmentScreen() {
-  const route = useRoute<RouteProp<RouteParams, 'params'>>();
-  const {id} = route.params;
+  const route = useRoute<RouteProp<RouteParams, "params">>();
+  const { id } = route.params;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
@@ -33,7 +35,7 @@ export default function EquipmentScreen() {
         <ThemedText type="title" style={{ textAlign: "center" }}>
           {cardData[id].name}
         </ThemedText>
-        
+
         {/* 图片部分 */}
         {/* <Image source={{ uri: Equipment.imageUri }} style={styles.picture} /> */}
         {/* <Image source={information.img_path} style={styles.picture} /> */}
@@ -52,19 +54,23 @@ export default function EquipmentScreen() {
             推荐动作
           </ThemedText>
           {cardData[id].m_id.map((action, index) => {
-            
             return (
               <View key={index} style={styles.recommendedAction}>
                 <TouchableOpacity style={styles.plusButton}>
-                  <ThemedText type="defaultBold" style={{ color: "#fff" }}>
-                    +
-                  </ThemedText>
+                  <FontAwesome name="plus" size={width * 0.03} color="#fff" />
                 </TouchableOpacity>
                 <View
-                  style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    marginRight: "8%",
+                  }}
                 >
-                  <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-                    {motionData[action-1].name}
+                  <ThemedText
+                    type="defaultBold"
+                    style={{ textAlign: "center" }}
+                  >
+                    {motionData[action - 1].name}
                   </ThemedText>
                 </View>
               </View>
