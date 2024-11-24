@@ -20,22 +20,22 @@ const { width, height } = Dimensions.get("window");
 const getBodyPartID = (name) => {
   const bodyParts = {
     胸部: 1,
-    前肩: 7,
-    斜方肌: 2,
-    肱二头肌: 8,
-    前臂: 8,
-    手: 8,
-    腹外斜肌: 3,
-    腹肌: 3,
-    股四头肌: 4,
-    小腿: 5,
-    后肩: 7,
-    肱三头肌: 8,
-    背阔肌: 2,
-    臀部: 6,
-    斜方肌中部: 2,
-    下背: 2,
-    腿后肌: 4,
+    前肩: 2,
+    斜方肌: 3,
+    肱二头肌: 4,
+    前臂: 5,
+    手: 6,
+    腹外斜肌: 7,
+    腹肌: 8,
+    股四头肌: 9,
+    小腿: 10,
+    后肩: 11,
+    肱三头肌: 12,
+    背阔肌: 13,
+    臀部: 14,
+    斜方肌中部: 15,
+    下背: 16,
+    腿后肌: 17,
   };
   return bodyParts[name];
 };
@@ -49,6 +49,7 @@ type RouteParams = {
 export default function BodyInfoScreen() {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const { name } = route.params;
+  const id = getBodyPartID(name) - 1;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <ScrollView style={styles.container}>
@@ -63,8 +64,7 @@ export default function BodyInfoScreen() {
         {/* 描述方框 */}
         <View style={styles.descriptionBox}>
           <ThemedText type="defaultBold" style={styles.text}>
-            {/* {cardData[id].description} */}
-            {name} 的描述
+            {bodyData[id].description}
           </ThemedText>
         </View>
 
@@ -73,7 +73,7 @@ export default function BodyInfoScreen() {
           <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
             推荐动作
           </ThemedText>
-          {bodyData[getBodyPartID(name) - 1].m_id.map((action, index) => {
+          {bodyData[id].m_id.map((action, index) => {
             return (
               <View key={index} style={styles.recommendedAction}>
                 <TouchableOpacity style={styles.plusButton}>
@@ -130,7 +130,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
-    marginBottom: 20,
+    marginBottom: height * 0.03,
+    marginTop: height * 0.02,
   },
   recommendedBox: {
     width: width * 0.8,

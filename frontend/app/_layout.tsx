@@ -44,11 +44,11 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="EquipmentScreen"
-            options={{ headerTitle: "Equipment" }}
+            options={{ headerTitle: "器材详情", headerBackTitle: "器械" }}
           />
           <Stack.Screen
             name="BodyInfoScreen"
-            options={{ headerTitle: "Body Info" }}
+            options={{ headerTitle: "肌群详情", headerBackTitle: "身体" }}
           />
         </Stack>
       </ThemeProvider>
