@@ -42,9 +42,13 @@ export default function RootLayout() {
             name="AccountScreen"
             options={{ headerBackTitle: "未登录", headerTitle: "Login" }}
           />
-          <Stack.Screen 
+          <Stack.Screen
             name="EquipmentScreen"
-            options={{ headerTitle: "Equipment", headerBackTitle:"全部" }}
+            options={{ headerTitle: "器材详情", headerBackTitle: "器械" }}
+          />
+          <Stack.Screen
+            name="BodyInfoScreen"
+            options={{ headerTitle: "肌群详情", headerBackTitle: "身体" }}
           />
         </Stack>
       </ThemeProvider>
