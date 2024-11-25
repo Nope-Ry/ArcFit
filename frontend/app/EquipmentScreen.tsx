@@ -17,6 +17,9 @@ import cardData from "@/res/equipment/json/comb.json";
 
 import { RouteProp } from "@react-navigation/native";
 import { equipment_imgs } from "@/res/equipment/equipment_img";
+import Cart from "@/components/Cart";
+import { CartContext } from "@/components/CartContext";
+import { useContext } from "react";
 const { width, height } = Dimensions.get("window");
 
 type RouteParams = {
@@ -28,8 +31,10 @@ type RouteParams = {
 export default function EquipmentScreen() {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const { id } = route.params;
+  const {cart, incrementCart} = useContext(CartContext);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <Cart />
       <ScrollView style={styles.container}>
         {/* 标题 */}
         <ThemedText type="title" style={{ textAlign: "center" }}>
@@ -56,7 +61,8 @@ export default function EquipmentScreen() {
           {cardData[id].m_id.map((action, index) => {
             return (
               <View key={index} style={styles.recommendedAction}>
-                <TouchableOpacity style={styles.plusButton}>
+                <TouchableOpacity style={styles.plusButton}
+                  onPress={()=>{incrementCart(action - 1)}}>
                   <FontAwesome name="plus" size={width * 0.03} color="#fff" />
                 </TouchableOpacity>
                 <View
@@ -66,12 +72,19 @@ export default function EquipmentScreen() {
                     marginRight: "8%",
                   }}
                 >
+                {cart.includes(action - 1) ? (
                   <ThemedText
                     type="defaultBold"
-                    style={{ textAlign: "center" }}
+                    style={{ textAlign: "center",color: "#D3D3D3" }}
                   >
                     {motionData[action - 1].name}
                   </ThemedText>
+                ) : <ThemedText
+                      type="defaultBold"
+                      style={{ textAlign: "center",color: "black" }}
+                    >
+                      {motionData[action - 1].name}
+                    </ThemedText>}
                 </View>
               </View>
             );

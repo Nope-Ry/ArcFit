@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { CartProvider } from "@/components/CartContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,6 +35,7 @@ export default function RootLayout() {
 
   return (
     <GluestackUIProvider mode="light">
+      <CartProvider>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -52,6 +54,7 @@ export default function RootLayout() {
           />
         </Stack>
       </ThemeProvider>
+      </CartProvider>
     </GluestackUIProvider>
   );
 }
