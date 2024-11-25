@@ -67,7 +67,7 @@ const EquipmentHeader = ({ OnSelect }) => {
         >
         <TouchableWithoutFeedback onPress={toggleMenu}>
           <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
-            <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+            <Animated.ScrollView style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
               {categories.map((category, index) => (
                 <TouchableOpacity
                   key={index}
@@ -82,7 +82,7 @@ const EquipmentHeader = ({ OnSelect }) => {
                   </ThemedText>
                 </TouchableOpacity>
               ))}
-            </Animated.View>
+            </Animated.ScrollView>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -110,9 +110,8 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     width: "50%",
-    height: "100%",
     backgroundColor: "white",
-    paddingTop: 50,
+    paddingVertical: 50,
     padding: 20,
   },
   menuItem: {
