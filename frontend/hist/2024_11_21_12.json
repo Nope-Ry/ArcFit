@@ -1,0 +1,54 @@
+{
+    "duration": 67,
+    "date": "2024-11-21",
+    "time": "11:48:44",
+    "cnt": 12,
+    "records": [
+        {
+            "name": "\u9ad8\u4f4d1",
+            "m_id": 3,
+            "b_id": [
+                13,
+                3
+            ],
+            "group": [
+                {
+                    "reps": 6,
+                    "weight": 20
+                },
+                {
+                    "reps": 3,
+                    "weight": 24
+                }
+            ],
+            "rating": 5
+        },
+        {
+            "name": "\u9ad8\u4f4d1",
+            "m_id": 13,
+            "b_id": [
+                16,
+                8
+            ],
+            "group": [
+                {
+                    "reps": 4,
+                    "weight": 17
+                },
+                {
+                    "reps": 3,
+                    "weight": 49
+                },
+                {
+                    "reps": 17,
+                    "weight": 34
+                },
+                {
+                    "reps": 14,
+                    "weight": 39
+                }
+            ],
+            "rating": 4
+        }
+    ]
+}

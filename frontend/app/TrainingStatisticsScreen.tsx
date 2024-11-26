@@ -13,6 +13,7 @@ import Slider from '@react-native-community/slider';
 import { ThemedText } from "@/components/ThemedText";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WeeklyTrainingRecords from "../components/index/WeeklyTrainingRecords";
+import TotalTrainingRecords from "../components/index/TotalTrainingRecords";
 
 const TrainingStatistics: React.FC = () => {
 
@@ -38,11 +39,9 @@ const TrainingStatistics: React.FC = () => {
   
         {/* 根据选择的模式显示不同的内容 */}
         {selectedMode === 'week' ? (
-            <WeeklyTrainingRecords 
-                weeklyDuration={[20, 40, 50, 30, 60, 70, 80]}
-            />
+            <WeeklyTrainingRecords />
         ) : (
-            <ThemedText type="default">总览内容展示</ThemedText>
+            <TotalTrainingRecords />
         )}
       </SafeAreaView>
     );

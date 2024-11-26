@@ -7,6 +7,8 @@ import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
 import RecordList from "@/components/training/RecordCard";
 import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function TrainingScreen() {
@@ -48,9 +50,9 @@ export default function TrainingScreen() {
       console.log("当前的时间为：", mins);
       const hist = {
         "duration" : mins,
-        "date": new Date().toISOString(),
+        "date": new Date().toISOString().split("T")[0],
         "time": new Date().toLocaleTimeString(),
-        "cnt": 0, // 没整
+        "cnt": 0, // 未完成，需要读写文件
         "record": []
       };
 
@@ -59,9 +61,12 @@ export default function TrainingScreen() {
       }
 
       for (let key in m_id_list){
+        // 找到m_id_list[key]对应的b_id数组，已知存在../../res/motion/json/x.json，其中x为m_id_list[key]，需要读写文件
+        const b_id = [];
         const records = {
           "name": `练习 ${m_id_list[key]}`,
           "m_id": m_id_list[key],
+          "b_id": b_id, // 寻找m_id到b_id的映射，未完成
           "group": exerSetsMap[m_id_list[key]],
           "rating": ratingMap[m_id_list[key]]
         };

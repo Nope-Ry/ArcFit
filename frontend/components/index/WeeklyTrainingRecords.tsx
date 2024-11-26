@@ -9,34 +9,128 @@ import { LineChart, Grid, PieChart } from 'react-native-svg-charts';
 import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
 
+import data1 from "../../hist/2024_11_23_1.json"
+import data2 from "../../hist/2024_11_24_2.json"
+import data3 from "../../hist/2024_11_25_3.json"
+import data4 from "../../hist/2024_11_21_4.json"
+import data5 from "../../hist/2024_11_16_5.json"
+import data6 from "../../hist/2024_11_17_6.json"
+import data7 from "../../hist/2024_11_20_7.json"
+import data8 from "../../hist/2024_11_21_8.json"
+import data9 from "../../hist/2024_11_16_9.json"
+import data10 from "../../hist/2024_11_23_10.json"
+import data11 from "../../hist/2024_11_24_11.json"
+import data12 from "../../hist/2024_11_21_12.json"
+import data13 from "../../hist/2024_11_20_13.json"
+import data14 from "../../hist/2024_11_24_14.json"
+import data15 from "../../hist/2024_11_26_15.json"
+
 const { width, height } = Dimensions.get("window");
 
-interface WeeklyTrainingRecordsProps {
-    weeklyDuration: number[];
+const getWeeklyDay = () => {
+    const today = new Date();
+    const week = [];
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        week.push(date.toISOString().split('T')[0]);
+    }
+    return week;
 }
-const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = ({weeklyDuration}) => {
-    weeklyDuration = [20, 40, 50, 30, 60, 70, 80];
+const week = getWeeklyDay();
+const days = week.map(date => date.split('-')[2]);
 
-    const [selected, setSelected] = useState('');
+const data = [data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13, data14, data15]; // 需要读写文件
 
-    const options = [
-      { key: 'chest', value: '胸部' },
-      { key: 'back', value: '背部' },
-      { key: 'legs', value: '腿部' },
-      { key: 'shoulders', value: '肩部' },
-      { key: 'arms', value: '手臂' },
-      { key: 'core', value: '核心' },
+
+const getWeeklyTrainingRecords = () => {
+    const Time = new Array(7).fill(0);
+    for (let i = 0; i < data.length; i++) {
+        const date = data[i].date;
+        const duration = data[i].duration;
+        const index = week.indexOf(date);
+        if (index !== -1) {
+            Time[index] = duration;
+        }
+    }
+    return Time;
+};
+
+const getWeeklyBodyRecords = () => {
+    const bodyParts = [
+        'NULL', '胸部', '前肩', '斜方肌', '肱二头肌', '前臂', '手', '腹外斜肌', 
+        '腹肌', '股四头肌', '小腿', '后肩', '肱三头肌', '背阔肌', '臀部', 
+        '斜方肌中部', '下背', '腿后肌'
     ];
 
-    const motions = [
-        { key: '高位下拉', value: '30%'},
-        { key: '硬拉', value: '40%'},
-        { key: '深蹲', value: '30%'},
-    ];
+    const weights = bodyParts.map((part, index) => ({
+        key: index,
+        value: part,
+        weight: new Array(7).fill(0),
+        motions: []
+    }));
+
+    for (let i = 0; i < data.length; i++) {
+        const date = data[i].date;
+        const index = week.indexOf(date);
+        if (index !== -1) {
+            const records = data[i].records;
+            for (let j = 0; j < records.length; j++) {
+                const m_id = records[j].m_id;
+                const b_id = records[j].b_id;
+                const group = records[j].group;
+                for (let k = 0; k < group.length; k++) {
+                    const reps = group[k].reps;
+                    const weightValue = group[k].weight;
+                    for( let l = 0; l < b_id.length; l++) {
+                        weights[b_id[l]].weight[index] += reps * weightValue;
+                        const motions = weights[b_id[l]].motions;
+                        let flag = false;
+                        for (let m = 0; m < motions.length; m++) {
+                            if (motions[m].m_id === m_id) { 
+                                motions[m].value += reps * weightValue;
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (!flag) 
+                            motions.push({ m_id: m_id, value: reps * weightValue });
+                    }
+                }
+            }
+        }
+    }
+    return weights;
+}
+
+const getWeeklyBodyMotion = (weeklyBodyRecords) => {
+    const motionsratio = Array.from({ length: 18 }, (_, b_id) => ({ b_id, motions: [] }));
+    for (let i = 1; i < weeklyBodyRecords.length; i++) {
+        const motionsList = weeklyBodyRecords[i].motions;
+        let sum = 0;
+        for (let j = 0; j < motionsList.length; j++) 
+            sum += motionsList[j].value;
+        for (let j = 0; j < motionsList.length; j++) 
+            motionsratio[i].motions.push({ m_id: motionsList[j].m_id , value: (motionsList[j].value / sum).toFixed(2) });
+    }
+    return motionsratio;
+}
+
+
+interface WeeklyTrainingRecordsProps {
+}
+
+const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
+
+    const [selected, setSelected] = useState('1');
 
     const getRandomColor = () => {
         return `#${Math.floor(Math.random()*16777215).toString(16)}`;
     };
+
+    const weeklyRecord = getWeeklyTrainingRecords();
+    const weeklyBodyRecords = getWeeklyBodyRecords();
+    const weeklyBodyMotion = getWeeklyBodyMotion(weeklyBodyRecords);
 
     return (
         <ScrollView style={{padding: 10}}>
@@ -44,15 +138,15 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = ({weeklyDura
             <View style={styles.container}>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
                 <LineChart
-                    style={{ height: 200 }}
-                    data={weeklyDuration}
+                    style={{ height: height * 0.25 }}
+                    data={weeklyRecord}
                     svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
                     contentInset={{ top: 10, bottom: 10 }}
                     gridMin={0}
-                    gridMax={Math.max(...weeklyDuration) + 20}
+                    gridMax={Math.max(...weeklyRecord) + 20}
                 />
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
+                    {days.map((day, index) => (
                     <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
                     ))}
                 </View>
@@ -67,57 +161,40 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = ({weeklyDura
                     {/* 下拉框 */}
                     <View>
                         <SelectList
-                            setSelected={(val) => setSelected(val)}
-                            data={options}
+                            setSelected={(value) => setSelected(value)}
+                            data={weeklyBodyRecords.slice(1).map(item => ({ key: item.key, value: item.value }))}
                             placeholder="选择一个部位"
                             boxStyles={styles.motionBox}
-                            dropdownStyles={styles.dropdown} // 下拉框样式
+                            dropdownStyles={styles.dropdown} 
                             search={false}
-                            defaultOption={{ key: 'chest', value: '胸部' }}
+                            defaultOption={{ key: '1', value: '胸部' }}
                         />
                     </View>
                  </View>
-                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>
-                        训练时长（分钟）
-                </ThemedText>
-                 <LineChart
-                    style={{ height: 200 }}
-                    data={weeklyDuration}
-                    svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                    contentInset={{ top: 10, bottom: 10 }}
-                    gridMin={0}
-                    gridMax={Math.max(...weeklyDuration) + 20}
-                />
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
-                    <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
-                    ))}
-                </View>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>
                         负重(kg)
                 </ThemedText>
                  <LineChart
-                    style={{ height: 200 }}
-                    data={weeklyDuration}
+                    style={{ height: height * 0.25 }}
+                    data={weeklyBodyRecords[selected].weight} 
                     svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
                     contentInset={{ top: 10, bottom: 10 }}
                     gridMin={0}
-                    gridMax={Math.max(...weeklyDuration) + 20}
+                    gridMax={Math.max(...weeklyRecord) + 20}
                 />
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => (
+                    {days.map((day, index) => (
                     <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
                     ))}
                 </View>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
                 <PieChart
                     style={{ height: 200 }}
-                    valueAccessor={({ item }) => item.value}
-                    data={motions.map(motion => ({
-                        key: motion.key,
+                    data={weeklyBodyMotion[selected].motions.map(motion => ({
+                        key: motion.m_id,
                         value: parseFloat(motion.value),
                         svg: { fill: getRandomColor() },
-                    }))}
+                    }))} 
                     outerRadius={ width * 0.25 }
                 >
                 </PieChart>
@@ -167,7 +244,7 @@ const styles = StyleSheet.create({
         borderColor: '#007bff',
         borderRadius: 8,
         padding: 10,
-        width: width * 0.25,
+        width: width * 0.4,
     },
     dropdown: {
         borderColor: '#007bff',

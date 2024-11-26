@@ -1,0 +1,94 @@
+{
+    "duration": 46,
+    "date": "2024-11-17",
+    "time": "01:07:39",
+    "cnt": 6,
+    "records": [
+        {
+            "name": "\u4e09\u4e94\u516d",
+            "m_id": 7,
+            "b_id": [
+                15,
+                10
+            ],
+            "group": [
+                {
+                    "reps": 1,
+                    "weight": 21
+                },
+                {
+                    "reps": 18,
+                    "weight": 40
+                },
+                {
+                    "reps": 2,
+                    "weight": 2
+                },
+                {
+                    "reps": 4,
+                    "weight": 20
+                },
+                {
+                    "reps": 6,
+                    "weight": 48
+                }
+            ],
+            "rating": 5
+        },
+        {
+            "name": "\u9ad8\u4f4d\u4e0b",
+            "m_id": 1,
+            "b_id": [
+                4,
+                6,
+                3
+            ],
+            "group": [
+                {
+                    "reps": 12,
+                    "weight": 11
+                },
+                {
+                    "reps": 2,
+                    "weight": 32
+                },
+                {
+                    "reps": 3,
+                    "weight": 36
+                },
+                {
+                    "reps": 18,
+                    "weight": 41
+                },
+                {
+                    "reps": 18,
+                    "weight": 5
+                }
+            ],
+            "rating": 3
+        },
+        {
+            "name": "\u9ad8\u4f4d1",
+            "m_id": 11,
+            "b_id": [
+                10,
+                3
+            ],
+            "group": [
+                {
+                    "reps": 5,
+                    "weight": 15
+                },
+                {
+                    "reps": 19,
+                    "weight": 24
+                },
+                {
+                    "reps": 10,
+                    "weight": 12
+                }
+            ],
+            "rating": 5
+        }
+    ]
+}
