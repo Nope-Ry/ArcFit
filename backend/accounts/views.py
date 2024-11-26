@@ -9,7 +9,6 @@ from rest_framework.decorators import (
 from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_200_OK,
-    HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
 )
 from rest_framework.serializers import DateTimeField
@@ -20,7 +19,7 @@ from knox.auth import TokenAuthentication
 
 from utils.decorators import json_request
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserUpdateSerializer
 
 
 @api_view(["POST"])
@@ -46,11 +45,11 @@ def user_login(request, json_data):
 
     if user is None:
         return Response(
-            {"error": "Invalid username or password"}, status=HTTP_400_BAD_REQUEST
+            {"error": "Invalid username or password."}, status=HTTP_400_BAD_REQUEST
         )
 
     if not user.is_active:
-        return Response({"error": "User isn't activated"}, status=HTTP_400_BAD_REQUEST)
+        return Response({"error": "User isn't activated."}, status=HTTP_400_BAD_REQUEST)
 
     token_limit_per_user = knox_settings.TOKEN_LIMIT_PER_USER
     if token_limit_per_user is not None:
@@ -97,4 +96,4 @@ def user_logout(request):
     """Invalidate current token."""
     request.auth.delete()
 
-    return Response(status=HTTP_204_NO_CONTENT)
+    return Response({}, status=HTTP_200_OK)

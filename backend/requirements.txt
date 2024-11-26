@@ -4,3 +4,4 @@ djangorestframework
 mysqlclient==2.2.5
 gunicorn
 jsonschema==4.23.0
+django-cors-headers

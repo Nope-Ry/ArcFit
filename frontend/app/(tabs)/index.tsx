@@ -40,7 +40,7 @@ export default function ProfileScreen() {
               {
                 icon: require("../../assets/images/favicon.png"),
                 text: "训练统计",
-                onPress: () => {},
+                onPress: () => navigation.navigate("TrainingStatisticsScreen"),
               },
             ]}
           />
