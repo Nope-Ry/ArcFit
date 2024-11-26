@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { View, Text, Button } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
@@ -7,14 +7,15 @@ import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
 import RecordList from "@/components/training/RecordCard";
 import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import * as FileSystem from "expo-file-system";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+
+let cnt = 0;
+
 export default function TrainingScreen() {
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
-
   const [time, setTime] = useState(0);
 
   const m_id_list = [3, 1, 2];
@@ -40,22 +41,20 @@ export default function TrainingScreen() {
   // 切换显示方式
   const toggleView = () => {
     if(isTraining){
-      // console.log("当前的exerSetsMap为：", exerSetsMap);
-      // console.log("当前的ratingMap为：", ratingMap);
-
-      // 创建一个json对象
-
-      // time除以60000得到分钟数，然后转换为字符串
+      // 保存当前的训练记录
       const mins = (time / 60000).toString();
-      console.log("当前的时间为：", mins);
+      const paths = FileSystem.documentDirectory;
+      // 查询FileSystem.documentDirectory下有几个文件
+
       const hist = {
         "duration" : mins,
         "date": new Date().toISOString().split("T")[0],
         "time": new Date().toLocaleTimeString(),
-        "cnt": 0, // 未完成，需要读写文件
-        "record": []
+        "cnt": cnt, // 未完成，需要读写文件
+        "records": []
       };
 
+      cnt += 1;
       for (let key in exerSetsMap) {
         exerSetsMap[key] = exerSetsMap[key].map(({ checked, ...rest }) => rest);
       }
@@ -70,10 +69,21 @@ export default function TrainingScreen() {
           "group": exerSetsMap[m_id_list[key]],
           "rating": ratingMap[m_id_list[key]]
         };
-        hist["record"].push(records);
+        hist["records"].push(records);
       }
+      // 把这个json对象写入文件,文件名为hist/YYYY_MM_DD_cnt.json，cnt为当天的第几次训练，需要读写文件
+      // const path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
+      // console.log("path", path);
+      // FileSystem.writeAsStringAsync(path, JSON.stringify(hist)).then(() => {
+      //   console.log("写入成功");
+      // }).catch((err) => {
+      //   console.log("写入失败");
+      // });
+      // 打印paths下的文件
+      FileSystem.readDirectoryAsync(paths).then((files) => {
+        console.log("files", files);
+      });
 
-      console.log("当前的hist为：", hist);
     }
     else{
 

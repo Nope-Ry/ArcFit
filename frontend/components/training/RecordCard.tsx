@@ -1,23 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { ThemedText } from '../ThemedText';
-import data1 from "../../hist/2024_11_23_1.json"
-import data2 from "../../hist/2024_11_24_2.json"
-import data3 from "../../hist/2024_11_25_3.json"
-import data4 from "../../hist/2024_11_21_4.json"
-import data5 from "../../hist/2024_11_16_5.json"
-import data6 from "../../hist/2024_11_17_6.json"
-import data7 from "../../hist/2024_11_20_7.json"
-import data8 from "../../hist/2024_11_21_8.json"
-import data9 from "../../hist/2024_11_16_9.json"
-import data10 from "../../hist/2024_11_23_10.json"
-import data11 from "../../hist/2024_11_24_11.json"
-import data12 from "../../hist/2024_11_21_12.json"
-import data13 from "../../hist/2024_11_20_13.json"
-import data14 from "../../hist/2024_11_24_14.json"
-import data15 from "../../hist/2024_11_26_15.json"
+import * as FileSystem from 'expo-file-system';
 
-const data = [data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12, data13, data14, data15] // 需要读写文件
+const path = FileSystem.documentDirectory;
+const data = [];
+FileSystem.readDirectoryAsync(path).then((files) => {
+  files = files.filter((file) => file.endsWith(".json"));
+  Promise.all(
+    files.map((file) => FileSystem.readAsStringAsync(path + file))
+  ).then((contents) => {
+    contents.forEach((content) => {
+      data.push(JSON.parse(content));
+    });
+    console.log("data", data);
+  }).catch((err) => {
+    console.log("读取失败");
+    console.log(err);
+  });
+});
+
 const getExerciseData = () => {
   // 筛选出当天的数据，但是后续要修改成选择的日期
   const today = new Date().toISOString().split("T")[0]
@@ -59,6 +61,7 @@ function ExerciseItem({ type, sets, img }) {
 }
 
 export default function RecordList() {
+  console.log("data", data);
   const ExerciseData = getExerciseData();
   return (
     <View style={styles.container}>
