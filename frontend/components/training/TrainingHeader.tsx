@@ -14,11 +14,13 @@ const { width, height } = Dimensions.get("window");
 
 interface TrainingHeaderProps {
   onButtonPress: () => void;
+  time: any;
+  setTime: (time: any) => void;
 }
 
-export default function TrainingHeader({ onButtonPress }: TrainingHeaderProps) {
+export default function TrainingHeader({ onButtonPress, time, setTime }: TrainingHeaderProps) {
   const [isPaused, setIsPaused] = useState(false);
-  const [time, setTime] = useState(0);
+  // const [time, setTime] = useState(0);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;

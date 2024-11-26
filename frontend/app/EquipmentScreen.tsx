@@ -5,69 +5,97 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
+  ScrollView,
+  View,
+  Dimensions,
 } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import motionData from "@/res/motion/json/comb.json";
+import cardData from "@/res/equipment/json/comb.json";
 
-const Equipment = {
-  description:
-    "高位下拉器主要用于锻炼背部、肩部和手臂的肌肉。它通常由一个高位拉索、滑轮系统和可调节的坐垫组成。使用者可以通过拉动手柄向下拉动拉索，锻炼到主要的背阔肌、斜方肌和肱二头肌。高位下拉器的多样化握柄设计允许用户进行不同的锻炼变体，以达到最佳的肌肉发展效果。",
-  imageUri: "https://via.placeholder.com/150",
-  title: "高位下拉器",
-  recommendedActions: ["宽握高位下拉", "中握高位下拉", "窄握高位下拉"],
+import { RouteProp } from "@react-navigation/native";
+import { equipment_imgs } from "@/res/equipment/equipment_img";
+const { width, height } = Dimensions.get("window");
+
+type RouteParams = {
+  params: {
+    id: number;
+  };
 };
-const EquipmentScreen = () => {
+
+export default function EquipmentScreen() {
+  const route = useRoute<RouteProp<RouteParams, 'params'>>();
+  const {id} = route.params;
   return (
-    <SafeAreaView style={styles.container}>
-      {/* 图片部分 */}
-      <Image source={{ uri: Equipment.imageUri }} style={styles.picture} />
-
-      {/* 描述方框 */}
-      <SafeAreaView style={styles.descriptionBox}>
-        <ThemedText type="default" style={styles.text}>
-          {" "}
-          {Equipment.description}{" "}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <ScrollView style={styles.container}>
+        {/* 标题 */}
+        <ThemedText type="title" style={{ textAlign: "center" }}>
+          {cardData[id].name}
         </ThemedText>
-      </SafeAreaView>
+        
+        {/* 图片部分 */}
+        {/* <Image source={{ uri: Equipment.imageUri }} style={styles.picture} /> */}
+        {/* <Image source={information.img_path} style={styles.picture} /> */}
+        <Image source={equipment_imgs[id + 1]} style={styles.picture} />
 
-      {/* 推荐动作方框 */}
-      <SafeAreaView style={styles.recommendedBox}>
-        <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
-          推荐动作
-        </ThemedText>
-        {Equipment.recommendedActions.map((action, index) => (
-          <SafeAreaView key={index} style={styles.recommendedAction}>
-            <TouchableOpacity style={styles.plusButton}>
-              <ThemedText type="defaultBold" style={{ color: "#fff" }}>
-                +
-              </ThemedText>
-            </TouchableOpacity>
-            <SafeAreaView
-              style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
-            >
-              <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-                {action}
-              </ThemedText>
-            </SafeAreaView>
-          </SafeAreaView>
-        ))}
-      </SafeAreaView>
+        {/* 描述方框 */}
+        <View style={styles.descriptionBox}>
+          <ThemedText type="default" style={styles.text}>
+            {cardData[id].description}
+          </ThemedText>
+        </View>
+
+        {/* 推荐动作方框 */}
+        <View style={styles.recommendedBox}>
+          <ThemedText type="subtitle" style={{ marginBottom: 15, padding: 10 }}>
+            推荐动作
+          </ThemedText>
+          {cardData[id].m_id.map((action, index) => {
+            
+            return (
+              <View key={index} style={styles.recommendedAction}>
+                <TouchableOpacity style={styles.plusButton}>
+                  <ThemedText type="defaultBold" style={{ color: "#fff" }}>
+                    +
+                  </ThemedText>
+                </TouchableOpacity>
+                <View
+                  style={{ flex: 1, justifyContent: "center", marginRight: "8%" }}
+                >
+                  <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
+                    {motionData[action-1].name}
+                  </ThemedText>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+        <View style={{ height: 35 }} />
+      </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
   },
   picture: {
-    width: 270,
-    height: 270,
+    width: width * 0.6,
+    height: height * 0.3,
+    marginTop: 20,
     marginBottom: 20,
     alignSelf: "center",
+
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
   },
   descriptionBox: {
-    width: "80%",
+    width: width * 0.8,
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -79,7 +107,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   recommendedBox: {
-    width: "80%",
+    width: width * 0.8,
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -88,11 +116,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
-    marginBottom: 20,
   },
   recommendedAction: {
     flexDirection: "row",
     alignItems: "center",
+    marginLeft: width * 0.05,
+    marginRight: width * 0.05,
     marginBottom: 20,
     backgroundColor: "#f5f5f5",
     padding: 10,
@@ -105,7 +134,7 @@ const styles = StyleSheet.create({
   plusButton: {
     backgroundColor: "#007bff",
     padding: 5,
-    marginRight: 10,
+    marginRight: "5%",
     width: 30,
     height: 30,
     borderRadius: 20,
@@ -113,5 +142,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-export default EquipmentScreen;
