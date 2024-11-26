@@ -17,19 +17,19 @@ class GetAssetMetadataTestCase(TestCase):
         self.asset1 = Asset.objects.create(
             asset_id="image1",
             version="1.0",
-            url="https://example.com/image1.jpg",
+            path="/image1.jpg",
             updated_at=now() - timedelta(days=5),
         )
         self.asset2 = Asset.objects.create(
             asset_id="image2",
             version="2.0",
-            url="https://example.com/image2.jpg",
+            path="/image2.jpg",
             updated_at=now() - timedelta(days=2),
         )
         self.asset3 = Asset.objects.create(
             asset_id="image3",
             version="1.1",
-            url="https://example.com/image3.jpg",
+            path="/image3.jpg",
             updated_at=now(),
         )
 

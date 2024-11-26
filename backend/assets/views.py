@@ -39,7 +39,7 @@ def get_asset_metadata(request):
         {
             "asset_id": asset.asset_id,
             "version": asset.version,
-            "url": asset.url,
+            "path": asset.path,
             "updated_at": asset.updated_at.isoformat(),
         }
         for asset in assets
