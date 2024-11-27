@@ -6,7 +6,7 @@ import * as shape from "d3-shape";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text as SvgText } from 'react-native-svg';
-import { LineChart, Grid, PieChart } from 'react-native-svg-charts';
+import { LineChart, Grid, PieChart, YAxis } from 'react-native-svg-charts';
 import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { data }from "../../app/(tabs)/index";
@@ -111,7 +111,10 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
     const getRandomColor = () => {
         return `#${Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0')}`;
     };
-
+    const handlePress = ({ motion }) => {
+        // 弹出消息框，显示动作的详细信息和统计数据
+        alert(`动作 ${motion.m_id} 的统计数据,占比：${motion.value}`);
+    }
     const weeklyRecord = getWeeklyTrainingRecords();
     const weeklyBodyRecords = getWeeklyBodyRecords();
     const weeklyBodyMotion = getWeeklyBodyMotion(weeklyBodyRecords);
@@ -121,14 +124,26 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
             {/* 训练时长柱状图 */}
             <View style={styles.container}>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
-                <LineChart
-                    style={{ height: 200 }}
-                    data={weeklyRecord}
-                    svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                    contentInset={{ top: 10, bottom: 10 }}
-                    gridMin={0}
-                    gridMax={Math.max(...weeklyRecord) + 20}
-                />
+                <View style={{ flexDirection: 'row'}}>
+                    <YAxis
+                        data={weeklyRecord}
+                        contentInset={{ top: 10, bottom: 10 }}
+                        svg={{ fill: 'grey', fontSize: 10 }}
+                        numberOfTicks={5} 
+                        formatLabel={(value) => `${value}`} 
+                        min={0}
+                        max={Math.max(...weeklyRecord)}
+                        width={100}
+                    />
+                    <LineChart
+                        style={{ height: 200, width: width * 0.75 }}
+                        data={weeklyRecord}
+                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
+                        contentInset={{ top: 10, bottom: 10 }}
+                        gridMin={0}
+                        gridMax={Math.max(...weeklyRecord)}
+                    />
+                </View>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     {days.map((day, index) => (
                     <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
@@ -138,7 +153,7 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
 
             {/* 动作统计 */}
             <View style={styles.container}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', zIndex: 2}}>
                     <ThemedText type="defaultBold" style={{ textAlign: 'center', width: width * 0.63, alignSelf: 'center' }}>
                         动作统计
                     </ThemedText>
@@ -158,14 +173,25 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>
                         负重(kg)
                 </ThemedText>
-                 <LineChart
-                    style={{ height: 200 }}
-                    data={weeklyBodyRecords[selected].weight} 
-                    svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                    contentInset={{ top: 10, bottom: 10 }}
-                    gridMin={0}
-                    gridMax={Math.max(...weeklyBodyRecords[selected].weight) + 20}
-                />
+                <View style={{ flexDirection: 'row'}}>
+                    <YAxis
+                        data={weeklyBodyRecords[selected].weight}
+                        contentInset={{ top: 10, bottom: 10 }}
+                        svg={{ fill: 'grey', fontSize: 10 }}
+                        numberOfTicks={5} 
+                        formatLabel={(value) => `${value}`} 
+                        min={0}
+                        max={Math.max(...weeklyBodyRecords[selected].weight)}
+                    />
+                    <LineChart
+                        style={{ height: 200, width: width * 0.75 }}
+                        data={weeklyBodyRecords[selected].weight}
+                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
+                        contentInset={{ top: 10, bottom: 10 }}
+                        gridMin={0}
+                        gridMax={Math.max(...weeklyBodyRecords[selected].weight)}
+                    />
+                </View>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     {days.map((day, index) => (
                     <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
@@ -177,7 +203,10 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
                     data={weeklyBodyMotion[selected].motions.map(motion => ({
                         key: motion.m_id,
                         value: parseFloat(motion.value),
-                        svg: { fill: getRandomColor() },
+                        svg: { 
+                            fill: getRandomColor(),
+                            onPress: () => handlePress({ motion }),
+                        },
                     }))} 
                     outerRadius={ width * 0.25 }
                 >
@@ -185,7 +214,7 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
             </View>
 
             {/* 容量统计 */}
-            <View style={styles.container}>
+            <View style={[styles.container,{zIndex:0}]}>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>容量统计</ThemedText>
             </View>
         </ScrollView>
@@ -204,6 +233,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2, 
         shadowRadius: 2,
         marginTop: 10,
+        zIndex: 2,
     },
     actionStatsContainer: { 
         padding: 20, 
@@ -232,8 +262,12 @@ const styles = StyleSheet.create({
         width: width * 0.3,
     },
     dropdown: {
-        borderColor: '#007bff',
+        borderColor: "#007bff",
         borderRadius: 8,
+        top: 40,
+        zIndex: 2,
+        position: "absolute",
+        backgroundColor: '#f5f5f5',
     },
     pieChartContainer: { 
         height: height * 0.35, 
