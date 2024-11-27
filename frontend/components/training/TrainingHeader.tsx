@@ -19,8 +19,9 @@ interface TrainingHeaderProps {
 }
 
 export default function TrainingHeader({ onButtonPress, time, setTime }: TrainingHeaderProps) {
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(true);
   // const [time, setTime] = useState(0);
+
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -54,17 +55,17 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
         </TouchableOpacity>
         <View style={{ flex: 1 }} />
         <TouchableOpacity onPress={onButtonPress} style={styles.button}>
-          <ThemedText type="default" style={styles.buttonText}>
+          <ThemedText type="defaultBold" style={styles.buttonText}>
             结束训练
           </ThemedText>
         </TouchableOpacity>
       </View>
       <View style={styles.line2}>
         {/* <Text>{new Date().toLocaleDateString()}</Text> */}
-        <ThemedText type="default">
+        <ThemedText type="defaultBold">
           {new Date().toLocaleDateString()}
         </ThemedText>
-        <ThemedText type="default">1/8</ThemedText>
+        <ThemedText type="defaultBold">1/8</ThemedText>
       </View>
     </View>
   );

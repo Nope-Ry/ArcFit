@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { CartProvider } from "@/components/CartContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,20 +35,30 @@ export default function RootLayout() {
 
   return (
     <GluestackUIProvider mode="light">
+      <CartProvider>
       <ThemeProvider value={DefaultTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen
             name="AccountScreen"
-            options={{ headerBackTitle: "hhh", headerTitle: "Login" }}
+            options={{ headerBackTitle: "未登录", headerTitle: "Login" }}
           />
-          <Stack.Screen 
+          <Stack.Screen
             name="EquipmentScreen"
-            options={{ headerTitle: "Equipment" }}
+            options={{ headerTitle: "器材详情", headerBackTitle: "器械" }}
+          />
+          <Stack.Screen
+            name="BodyInfoScreen"
+            options={{ headerTitle: "肌群详情", headerBackTitle: "身体" }}
+          />
+          <Stack.Screen
+            name="TrainingStatisticsScreen"
+            options={{ headerTitle: "训练统计", headerBackTitle: "主页" }}
           />
         </Stack>
       </ThemeProvider>
+      </CartProvider>
     </GluestackUIProvider>
   );
 }

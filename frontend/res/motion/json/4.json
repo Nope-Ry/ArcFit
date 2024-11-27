@@ -9,7 +9,9 @@
     ],
     "img_path": "res/motion/img/4.gif",
     "b_id": [
-        1
+        1,
+        2,
+        12
     ],
     "e_id": [
         3
