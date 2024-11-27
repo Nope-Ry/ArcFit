@@ -2,8 +2,12 @@ import {View, StyleSheet} from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Divider } from "@/components/ui/divider";
 import DateTimePicker from '@react-native-community/datetimepicker';
+interface IHistoryRecordHeaderProps {
+    date: Date;
+    setDate: (date: Date) => void;
+}
 
-export default function HistoryRecordHeader() {
+export default function HistoryRecordHeader({ date, setDate }: IHistoryRecordHeaderProps) {
 
     return (
         <View className="flex flex-col items-center bg-white" style={styles.container}>
@@ -14,14 +18,16 @@ export default function HistoryRecordHeader() {
             <View className="h-12 justify-center">
                 {/* Date time selecter */}
                 <DateTimePicker
-                    value={new Date()}
+                    value={date}
                     mode="date"
                     display="default"
                     onChange={(event, selectedDate) => {
-                        const currentDate = selectedDate || new Date();
+                        if (selectedDate) {
+                            setDate(selectedDate);
+                            console.log("currentDate: ", selectedDate);
+                        }
                     }}
                 />
-
             </View>
         </View>
     );

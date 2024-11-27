@@ -18,6 +18,7 @@ export default function TrainingScreen() {
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
   const [time, setTime] = useState(0);
+  const [date, setDate] = useState(new Date());
 
   const m_id_list = [3, 1, 2];
 
@@ -42,10 +43,8 @@ export default function TrainingScreen() {
   // 切换显示方式
   const toggleView = () => {
     if(isTraining){
-      // 保存当前的训练记录
       const mins = Math.floor(time / 60000);
       const paths = FileSystem.documentDirectory;
-      // 查询FileSystem.documentDirectory下有几个文件
 
       const hist = {
         "duration" : mins,
@@ -61,7 +60,6 @@ export default function TrainingScreen() {
       }
 
       for (let key in m_id_list){
-        // 找到m_id_list[key]对应的b_id数组，已知存在../../res/motion/json/x.json，其中x为m_id_list[key]，需要读写文件
         const b_id = [];
         const records = {
           "name": `练习 ${m_id_list[key]}`,
@@ -72,7 +70,6 @@ export default function TrainingScreen() {
         };
         hist["records"].push(records);
       }
-      // 把这个json对象写入文件,文件名为hist/YYYY_MM_DD_cnt.json，cnt为当天的第几次训练，需要读写文件
       const path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
       console.log("path", path);
       FileSystem.writeAsStringAsync(path, JSON.stringify(hist)).then(() => {
@@ -82,6 +79,7 @@ export default function TrainingScreen() {
         console.log("写入失败");
       });
       data.push(hist);
+      setTime(0);
     }
     else{
 
@@ -127,10 +125,13 @@ export default function TrainingScreen() {
   } else {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <HistoryRecordHeader />
+        <HistoryRecordHeader 
+          date={date}
+          setDate={(newDate) => setDate(newDate)}
+        />
         <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
-          <MainRecord />
-          <RecordList />
+          <MainRecord date={date} />
+          <RecordList date={date} />
         </ScrollView>
         <View className="bg-white h-20 px-4 py-4">
           <TouchableOpacity

@@ -5,8 +5,8 @@ import { Dimensions } from 'react-native';
 import { data } from '../../app/(tabs)/index';
 
 
-const getDuration = () => {
-  const today = new Date().toISOString().split("T")[0]
+const getDuration = (date: Date) => {
+  const today = date.toISOString().split("T")[0]
   const todayData = data.filter(item => item.date === today)
   if (todayData.length === 0) {
     return 0
@@ -25,9 +25,11 @@ const getTimes = () => {
 }
 
 const { width } = Dimensions.get('window');
-
-export default function MainRecord() {
-  const duration = getDuration();
+interface MainRecordProps {
+  date: Date;
+}
+export default function MainRecord({ date }: MainRecordProps) {
+  const duration = getDuration(date);
   const times = getTimes();
 
   return (

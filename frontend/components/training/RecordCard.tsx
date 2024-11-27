@@ -4,9 +4,10 @@ import { ThemedText } from '../ThemedText';
 import { data } from '../../app/(tabs)/index';
 
 
-const getExerciseData = () => {
+const getExerciseData = (date: Date) => {
   // 筛选出当天的数据，但是后续要修改成选择的日期
-  const today = new Date().toISOString().split("T")[0]
+  console.log("date: ", date);
+  const today = date.toISOString().split("T")[0]
   const todayData = data.filter(item => item.date === today)
   const exerciseData = []
   todayData.forEach(item => {
@@ -42,9 +43,11 @@ function ExerciseItem({ type, sets, img }) {
     </View>
   );
 }
-
-export default function RecordList() {
-  const ExerciseData = getExerciseData();
+interface ExerciseItemProps {
+  date: Date;
+}
+export default function RecordCard({ date }: ExerciseItemProps) {
+  const ExerciseData = getExerciseData(date);
   return (
     <View style={styles.container}>
       {ExerciseData.map((exercise, index) => (
