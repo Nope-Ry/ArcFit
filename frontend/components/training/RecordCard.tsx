@@ -4,6 +4,10 @@ import { ThemedText } from '../ThemedText';
 import { data } from '../../app/(tabs)/index';
 import { motion_imgs } from '@/res/motion/motion_img';
 
+import { Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+
 const getExerciseData = (date: Date) => {
   const today = date.toISOString().split("T")[0]
   const todayData = data.filter(item => item.date === today)
@@ -78,9 +82,9 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   imgcontainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: width * 0.15,
+    height: width * 0.15,
+    borderRadius: (width * 0.15) / 2,
   },
   contentContainer: {
     flex: 1,

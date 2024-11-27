@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Divider } from "@/components/ui/divider";
-import Slider from '@react-native-community/slider';
+import Slider from "@react-native-community/slider";
 
 import { ThemedText } from "../ThemedText";
 const { width, height } = Dimensions.get("window");
@@ -20,12 +20,20 @@ interface ExerciseCardProps {
     image: any;
   };
   exerSets: { reps: string; weight: string; checked: boolean }[];
-  setExerSets: (sets: { reps: string; weight: string; checked: boolean }[]) => void;
+  setExerSets: (
+    sets: { reps: string; weight: string; checked: boolean }[]
+  ) => void;
   rating: number;
   setRating: (rating: number) => void;
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExerSets, rating, setRating }) => {
+const ExerciseCard: React.FC<ExerciseCardProps> = ({
+  exercise,
+  exerSets,
+  setExerSets,
+  rating,
+  setRating,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   // const [rating, setRating] = useState(3);
 
@@ -34,7 +42,29 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
     if (value <= 4) return "#FFC107"; // 黄色
     return "#FF5252"; // 红色
   };
-  
+
+  const handleWeightChange = (text, index) => {
+    let numericText = text.replace(/[^0-9.]/g, "");
+    if (parseFloat(numericText) > 500) {
+      numericText = "500";
+    }
+    if (numericText.includes(".")) {
+      const parts = numericText.split(".");
+      if (parts[1].length > 1) {
+        numericText = `${parts[0]}.${parts[1].slice(0, 1)}`;
+      }
+    }
+    updateSet(index, "weight", numericText);
+  };
+
+  const handleRepsChange = (text, index) => {
+    let numericText = text.replace(/[^0-9]/g, "");
+    if (parseInt(numericText, 10) > 100) {
+      numericText = "100";
+    }
+    updateSet(index, "reps", numericText);
+  };
+
   const addSet = () => {
     const lastSet = exerSets[exerSets.length - 1];
     setExerSets([...exerSets, { ...lastSet, checked: false }]);
@@ -81,7 +111,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
         <View style={styles.expandedContent}>
           {/* 训练组信息 */}
           <Divider />
-          <View style={{flex: 1, height: height * 0.015,}}/>
+          <View style={{ flex: 1, height: height * 0.015 }} />
 
           {exerSets.map((set, index) => (
             <View key={index} style={styles.row}>
@@ -90,19 +120,23 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
                 <TextInput
                   style={styles.input}
                   value={set.weight}
-                  onChangeText={(text) => updateSet(index, "weight", text)}
+                  onChangeText={(text) => handleWeightChange(text, index)}
                   keyboardType="numeric"
                 />
-                <ThemedText type="small" style={styles.unitText}>kg</ThemedText>
+                <ThemedText type="small" style={styles.unitText}>
+                  kg
+                </ThemedText>
               </View>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
                   value={set.reps}
-                  onChangeText={(text) => updateSet(index, "reps", text)}
+                  onChangeText={(text) => handleRepsChange(text, index)}
                   keyboardType="numeric"
                 />
-                <ThemedText type="small" style={styles.unitText}>次</ThemedText>
+                <ThemedText type="small" style={styles.unitText}>
+                  次
+                </ThemedText>
               </View>
               <TouchableOpacity onPress={() => deleteSet(index)}>
                 <Ionicons name="trash-outline" size={width * 0.06} />
@@ -122,7 +156,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
               <Ionicons name="add-circle-outline" size={width * 0.06} />
             </TouchableOpacity>
             <View style={styles.ratingContainer}>
-              <View style={{flex: 1}}/>
+              <View style={{ flex: 1 }} />
               {/* <ThemedText type="defaultBold">强度</ThemedText> */}
               <Slider
                 style={styles.slider}
@@ -142,17 +176,21 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
           </View>
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.button}>
-              <ThemedText type="defaultBold" style={styles.buttonText}>动作纠正</ThemedText>
+              <ThemedText type="defaultBold" style={styles.buttonText}>
+                动作纠正
+              </ThemedText>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
-              <ThemedText type="defaultBold" style={styles.buttonText}>历史记录</ThemedText>
+              <ThemedText type="defaultBold" style={styles.buttonText}>
+                历史记录
+              </ThemedText>
             </TouchableOpacity>
           </View>
         </View>
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   card: {
@@ -204,7 +242,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
   },
   inputContainer: {
-    position: 'relative',
+    position: "relative",
     width: width * 0.2,
   },
   input: {
@@ -216,17 +254,17 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
   },
   unitText: {
-    position: 'absolute',
+    position: "absolute",
     right: width * 0.02,
     top: -height * 0.01,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: width * 0.01,
   },
   ratingContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 'auto',
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: "auto",
     width: width * 0.6,
   },
   slider: {
@@ -236,7 +274,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     width: width * 0.08,
-    textAlign: 'center',
+    textAlign: "center",
   },
   buttonRow: {
     flexDirection: "row",
