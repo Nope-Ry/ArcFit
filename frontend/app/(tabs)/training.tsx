@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import { View, Text, Button } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
@@ -7,14 +7,22 @@ import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
 import RecordList from "@/components/training/RecordCard";
 import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
+
+import { data } from "../../app/(tabs)/index";
+import * as FileSystem from "expo-file-system";
+
 import { useContext } from "react";
 import { CartContext } from "@/components/CartContext";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+
+let cnt = 0;
+
 export default function TrainingScreen() {
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
   const [time, setTime] = useState(0);
+  const [date, setDate] = useState(new Date());
 
   const [m_id_list, setM_id_list] = useState([1, 2, 3]);
   const {cart, clearCart} = useContext(CartContext);
@@ -45,8 +53,9 @@ export default function TrainingScreen() {
   // 切换显示方式
   const toggleView = () => {
     if(isTraining){
-      // console.log("当前的exerSetsMap为：", exerSetsMap);
-      // console.log("当前的ratingMap为：", ratingMap);
+      const mins = Math.floor(time / 60000);
+      const paths = FileSystem.documentDirectory;
+
 
       // 创建一个json对象
 
@@ -55,29 +64,41 @@ export default function TrainingScreen() {
       setM_id_list([1, 2, 3]);
       const mins = (time / 60000).toString();
       console.log("当前的时间为：", mins);
+
       const hist = {
         "duration" : mins,
-        "date": new Date().toISOString(),
+        "date": new Date().toISOString().split("T")[0],
         "time": new Date().toLocaleTimeString(),
-        "cnt": 0, // 没整
-        "record": []
+        "cnt": cnt, 
+        "records": []
       };
 
+      cnt += 1;
       for (let key in exerSetsMap) {
         exerSetsMap[key] = exerSetsMap[key].map(({ checked, ...rest }) => rest);
       }
 
       for (let key in m_id_list){
+        const b_id = [];
         const records = {
           "name": `练习 ${m_id_list[key]}`,
           "m_id": m_id_list[key],
+          "b_id": b_id, // 寻找m_id到b_id的映射，未完成
           "group": exerSetsMap[m_id_list[key]],
           "rating": ratingMap[m_id_list[key]]
         };
-        hist["record"].push(records);
+        hist["records"].push(records);
       }
-
-      console.log("当前的hist为：", hist);
+      const stringdate = hist["date"].replace(/-/g, "_");
+      const path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
+      console.log(path);
+      FileSystem.writeAsStringAsync(path, JSON.stringify(hist)).then(() => {
+        console.log("写到了", path);
+      }).catch((err) => {
+        console.log(err);
+      });
+      data.push(hist);
+      setTime(0);
     }
     else{
 
@@ -123,10 +144,13 @@ export default function TrainingScreen() {
   } else {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <HistoryRecordHeader />
+        <HistoryRecordHeader 
+          date={date}
+          setDate={(newDate) => setDate(newDate)}
+        />
         <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
-          <MainRecord />
-          <RecordList />
+          <MainRecord date={date} />
+          <RecordList date={date} />
         </ScrollView>
         <View className="bg-white h-20 px-4 py-4">
           <TouchableOpacity

@@ -20,7 +20,6 @@ interface TrainingHeaderProps {
 
 export default function TrainingHeader({ onButtonPress, time, setTime }: TrainingHeaderProps) {
   const [isPaused, setIsPaused] = useState(false);
-  // const [time, setTime] = useState(0);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;

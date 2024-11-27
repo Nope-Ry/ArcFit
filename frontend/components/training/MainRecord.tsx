@@ -2,10 +2,36 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { Dimensions } from 'react-native';
+import { data } from '../../app/(tabs)/index';
+
+
+const getDuration = (date: Date) => {
+  const today = date.toISOString().split("T")[0]
+  const todayData = data.filter(item => item.date === today)
+  if (todayData.length === 0) {
+    return 0
+  }
+  const duration = todayData.reduce((acc, item) => acc + item.duration, 0)
+  return Math.floor(duration);
+}
+
+const getTimes = () => {
+  const today = new Date().toISOString().split("T")[0]
+  const todayData = data.filter(item => item.date === today)
+  if (todayData.length === 0) {
+    return "未开始"
+  }
+  return todayData[0].time
+}
 
 const { width } = Dimensions.get('window');
+interface MainRecordProps {
+  date: Date;
+}
+export default function MainRecord({ date }: MainRecordProps) {
+  const duration = getDuration(date);
+  const times = getTimes();
 
-export default function MainRecord() {
   return (
     <View style={styles.container}>
       {/* 左侧的图像 */}
@@ -18,11 +44,9 @@ export default function MainRecord() {
       {/* 右侧的锻炼信息 */}
       <View style={styles.infoBox}>
         <ThemedText type="default">开始时间</ThemedText>
-        <ThemedText type="subtitle">20:34</ThemedText>
+        <ThemedText type="subtitle">{times}</ThemedText>
         <ThemedText type="default">运动时长</ThemedText>
-        <ThemedText type="subtitle">1小时6分</ThemedText>
-        <ThemedText type="default">消耗热量</ThemedText>
-        <ThemedText type="subtitle">61 cal</ThemedText>
+        <ThemedText type="subtitle">{duration}分钟</ThemedText>
       </View>
     </View>
   );
