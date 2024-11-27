@@ -42,7 +42,6 @@ export default function TrainingScreen() {
             />
           ))}
       </ScrollView>
-      <Cart />
     </SafeAreaView>
   );
 }
