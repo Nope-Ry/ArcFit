@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
+import  MotionBar  from "@/components/motion/MotionBar";
+
 import { useRoute } from "@react-navigation/native";
 import motionData from "@/res/motion/json/comb.json";
 import cardData from "@/res/equipment/json/comb.json";
@@ -60,33 +62,12 @@ export default function EquipmentScreen() {
           </ThemedText>
           {cardData[id].m_id.map((action, index) => {
             return (
-              <View key={index} style={styles.recommendedAction}>
-                <TouchableOpacity style={styles.plusButton}
-                  onPress={()=>{incrementCart(action - 1)}}>
-                  <FontAwesome name="plus" size={width * 0.03} color="#fff" />
-                </TouchableOpacity>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    marginRight: "8%",
-                  }}
-                >
-                {cart.includes(action - 1) ? (
-                  <ThemedText
-                    type="defaultBold"
-                    style={{ textAlign: "center",color: "#D3D3D3" }}
-                  >
-                    {motionData[action - 1].name}
-                  </ThemedText>
-                ) : <ThemedText
-                      type="defaultBold"
-                      style={{ textAlign: "center",color: "black" }}
-                    >
-                      {motionData[action - 1].name}
-                    </ThemedText>}
-                </View>
-              </View>
+
+              <MotionBar
+                key={index}
+                name={motionData[action - 1].name}
+                m_id={action}
+              />
             );
           })}
         </View>
