@@ -11,6 +11,7 @@ import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { data }from "../../app/(tabs)/index";
 
+import motionData from "@/res/motion/json/comb.json";
 
 const { width, height } = Dimensions.get("window");
 
@@ -113,7 +114,7 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
     };
     const handlePress = ({ motion }) => {
         // 弹出消息框，显示动作的详细信息和统计数据
-        alert(`动作 ${motion.m_id} 的统计数据,占比：${motion.value}`);
+        alert(`${motionData[motion.m_id - 1].name}的统计数据，占比：${motion.value}`);
     }
     const weeklyRecord = getWeeklyTrainingRecords();
     const weeklyBodyRecords = getWeeklyBodyRecords();
