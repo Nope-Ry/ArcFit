@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   View,
+  Text,
   StyleSheet,
   ScrollView,
   Dimensions,
@@ -10,6 +11,9 @@ import EquipmentCard from "../../components/equipment/EquipmentCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import cardData from "../../res/equipment/json/comb.json";
 import bodypartData from "@/res/bodypart/json/comb.json";
+import Icon from 'react-native-vector-icons/Ionicons';
+import { ThemedText } from "@/components/ThemedText";
+import Cart from "@/components/Cart";
 
 const { width, height } = Dimensions.get("window");
 
@@ -38,6 +42,7 @@ export default function TrainingScreen() {
             />
           ))}
       </ScrollView>
+      <Cart />
     </SafeAreaView>
   );
 }

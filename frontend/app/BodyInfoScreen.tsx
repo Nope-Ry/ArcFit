@@ -17,6 +17,10 @@ import motionData from "@/res/motion/json/comb.json";
 import bodyData from "@/res/bodypart/json/comb.json";
 
 import { RouteProp } from "@react-navigation/native";
+import Cart from "@/components/Cart";
+import { CartContext } from "@/components/CartContext";
+import { useContext } from "react";
+
 const { width, height } = Dimensions.get("window");
 
 const getBodyPartID = (name) => {
@@ -52,8 +56,10 @@ export default function BodyInfoScreen() {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const { name } = route.params;
   const id = getBodyPartID(name) - 1;
+  const {cart, incrementCart} = useContext(CartContext);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <Cart />
       <ScrollView style={styles.container}>
         {/* 标题 */}
         <ThemedText type="title" style={{ textAlign: "center" }}>

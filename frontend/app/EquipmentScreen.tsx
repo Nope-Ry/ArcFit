@@ -19,6 +19,9 @@ import cardData from "@/res/equipment/json/comb.json";
 
 import { RouteProp } from "@react-navigation/native";
 import { equipment_imgs } from "@/res/equipment/equipment_img";
+import Cart from "@/components/Cart";
+import { CartContext } from "@/components/CartContext";
+import { useContext } from "react";
 const { width, height } = Dimensions.get("window");
 
 type RouteParams = {
@@ -30,8 +33,10 @@ type RouteParams = {
 export default function EquipmentScreen() {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const { id } = route.params;
+  const {cart, incrementCart} = useContext(CartContext);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <Cart />
       <ScrollView style={styles.container}>
         {/* 标题 */}
         <ThemedText type="title" style={{ textAlign: "center" }}>
@@ -57,6 +62,7 @@ export default function EquipmentScreen() {
           </ThemedText>
           {cardData[id].m_id.map((action, index) => {
             return (
+
               <MotionBar
                 key={index}
                 name={motionData[action - 1].name}
@@ -127,7 +133,6 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     backgroundColor: "#007bff",
-    padding: 5,
     marginRight: "5%",
     width: 30,
     height: 30,
