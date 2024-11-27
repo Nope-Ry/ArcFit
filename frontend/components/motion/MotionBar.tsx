@@ -10,19 +10,28 @@ import {
   Dimensions,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { CartContext } from "@/components/CartContext";
+import { useContext } from "react";
 
 const { width, height } = Dimensions.get("window");
 
 const MotionBar = ({ name, m_id }) => {
+  const { cart, incrementCart } = useContext(CartContext);
   return (
     <View style={styles.recommendedAction}>
-      <TouchableOpacity style={styles.plusButton}>
+      <TouchableOpacity style={styles.plusButton}
+        onPress={()=>{incrementCart(m_id);}}>
         <FontAwesome name="plus" size={width * 0.03} color="#fff" />
       </TouchableOpacity>
       <View style={styles.textContent}>
-        <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
+        {cart.includes(m_id) ? (
+          <ThemedText type="defaultBold" style={{ textAlign: "center", color: "#D3D3D3" }}>
+            {name}
+          </ThemedText>
+        ) :
+        <ThemedText type="defaultBold" style={{ textAlign: "center",color: "black" }}>
           {name}
-        </ThemedText>
+        </ThemedText>}
       </View>
       <TouchableOpacity style={styles.infoButton}>
         <FontAwesome name="info-circle" size={width * 0.06} color="#000" />
