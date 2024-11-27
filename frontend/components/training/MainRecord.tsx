@@ -2,25 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { Dimensions } from 'react-native';
-import * as FileSystem from 'expo-file-system';
-
-const path = FileSystem.documentDirectory;
-const data = [];
-FileSystem.readDirectoryAsync(path).then((files) => {
-  files = files.filter((file) => file.endsWith(".json"));
-  Promise.all(
-    files.map((file) => FileSystem.readAsStringAsync(path + file))
-  ).then((contents) => {
-    contents.forEach((content) => {
-      data.push(JSON.parse(content));
-    });
-  });
-});
+import { data } from '../../app/(tabs)/index';
 
 
 const getDuration = () => {
   const today = new Date().toISOString().split("T")[0]
   const todayData = data.filter(item => item.date === today)
+  if (todayData.length === 0) {
+    return 0
+  }
   const duration = todayData.reduce((acc, item) => acc + item.duration, 0)
   return Math.floor(duration);
 }
@@ -28,7 +18,10 @@ const getDuration = () => {
 const getTimes = () => {
   const today = new Date().toISOString().split("T")[0]
   const todayData = data.filter(item => item.date === today)
-  return todayData[0].time;
+  if (todayData.length === 0) {
+    return "未开始"
+  }
+  return todayData[0].time
 }
 
 const { width } = Dimensions.get('window');

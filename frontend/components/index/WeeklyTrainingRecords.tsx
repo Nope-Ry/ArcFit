@@ -8,20 +8,8 @@ import { Text as SvgText } from 'react-native-svg';
 import { LineChart, Grid, PieChart } from 'react-native-svg-charts';
 import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
-import * as FileSystem from 'expo-file-system';
+import { data }from "../../app/(tabs)/index";
 
-const path = FileSystem.documentDirectory;
-const data = [];
-FileSystem.readDirectoryAsync(path).then((files) => {
-    files = files.filter((file) => file.endsWith(".json"));
-  Promise.all(
-    files.map((file) => FileSystem.readAsStringAsync(path + file))
-  ).then((contents) => {
-    contents.forEach((content) => {
-      data.push(JSON.parse(content));
-    });
-  });
-});
 
 const { width, height } = Dimensions.get("window");
 
@@ -48,6 +36,7 @@ const getWeeklyTrainingRecords = () => {
             Time[index] = duration;
         }
     }
+    console.log("Time: ", Time);
     return Time;
 };
 

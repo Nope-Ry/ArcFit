@@ -7,6 +7,7 @@ import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
 import RecordList from "@/components/training/RecordCard";
 import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
+import { data } from "../../app/(tabs)/index";
 import * as FileSystem from "expo-file-system";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -42,7 +43,7 @@ export default function TrainingScreen() {
   const toggleView = () => {
     if(isTraining){
       // 保存当前的训练记录
-      const mins = (time / 60000).toString();
+      const mins = time / 60000;
       const paths = FileSystem.documentDirectory;
       // 查询FileSystem.documentDirectory下有几个文件
 
@@ -50,7 +51,7 @@ export default function TrainingScreen() {
         "duration" : mins,
         "date": new Date().toISOString().split("T")[0],
         "time": new Date().toLocaleTimeString(),
-        "cnt": cnt, // 未完成，需要读写文件
+        "cnt": cnt, 
         "records": []
       };
 
@@ -72,18 +73,15 @@ export default function TrainingScreen() {
         hist["records"].push(records);
       }
       // 把这个json对象写入文件,文件名为hist/YYYY_MM_DD_cnt.json，cnt为当天的第几次训练，需要读写文件
-      // const path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
-      // console.log("path", path);
-      // FileSystem.writeAsStringAsync(path, JSON.stringify(hist)).then(() => {
-      //   console.log("写入成功");
-      // }).catch((err) => {
-      //   console.log("写入失败");
-      // });
-      // 打印paths下的文件
-      FileSystem.readDirectoryAsync(paths).then((files) => {
-        console.log("files", files);
+      const path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
+      console.log("path", path);
+      FileSystem.writeAsStringAsync(path, JSON.stringify(hist)).then(() => {
+        console.log("写入成功");
+        console.log("写到了", path);
+      }).catch((err) => {
+        console.log("写入失败");
       });
-
+      data.push(hist);
     }
     else{
 

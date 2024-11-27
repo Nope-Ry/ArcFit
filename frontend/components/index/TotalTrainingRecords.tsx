@@ -17,44 +17,19 @@ import { MaxEquation } from "three";
 import * as shape from "d3-shape";
 import { SelectList } from "react-native-dropdown-select-list";
 import * as FileSystem from "expo-file-system";
+import { data }from "../../app/(tabs)/index";
 
-let firstDay = new Date();
-let lastDay = new Date();
-let intervalDays = 0;
-const path = FileSystem.documentDirectory;
-const data = [];
-FileSystem.readDirectoryAsync(path).then((files) => {
-    files = files.filter((file) => file.endsWith(".json"));
-  Promise.all(
-    files.map((file) => FileSystem.readAsStringAsync(path + file))
-  ).then((contents) => {
-    contents.forEach((content) => {
-      data.push(JSON.parse(content));
-    });
-    firstDay = new Date(
-        Math.min(...data.map((item) => new Date(item.date).getTime()))
-        );
-    lastDay = new Date(
-        Math.max(...data.map((item) => new Date(item.date).getTime()))
-        );
-    intervalDays =
-        Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
-        1;
-  });
-});
+const firstDay = new Date(
+  Math.min(...data.map((item) => new Date(item.date).getTime()))
+);
 
+const lastDay = new Date(
+  Math.max(...data.map((item) => new Date(item.date).getTime()))
+);
 
-// const firstDay = new Date(
-//   Math.min(...data.map((item) => new Date(item.date).getTime()))
-// );
-
-// const lastDay = new Date(
-//   Math.max(...data.map((item) => new Date(item.date).getTime()))
-// );
-
-// const intervalDays =
-//   Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
-//   1;
+const intervalDays =
+  Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
+  1;
 
 const { width, height } = Dimensions.get("window");
 
@@ -107,7 +82,7 @@ const interpolate = (array: number[]) => {
 
 const getTotalTrainingRecords = () => {
   const totalDays = new Set(data.map((item) => item.date));
-  const totalDuration = data.reduce((acc, item) => acc + item.duration, 0);
+  const totalDuration = Math.floor(data.reduce((acc, item) => acc + item.duration, 0));
   const avgDuration = Math.floor(totalDuration / totalDays.size);
   return {
     totalDays: totalDays.size,
@@ -116,9 +91,16 @@ const getTotalTrainingRecords = () => {
   };
 };
 const getBodyWeightTrend = () => {
-  const BodyWeight = Array.from({ length: 18 }, (_, index) => ({
-    b_id: index,
-    motions: [],
+    const bodyParts = [
+      'NULL', '胸部', '前肩', '斜方肌', '肱二头肌', '前臂', '手', '腹外斜肌', 
+      '腹肌', '股四头肌', '小腿', '后肩', '肱三头肌', '背阔肌', '臀部', 
+      '斜方肌中部', '下背', '腿后肌'
+  ];
+
+  const bodyWeight = bodyParts.map((part, index) => ({
+      key: index,
+      value: part,
+      motions: []
   }));
 
   data.forEach((item) => {
@@ -130,16 +112,16 @@ const getBodyWeightTrend = () => {
             (1000 * 60 * 60 * 24)
         ) + 1;
       record.b_id.forEach((b_id) => {
-        const index = BodyWeight.findIndex((item) => item.b_id === b_id);
-        const motionIndex = BodyWeight[index].motions.findIndex(
+        const index = bodyWeight.findIndex((item) => item.key === b_id);
+        const motionIndex = bodyWeight[index].motions.findIndex(
           (motion) => motion.m_id === record.m_id
         );
         if (motionIndex !== -1) {
-          BodyWeight[index].motions[motionIndex].weight[nowday] = weight;
+          bodyWeight[index].motions[motionIndex].weight[nowday] = weight;
         } else {
           const weightTrend = new Array(intervalDays).fill(0);
           weightTrend[nowday] = weight;
-          BodyWeight[index].motions.push({
+          bodyWeight[index].motions.push({
             m_id: record.m_id,
             weight: weightTrend,
           });
@@ -149,12 +131,12 @@ const getBodyWeightTrend = () => {
   });
 
   // 对每个部位的负重趋势进行插值
-  BodyWeight.forEach((item) => {
+  bodyWeight.forEach((item) => {
     item.motions.forEach((motion) => {
       motion.weight = interpolate(motion.weight);
     });
   });
-  return BodyWeight;
+  return bodyWeight;
 };
 
 const TotalTrainingRecords: React.FC = () => {
@@ -163,7 +145,6 @@ const TotalTrainingRecords: React.FC = () => {
   const [selected, setSelected] = useState("1");
 
   const days = Array.from({ length: intervalDays }, (_, index) => index + 1);
-
   return (
     <ScrollView>
       {/* 预卡片总览 */}
@@ -206,7 +187,7 @@ const TotalTrainingRecords: React.FC = () => {
               setSelected={(value) => setSelected(value)}
               data={bodyWeightTrend
                 .slice(1)
-                .map((item) => ({ key: item.b_id, value: item.b_id }))}
+                .map((item) => ({ key: item.key, value: item.value }))}
               placeholder="选择一个部位"
               boxStyles={styles.motionBox}
               dropdownStyles={styles.dropdown}
@@ -215,23 +196,32 @@ const TotalTrainingRecords: React.FC = () => {
             />
           </View>
         </View>
-        <LineChart
-          style={{ height: height * 0.25 }}
-          data={bodyWeightTrend[1].motions[0].weight} // bug
-          svg={{ stroke: "rgba(134, 65, 244, 0.8)", strokeWidth: 2 }}
-          contentInset={{ top: 10, bottom: 10 }}
-        />
-        <View style={{ flexDirection: "row", marginTop: 10 }}>
-          {days.map((day, index) => (
-            <ThemedText
-              type="default"
-              key={index}
-              style={{ textAlign: "center", width: `${100 / 7}%` }}
-            >
-              {day}
-            </ThemedText>
+        {/* 对当前选定的bodyWeightTrend[selected]的每个motions都画一个LineChart */}
+        <View>
+          {bodyWeightTrend[selected].motions.map((motion, index) => (
+            <View key={index} style={{ marginVertical: 10 }}>
+              <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
+              动作ID: {motion.m_id}
+              </ThemedText>
+              <LineChart
+              style={{ height: 200 }}
+              data={motion.weight}
+              svg={{ stroke: "rgb(134, 65, 244)" }}
+              contentInset={{ top: 20, bottom: 20 }}
+              curve={shape.curveLinear}
+              >
+              </LineChart>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+              {days.map((day, index) => (
+                <Text key={index} style={{ textAlign: "center", width: `${100 / days.length}%` }}>
+                {day}
+                </Text>
+              ))}
+              </View>
+            </View>
           ))}
         </View>
+
       </View>
 
       {/* 容量统计 */}
