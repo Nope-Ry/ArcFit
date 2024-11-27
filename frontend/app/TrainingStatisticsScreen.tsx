@@ -7,12 +7,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Slider from '@react-native-community/slider';
 import { ThemedText } from "@/components/ThemedText";
-import { SafeAreaView } from "react-native-safe-area-context";
 import WeeklyTrainingRecords from "../components/index/WeeklyTrainingRecords";
+import TotalTrainingRecords from "../components/index/TotalTrainingRecords";
+
+const {width, height} = Dimensions.get("window");
 
 const TrainingStatistics: React.FC = () => {
 
@@ -38,37 +42,38 @@ const TrainingStatistics: React.FC = () => {
   
         {/* 根据选择的模式显示不同的内容 */}
         {selectedMode === 'week' ? (
-            <WeeklyTrainingRecords 
-                weeklyDuration={[20, 40, 50, 30, 60, 70, 80]}
-            />
+            <WeeklyTrainingRecords />
         ) : (
-            <ThemedText type="default">总览内容展示</ThemedText>
+            <TotalTrainingRecords />
         )}
       </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
-    container: {
-      padding: 20,
-      flex: 1,
-    },
-    toggleContainer: {
-      flexDirection: 'row', 
-      borderRadius: 20, 
-      overflow: 'hidden', 
-      marginBottom: 20,
-    },
-    toggleButton: {
-      flex: 1, 
-      paddingVertical: 10, 
-      alignItems: 'center', 
-      justifyContent: 'center', 
-      backgroundColor: '#ddd', 
-    },
-    selectedButton: {
-      backgroundColor: '#007BFF',
-    },
-  });
-
+  container: {
+    padding: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  toggleContainer: {
+    marginTop: 20,
+    width: width * 0.6,
+    flexDirection: 'row', 
+    borderRadius: 20, 
+    overflow: 'hidden', 
+    marginBottom: 20,
+  },
+  toggleButton: {
+    flex: 1, 
+    paddingVertical: 10, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    backgroundColor: '#ddd', 
+  },
+  selectedButton: {
+    backgroundColor: '#007BFF',
+  },
+});
 
 export default TrainingStatistics;

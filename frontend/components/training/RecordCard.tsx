@@ -1,54 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { ThemedText } from '../ThemedText';
+import { data } from '../../app/(tabs)/index';
 
-const ExerciseData = [
-  {
-    type: '哑铃卧推',
-    sets: [
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-    ],
-    img: require('../../assets/images/icon.png'),
-  },
-  {
-    type: '杠铃卧推',
-    sets: [
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-    ],
-    img: require('../../assets/images/icon.png'),
-  },
-  {
-    type: '杠铃卧推',
-    sets: [
-    ],
-    img: require('../../assets/images/icon.png'),
-  },
-  {
-    type: '杠铃卧推',
-    sets: [
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-    ],
-    img: require('../../assets/images/icon.png'),
-  },
-  {
-    type: '杠铃卧推',
-    sets: [
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-      { weight: 15, reps: 10 },
-    ],
-    img: require('../../assets/images/icon.png'),
-  },
-];
 
+const getExerciseData = (date: Date) => {
+  const today = date.toISOString().split("T")[0]
+  const todayData = data.filter(item => item.date === today)
+  const exerciseData = []
+  todayData.forEach(item => {
+    item.records.forEach(record => {
+      const sets = record.group.map(set => ({
+        weight: set.weight,
+        reps: set.reps,
+      }))
+      exerciseData.push({
+        type: record.name,
+        sets,
+        img: require('../../assets/images/icon.png'),
+      })
+    })
+  })
+  return exerciseData
+};
 function ExerciseItem({ type, sets, img }) {
   return (
     <View style={styles.exerciseItem}>
@@ -67,8 +41,11 @@ function ExerciseItem({ type, sets, img }) {
     </View>
   );
 }
-
-export default function RecordList() {
+interface ExerciseItemProps {
+  date: Date;
+}
+export default function RecordCard({ date }: ExerciseItemProps) {
+  const ExerciseData = getExerciseData(date);
   return (
     <View style={styles.container}>
       {ExerciseData.map((exercise, index) => (

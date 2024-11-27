@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import { CartContext } from "@/components/CartContext";
 import { useContext } from "react";
 

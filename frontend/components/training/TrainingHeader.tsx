@@ -22,6 +22,7 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
   const [isPaused, setIsPaused] = useState(true);
   // const [time, setTime] = useState(0);
 
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (!isPaused) {
