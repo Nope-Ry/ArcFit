@@ -47,7 +47,7 @@ const InteractBody = () => {
   const [isMale, setIsMale] = useState(true);
   const [isSimple, setIsSimple] = useState(true);
   const [isFront, setIsFront] = useState(true);
-  const [activeGroup, setActiveGroup] = useState(null);
+  const [activeGroup, setActiveGroup] = useState("chest");
   const color = "#FFF5EE";
   const activeColor = "#FFA07A";
   useEffect(() => {

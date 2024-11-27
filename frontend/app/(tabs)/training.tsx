@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Button } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
@@ -16,6 +16,11 @@ import { CartContext } from "@/components/CartContext";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import motionData from "@/res/motion/json/comb.json";
+import { motion_imgs } from "@/res/motion/motion_img";
+
+import { useNavigationState } from "@react-navigation/native";
+
 let cnt = 0;
 
 export default function TrainingScreen() {
@@ -24,16 +29,43 @@ export default function TrainingScreen() {
   const [time, setTime] = useState(0);
   const [date, setDate] = useState(new Date());
 
-  const [m_id_list, setM_id_list] = useState([1, 2, 3]);
-  const {cart, clearCart} = useContext(CartContext);
+  const [m_id_list, setM_id_list] = useState([]);
+  const { cart, clearCart } = useContext(CartContext);
+
+  const currentRoute = useNavigationState((state) => {
+    const route = state.routes[state.index];
+    return route.name;
+  });
+
   useEffect(() => {
-    if(cart.length > 0){
-      setM_id_list(cart);
+    if (cart.length > 0 && currentRoute === "training" && isTraining) {
+      setM_id_list((prevM_id_list) => [...prevM_id_list, ...cart]);
+      console.log("当前的m_id_list为：", m_id_list);
+      setExerSetsMap((prevExerSetsMap) => ({
+        ...prevExerSetsMap,
+        ...cart.reduce((acc, id) => {
+          acc[id] = [
+            { reps: "10", weight: "60", checked: false },
+            { reps: "10", weight: "60", checked: false },
+            { reps: "12", weight: "50", checked: false },
+          ];
+          return acc;
+        }, {}),
+      }));
+      console.log("当前的exerSetsMap为：", exerSetsMap);
+      setRatingMap((prevExerSetsMap) => ({
+        ...prevExerSetsMap,
+        ...cart.reduce((acc, id) => {
+          acc[id] = 3;
+          return acc;
+        }, {}),
+      }));
+      clearCart();
     }
-  }, [cart]);
+  }, [cart, currentRoute, isTraining]);
 
   const [exerSetsMap, setExerSetsMap] = useState(
-    m_id_list.reduce((acc, id) => { 
+    m_id_list.reduce((acc, id) => {
       acc[id] = [
         { reps: "10", weight: "60", checked: false },
         { reps: "10", weight: "60", checked: false },
@@ -41,7 +73,7 @@ export default function TrainingScreen() {
       ];
       return acc;
     }, {})
-  ); 
+  );
 
   const [ratingMap, setRatingMap] = useState(
     m_id_list.reduce((acc, id) => {
@@ -52,16 +84,17 @@ export default function TrainingScreen() {
 
   // 切换显示方式
   const toggleView = () => {
-    if(isTraining){
+
+    if (isTraining) {
+      // 清空useState数据
+      setM_id_list([]);
+      setExerSetsMap({});
+      setRatingMap({});
+
+      // time除以60000得到分钟数，然后转换为字符串
       const mins = Math.floor(time / 60000);
       const paths = FileSystem.documentDirectory;
 
-
-      // 创建一个json对象
-
-      // time除以60000得到分钟数，然后转换为字符串
-      clearCart();
-      setM_id_list([1, 2, 3]);
       console.log("当前的时间为：", mins);
 
       const hist = {
@@ -76,6 +109,7 @@ export default function TrainingScreen() {
       for (let key in exerSetsMap) {
         exerSetsMap[key] = exerSetsMap[key].map(({ checked, ...rest }) => rest);
       }
+
 
       for (let key in m_id_list){
         const b_id = [];
@@ -99,11 +133,8 @@ export default function TrainingScreen() {
       data.push(hist);
       setTime(0);
     }
-    else{
 
-    }
     setIsTraining(!isTraining);
-    
   };
 
   if (isTraining) {
@@ -111,23 +142,23 @@ export default function TrainingScreen() {
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
         {/* 上部容器 */}
         <View style={{ padding: 15, backgroundColor: "white" }}>
-          <TrainingHeader 
-          onButtonPress={toggleView}
-          time={time}
-          setTime={(newTime) => setTime(newTime)}
+          <TrainingHeader
+            onButtonPress={toggleView}
+            time={time}
+            setTime={(newTime) => setTime(newTime)}
           />
         </View>
 
         {/* 下部滚动容器 */}
         <ScrollView style={{ flex: 1, padding: 15 }}>
-          {m_id_list.map((item) => ( 
+          {m_id_list.map((item, index) => (
             <ExerciseCard
-              key={item}
+              key={index}
               exercise={{
-                name: `练习 ${item}`,
-                image: require("../../assets/images/icon.png"),
+                name: `${motionData[item - 1].name}`,
+                image: motion_imgs[item - 1],
               }}
-              exerSets={exerSetsMap[item]} 
+              exerSets={exerSetsMap[item]}
               setExerSets={(newSets) =>
                 setExerSetsMap((prev) => ({ ...prev, [item]: newSets }))
               }
