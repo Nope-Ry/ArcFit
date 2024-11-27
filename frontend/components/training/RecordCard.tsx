@@ -5,8 +5,6 @@ import { data } from '../../app/(tabs)/index';
 
 
 const getExerciseData = (date: Date) => {
-  // 筛选出当天的数据，但是后续要修改成选择的日期
-  console.log("date: ", date);
   const today = date.toISOString().split("T")[0]
   const todayData = data.filter(item => item.date === today)
   const exerciseData = []

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Button, Dimensions, StyleSheet, FlatList } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
+import * as shape from "d3-shape";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text as SvgText } from 'react-native-svg';
@@ -36,7 +37,6 @@ const getWeeklyTrainingRecords = () => {
             Time[index] = duration;
         }
     }
-    console.log("Time: ", Time);
     return Time;
 };
 
@@ -122,7 +122,7 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
             <View style={styles.container}>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
                 <LineChart
-                    style={{ height: height * 0.25 }}
+                    style={{ height: 200 }}
                     data={weeklyRecord}
                     svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
                     contentInset={{ top: 10, bottom: 10 }}
@@ -159,12 +159,12 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
                         负重(kg)
                 </ThemedText>
                  <LineChart
-                    style={{ height: height * 0.25 }}
+                    style={{ height: 200 }}
                     data={weeklyBodyRecords[selected].weight} 
                     svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
                     contentInset={{ top: 10, bottom: 10 }}
                     gridMin={0}
-                    gridMax={Math.max(...weeklyRecord) + 20}
+                    gridMax={Math.max(...weeklyBodyRecords[selected].weight) + 20}
                 />
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     {days.map((day, index) => (

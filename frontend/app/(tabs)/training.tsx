@@ -70,13 +70,13 @@ export default function TrainingScreen() {
         };
         hist["records"].push(records);
       }
-      const path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
-      console.log("path", path);
+      let path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
+      // date处的-替换为_
+      path = path.replace(/-/g, "_");
       FileSystem.writeAsStringAsync(path, JSON.stringify(hist)).then(() => {
-        console.log("写入成功");
         console.log("写到了", path);
       }).catch((err) => {
-        console.log("写入失败");
+        console.log(err);
       });
       data.push(hist);
       setTime(0);

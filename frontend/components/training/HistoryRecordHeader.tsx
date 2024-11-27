@@ -24,7 +24,6 @@ export default function HistoryRecordHeader({ date, setDate }: IHistoryRecordHea
                     onChange={(event, selectedDate) => {
                         if (selectedDate) {
                             setDate(selectedDate);
-                            console.log("currentDate: ", selectedDate);
                         }
                     }}
                 />

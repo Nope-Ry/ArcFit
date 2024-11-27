@@ -27,50 +27,6 @@ let intervalDays: number;
 
 interface IRecord {}
 
-const interpolate = (array: number[]) => {
-  // 找到所有非零点的索引
-  const nonZeroIndices = array
-    .map((value, index) => (value !== 0 ? index : -1))
-    .filter((index) => index !== -1);
-
-  // 如果没有非零点，返回原数组
-  if (nonZeroIndices.length === 0) return array;
-
-  // 如果头尾为0，填充它们
-  if (nonZeroIndices[0] > 0) {
-    // 头部为0
-    for (let i = 0; i < nonZeroIndices[0]; i++) {
-      array[i] = array[nonZeroIndices[0]];
-    }
-  }
-
-  if (nonZeroIndices[nonZeroIndices.length - 1] < array.length - 1) {
-    // 尾部为0
-    for (
-      let i = nonZeroIndices[nonZeroIndices.length - 1] + 1;
-      i < array.length;
-      i++
-    ) {
-      array[i] = array[nonZeroIndices[nonZeroIndices.length - 1]];
-    }
-  }
-
-  // 分段线性插值
-  for (let i = 0; i < nonZeroIndices.length - 1; i++) {
-    const start = nonZeroIndices[i];
-    const end = nonZeroIndices[i + 1];
-    const startValue = array[start];
-    const endValue = array[end];
-
-    // 对于中间的0值进行插值
-    for (let j = start + 1; j < end; j++) {
-      const t = (j - start) / (end - start); // 计算比例
-      array[j] = startValue + t * (endValue - startValue); // 插值公式
-    }
-  }
-
-  return array;
-};
 
 const getTotalTrainingRecords = () => {
   const totalDays = new Set(data.map((item) => item.date));
@@ -120,23 +76,29 @@ const getBodyWeightTrend = () => {
           (motion) => motion.m_id === record.m_id
         );
         if (motionIndex !== -1) {
-          bodyWeight[index].motions[motionIndex].weight[nowday] = weight;
+          const dayIndex = bodyWeight[index].motions[motionIndex].days.indexOf(nowday);
+          if (dayIndex !== -1) {
+            bodyWeight[index].motions[motionIndex].weight[dayIndex] = Math.max(bodyWeight[index].motions[motionIndex].weight[dayIndex], weight);
+          } else {
+            bodyWeight[index].motions[motionIndex].days.push(nowday);
+            bodyWeight[index].motions[motionIndex].weight.push(weight);
+          }
         } else {
-          const weightTrend = new Array(intervalDays).fill(0);
-          weightTrend[nowday] = weight;
           bodyWeight[index].motions.push({
             m_id: record.m_id,
-            weight: weightTrend,
+            days: [nowday],
+            weight: [weight],
           });
         }
       });
     });
   });
-
-  // 对每个部位的负重趋势进行插值
-  bodyWeight.forEach((item) => {
-    item.motions.forEach((motion) => {
-      motion.weight = interpolate(motion.weight);
+  // 要对每个motions按照days进行排序
+  bodyWeight.forEach((part) => {
+    part.motions.forEach((motion) => {
+      const sorted = motion.days.map((day, index) => ({ day, weight: motion.weight[index] })).sort((a, b) => a.day - b.day);
+      motion.days = sorted.map((item) => item.day);
+      motion.weight = sorted.map((item) => item.weight);
     });
   });
   return bodyWeight;
@@ -147,16 +109,16 @@ const TotalTrainingRecords: React.FC = () => {
   const bodyWeightTrend = getBodyWeightTrend();
   const [selected, setSelected] = useState("1");
 
-  const days = Array.from({ length: intervalDays }, (_, index) => index + 1);
+
   return (
     <ScrollView style={{padding:10}}>
       {/* 预卡片总览 */}
       <View style={styles.container}>
-        <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
+        <ThemedText type="defaultBold" style={{ textAlign: "center", marginBottom: 10 }}>
           总统计
         </ThemedText>
         <View style={styles.card}>
-          <ThemedText type="default">总训练天数</ThemedText>
+          <ThemedText type="default">总训练次数</ThemedText>
           <ThemedText type="default">{totalRecords.totalDays}</ThemedText>
         </View>
         <View style={styles.card}>
@@ -199,25 +161,25 @@ const TotalTrainingRecords: React.FC = () => {
             />
           </View>
         </View>
-        {/* 对当前选定的bodyWeightTrend[selected]的每个motions都画一个LineChart */}
         <View>
           {bodyWeightTrend[selected].motions.map((motion, index) => (
             <View key={index} style={{ marginVertical: 10 }}>
               <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
               动作ID: {motion.m_id}
               </ThemedText>
-              <LineChart
-              style={{ height: 200 }}
-              data={motion.weight}
-              svg={{ stroke: "rgb(134, 65, 244)" }}
-              contentInset={{ top: 20, bottom: 20 }}
-              curve={shape.curveLinear}
-              >
-              </LineChart>
+                <LineChart
+                  style={{ height: 200 }}
+                  data={motion.weight}
+                  svg={{ stroke: "rgb(134, 65, 244)" }}
+                  contentInset={{ top: 20, bottom: 20 }}
+                  gridMin={0}
+                  gridMax={Math.max(...motion.weight) + 20}
+                >
+                </LineChart>
               <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-              {days.map((day, index) => (
-                <Text key={index} style={{ textAlign: "center", width: `${100 / days.length}%` }}>
-                {day}
+              {motion.days.map((day, index) => (
+                <Text key={index} style={{ textAlign: "center", width: `${100 / motion.days.length}%` }}>
+                  {day}
                 </Text>
               ))}
               </View>
