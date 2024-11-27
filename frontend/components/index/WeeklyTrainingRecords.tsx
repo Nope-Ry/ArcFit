@@ -109,7 +109,7 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
     const [selected, setSelected] = useState('1');
 
     const getRandomColor = () => {
-        return `#${Math.floor(Math.random()*16777215).toString(16)}`;
+        return `#${Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0')}`;
     };
 
     const weeklyRecord = getWeeklyTrainingRecords();

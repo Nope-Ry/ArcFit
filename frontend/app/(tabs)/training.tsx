@@ -70,9 +70,9 @@ export default function TrainingScreen() {
         };
         hist["records"].push(records);
       }
-      let path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
-      // date处的-替换为_
-      path = path.replace(/-/g, "_");
+      const stringdate = hist["date"].replace(/-/g, "_");
+      const path = FileSystem.documentDirectory + hist["date"] + "_" + hist["cnt"] + ".json";
+      console.log(path);
       FileSystem.writeAsStringAsync(path, JSON.stringify(hist)).then(() => {
         console.log("写到了", path);
       }).catch((err) => {
