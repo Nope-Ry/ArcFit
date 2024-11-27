@@ -3,3 +3,5 @@ __pycache__
 migrations
 .env
 settings_prod.py
+asset_files
+static

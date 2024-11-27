@@ -1,66 +1,55 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  Text,
-  Button,
-  Image,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 import EquipmentHeader from "../../components/equipment/EquipmentHeader";
 import EquipmentCard from "../../components/equipment/EquipmentCard";
+import { SafeAreaView } from "react-native-safe-area-context";
+import cardData from "../../res/equipment/json/comb.json";
+import bodypartData from "@/res/bodypart/json/comb.json";
+import Icon from "react-native-vector-icons/Ionicons";
+import { ThemedText } from "@/components/ThemedText";
+import Cart from "@/components/Cart";
 
-const cardData = [
-  {
-    imageUri: "https://via.placeholder.com/150",
-    title: "Card 1",
-    description: "Description for Card 1",
-  },
-  {
-    imageUri: "https://via.placeholder.com/150",
-    title: "Card 2",
-    description: "Description for Card 2",
-  },
-  {
-    imageUri: "https://via.placeholder.com/150",
-    title: "Card 3",
-    description: "Description for Card 3",
-  },
-];
+const { width, height } = Dimensions.get("window");
 
 export default function TrainingScreen() {
+  const [selectedEquipment, setSelectedEquipment] = useState(0);
+
+  const handleEquipmentSelect = (index) => {
+    setSelectedEquipment(index);
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       {/* 上部容器 */}
-      <SafeAreaView style={styles.upContainer}>
-        <EquipmentHeader />
-      </SafeAreaView>
+      <View style={styles.upContainer}>
+        <EquipmentHeader OnSelect={handleEquipmentSelect} />
+      </View>
 
       {/* 图片卡片容器 */}
       <ScrollView contentContainerStyle={styles.cardContainer}>
-        {cardData.map((card, index) => (
-          <EquipmentCard
-            key={index}
-            imageUri={card.imageUri}
-            title={card.title}
-            description={card.description}
-          />
-        ))}
+        {cardData
+          .filter(
+            (card) =>
+              !selectedEquipment ||
+              bodypartData[selectedEquipment - 1].e_id.includes(card.e_id)
+          )
+          .map((card, index) => (
+            <EquipmentCard key={index} information={card} />
+          ))}
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-// 样式
 const styles = StyleSheet.create({
   cardContainer: {
-    height: 400,
-    width: "90%",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-    margin: 20,
-    rowGap: 20,
+    justifyContent: "center",
+    margin: width * 0.05,
+    rowGap: height * 0.02,
+    columnGap: width * 0.04,
+    gap: width * 0.05,
   },
   upContainer: {
     padding: 15,

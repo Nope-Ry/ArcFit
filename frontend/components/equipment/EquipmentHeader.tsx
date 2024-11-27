@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SafeAreaView, TouchableOpacity, TextInput, Modal, Text, Animated, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { SafeAreaView, TouchableOpacity, TextInput, Modal, View, Animated, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "../ThemedText";
+import clfData from "@/res/bodypart/json/comb.json";
 
-const EquipmentHeader = () => {
+
+const EquipmentHeader = ({ OnSelect }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
-  const categories = ["Cardio", "Strength", "Flexibility", "Balance"];
+  const categories = ["全部", ...clfData.map((item) => item.name)];
 
   const toggleMenu = () => {
     if (isMenuVisible) {
@@ -29,9 +31,11 @@ const EquipmentHeader = () => {
     }
   };
   
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = (index) => {
     // 根据不同的分类
     // toggleMenu();
+    toggleMenu();
+    OnSelect(index);
   };
 
   return (
@@ -62,20 +66,24 @@ const EquipmentHeader = () => {
         onRequestClose={toggleMenu}
         >
         <TouchableWithoutFeedback onPress={toggleMenu}>
-          <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
-            <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+          <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <Animated.ScrollView style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
               {categories.map((category, index) => (
-                <ThemedText
-                  key={index} 
-                  type="defaultBold"
-                  onPress={() => handleCategoryClick(category)}
-                  style={{ marginVertical: 10 }}
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleCategoryClick(index)}
+                  style={{  }}
                 >
-                  {category}
-                </ThemedText>
+                  <ThemedText
+                    type="defaultBold"
+                    style={{ marginVertical: 10, paddingLeft: 10 }}
+                  >
+                    {category}
+                  </ThemedText>
+                </TouchableOpacity>
               ))}
-            </Animated.View>
-          </SafeAreaView>
+            </Animated.ScrollView>
+          </View>
         </TouchableWithoutFeedback>
       </Modal>
     </SafeAreaView>
@@ -102,8 +110,8 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     width: "50%",
-    height: "100%",
     backgroundColor: "white",
+    paddingVertical: 50,
     padding: 20,
   },
   menuItem: {

@@ -9,7 +9,6 @@ from rest_framework.decorators import (
 from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_200_OK,
-    HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
 )
 from rest_framework.serializers import DateTimeField
@@ -20,12 +19,13 @@ from knox.auth import TokenAuthentication
 
 from utils.decorators import json_request
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserUpdateSerializer
 
 
 @api_view(["POST"])
 @json_request
 def user_register(request, json_data):
+    """Register a new user."""
     serializer = UserSerializer(data=json_data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -37,6 +37,7 @@ def user_register(request, json_data):
 @api_view(["POST"])
 @json_request
 def user_login(request, json_data):
+    """Try to login with given username and password. Return a access token on success."""
     username = json_data.get("username", None)
     password = json_data.get("password", None)
 
@@ -44,16 +45,16 @@ def user_login(request, json_data):
 
     if user is None:
         return Response(
-            {"error": "Invalid username or password"}, status=HTTP_400_BAD_REQUEST
+            {"error": "Invalid username or password."}, status=HTTP_400_BAD_REQUEST
         )
 
     if not user.is_active:
-        return Response({"error": "User isn't activated"}, status=HTTP_400_BAD_REQUEST)
+        return Response({"error": "User isn't activated."}, status=HTTP_400_BAD_REQUEST)
 
     token_limit_per_user = knox_settings.TOKEN_LIMIT_PER_USER
     if token_limit_per_user is not None:
         now = timezone.now()
-        token = user.auth_token_set.filter(expiry__gt=now) # type: ignore
+        token = user.auth_token_set.filter(expiry__gt=now)  # type: ignore
         if token.count() >= token_limit_per_user:
             return Response(
                 {"error": "Maximum amount of tokens allowed per user exceeded."},
@@ -73,11 +74,13 @@ def user_login(request, json_data):
         status=HTTP_200_OK,
     )
 
+
 @api_view(["POST"])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 @json_request
 def user_update(request, json_data):
+    """Update user information. Only accessible to authenticated users."""
     serializer = UserSerializer(instance=request.user, data=json_data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -90,6 +93,7 @@ def user_update(request, json_data):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def user_logout(request):
+    """Invalidate current token."""
     request.auth.delete()
 
-    return Response(status=HTTP_204_NO_CONTENT)
+    return Response({}, status=HTTP_200_OK)
