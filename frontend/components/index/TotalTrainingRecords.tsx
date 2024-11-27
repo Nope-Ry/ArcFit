@@ -32,6 +32,14 @@ const getTotalTrainingRecords = () => {
   const totalDays = new Set(data.map((item) => item.date));
   const totalDuration = Math.floor(data.reduce((acc, item) => acc + item.duration, 0));
   const avgDuration = Math.floor(totalDuration / totalDays.size);
+  // 如果avgDuration为NaN，说明totalDays.size为0，此时返回0
+  if (isNaN(avgDuration)) {
+    return {
+      totalDays: 0,
+      totalDuration: 0,
+      avgDuration: 0,
+    };
+  }
   return {
     totalDays: totalDays.size,
     totalDuration,
