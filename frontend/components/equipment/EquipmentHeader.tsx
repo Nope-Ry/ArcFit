@@ -67,18 +67,22 @@ const EquipmentHeader = ({ OnSelect }) => {
         >
         <TouchableWithoutFeedback onPress={toggleMenu}>
           <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
-            <Animated.View style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+            <Animated.ScrollView style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
               {categories.map((category, index) => (
-                <ThemedText
-                  key={index} 
-                  type="defaultBold"
+                <TouchableOpacity
+                  key={index}
                   onPress={() => handleCategoryClick(index)}
-                  style={{ marginVertical: 10 }}
+                  style={{  }}
                 >
-                  {category}
-                </ThemedText>
+                  <ThemedText
+                    type="defaultBold"
+                    style={{ marginVertical: 10, paddingLeft: 10 }}
+                  >
+                    {category}
+                  </ThemedText>
+                </TouchableOpacity>
               ))}
-            </Animated.View>
+            </Animated.ScrollView>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -106,8 +110,8 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     width: "50%",
-    height: "100%",
     backgroundColor: "white",
+    paddingVertical: 50,
     padding: 20,
   },
   menuItem: {
