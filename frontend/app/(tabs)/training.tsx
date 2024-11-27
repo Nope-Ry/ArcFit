@@ -43,7 +43,7 @@ export default function TrainingScreen() {
   const toggleView = () => {
     if(isTraining){
       // 保存当前的训练记录
-      const mins = time / 60000;
+      const mins = Math.floor(time / 60000);
       const paths = FileSystem.documentDirectory;
       // 查询FileSystem.documentDirectory下有几个文件
 

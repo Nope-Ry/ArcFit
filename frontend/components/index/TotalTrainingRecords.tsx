@@ -19,19 +19,11 @@ import { SelectList } from "react-native-dropdown-select-list";
 import * as FileSystem from "expo-file-system";
 import { data }from "../../app/(tabs)/index";
 
-const firstDay = new Date(
-  Math.min(...data.map((item) => new Date(item.date).getTime()))
-);
-
-const lastDay = new Date(
-  Math.max(...data.map((item) => new Date(item.date).getTime()))
-);
-
-const intervalDays =
-  Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
-  1;
-
 const { width, height } = Dimensions.get("window");
+
+let firstDay: Date;
+let lastDay: Date;
+let intervalDays: number;
 
 interface IRecord {}
 
@@ -102,6 +94,17 @@ const getBodyWeightTrend = () => {
       value: part,
       motions: []
   }));
+  firstDay = new Date(
+    Math.min(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  lastDay = new Date(
+    Math.max(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  intervalDays =
+    Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
+    1;
 
   data.forEach((item) => {
     item.records.forEach((record) => {
@@ -146,7 +149,7 @@ const TotalTrainingRecords: React.FC = () => {
 
   const days = Array.from({ length: intervalDays }, (_, index) => index + 1);
   return (
-    <ScrollView>
+    <ScrollView style={{padding:10}}>
       {/* 预卡片总览 */}
       <View style={styles.container}>
         <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
@@ -235,6 +238,7 @@ const TotalTrainingRecords: React.FC = () => {
 };
 const styles = StyleSheet.create({
   container: {
+    width: width * 0.9,
     padding: 20,
     backgroundColor: "#f5f5f5",
     borderRadius: 10,
@@ -263,7 +267,7 @@ const styles = StyleSheet.create({
     borderColor: "#007bff",
     borderRadius: 8,
     padding: 10,
-    width: width * 0.4,
+    width: width * 0.3,
   },
   dropdown: {
     borderColor: "#007bff",

@@ -195,6 +195,7 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
 
 const styles = StyleSheet.create({
     container: { 
+        width: width * 0.9,
         padding: 20, 
         backgroundColor: '#f5f5f5', 
         borderRadius: 10, 
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
         borderColor: '#007bff',
         borderRadius: 8,
         padding: 10,
-        width: width * 0.4,
+        width: width * 0.3,
     },
     dropdown: {
         borderColor: '#007bff',
