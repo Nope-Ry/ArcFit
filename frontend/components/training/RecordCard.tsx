@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { data } from '../../app/(tabs)/index';
-
+import { motion_imgs } from '@/res/motion/motion_img';
 
 const getExerciseData = (date: Date) => {
   const today = date.toISOString().split("T")[0]
@@ -17,7 +17,7 @@ const getExerciseData = (date: Date) => {
       exerciseData.push({
         type: record.name,
         sets,
-        img: require('../../assets/images/icon.png'),
+        img: motion_imgs[record.m_id],
       })
     })
   })
