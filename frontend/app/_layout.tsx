@@ -52,6 +52,10 @@ export default function RootLayout() {
             name="BodyInfoScreen"
             options={{ headerTitle: "肌群详情", headerBackTitle: "身体" }}
           />
+          <Stack.Screen
+            name="TrainingStatisticsScreen"
+            options={{ headerTitle: "训练统计", headerBackTitle: "主页" }}
+          />
         </Stack>
       </ThemeProvider>
       </CartProvider>

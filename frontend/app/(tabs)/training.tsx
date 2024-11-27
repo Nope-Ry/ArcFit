@@ -112,7 +112,7 @@ export default function TrainingScreen() {
       }
 
       for (let key in m_id_list) {
-        const b_id = [motionData[m_id_list[key] - 1].b_id];
+        const b_id = motionData[m_id_list[key] - 1].b_id;
         const records = {
           name: motionData[m_id_list[key] - 1].name,
           m_id: m_id_list[key],
