@@ -1,4 +1,4 @@
-export const equipment_imgs = {
+export const motion_imgs = {
     "1": require("./img/1.gif"),
     "2": require("./img/2.gif"),
     "3": require("./img/3.gif"),
