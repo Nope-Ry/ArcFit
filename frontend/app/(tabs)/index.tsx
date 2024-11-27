@@ -20,6 +20,7 @@ FileSystem.readDirectoryAsync(path).then((files) => {
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const path = FileSystem.documentDirectory;
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>

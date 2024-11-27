@@ -12,7 +12,7 @@ import { ThemedText } from "@/components/ThemedText";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text as SvgText } from "react-native-svg";
-import { LineChart, Grid, PieChart } from "react-native-svg-charts";
+import { LineChart, Grid, PieChart, YAxis } from "react-native-svg-charts";
 import { MaxEquation } from "three";
 import * as shape from "d3-shape";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -32,7 +32,6 @@ const getTotalTrainingRecords = () => {
   const totalDays = new Set(data.map((item) => item.date));
   const totalDuration = Math.floor(data.reduce((acc, item) => acc + item.duration, 0));
   const avgDuration = Math.floor(totalDuration / totalDays.size);
-  // 如果avgDuration为NaN，说明totalDays.size为0，此时返回0
   if (isNaN(avgDuration)) {
     return {
       totalDays: 0,
@@ -125,25 +124,27 @@ const TotalTrainingRecords: React.FC = () => {
         <ThemedText type="defaultBold" style={{ textAlign: "center", marginBottom: 10 }}>
           总统计
         </ThemedText>
-        <View style={styles.card}>
-          <ThemedText type="default">总训练次数</ThemedText>
-          <ThemedText type="default">{totalRecords.totalDays}</ThemedText>
-        </View>
-        <View style={styles.card}>
-          <ThemedText type="default">总训练时长</ThemedText>
-          <ThemedText type="default">
-            {totalRecords.totalDuration}mins
-          </ThemedText>
-        </View>
-        <View style={styles.card}>
-          <ThemedText type="default">平均每次训练</ThemedText>
-          <ThemedText type="default">{totalRecords.avgDuration}mins</ThemedText>
+        <View style={styles.totalcontainer}>
+          <View style={styles.card}>
+            <ThemedText type="default">总训练次数</ThemedText>
+            <ThemedText type="default">{totalRecords.totalDays}</ThemedText>
+          </View>
+          <View style={styles.card}>
+            <ThemedText type="default">总训练时长</ThemedText>
+            <ThemedText type="default">
+              {totalRecords.totalDuration}mins
+            </ThemedText>
+          </View>
+          <View style={styles.card}>
+            <ThemedText type="default">平均每次训练</ThemedText>
+            <ThemedText type="default">{totalRecords.avgDuration}mins</ThemedText>
+          </View>
         </View>
       </View>
 
       {/* 身体部位负重的趋势 */}
       <View style={styles.container}>
-        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-around", zIndex: 2 }}>
           <ThemedText
             type="defaultBold"
             style={{
@@ -155,19 +156,17 @@ const TotalTrainingRecords: React.FC = () => {
             动作统计
           </ThemedText>
           {/* 下拉框 */}
-          <View>
-            <SelectList
-              setSelected={(value) => setSelected(value)}
-              data={bodyWeightTrend
-                .slice(1)
-                .map((item) => ({ key: item.key, value: item.value }))}
-              placeholder="选择一个部位"
-              boxStyles={styles.motionBox}
-              dropdownStyles={styles.dropdown}
-              search={false}
-              defaultOption={{ key: "1", value: "胸部" }}
-            />
-          </View>
+          <SelectList
+            setSelected={(value) => setSelected(value)}
+            data={bodyWeightTrend
+              .slice(1)
+              .map((item) => ({ key: item.key, value: item.value }))}
+            placeholder="选择一个部位"
+            boxStyles={styles.motionBox}
+            dropdownStyles={styles.dropdown}
+            search={false}
+            defaultOption={{ key: "1", value: "胸部" }}
+          />
         </View>
         <View>
           {bodyWeightTrend[selected].motions.map((motion, index) => (
@@ -175,15 +174,26 @@ const TotalTrainingRecords: React.FC = () => {
               <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
               动作ID: {motion.m_id}
               </ThemedText>
-                <LineChart
-                  style={{ height: 200 }}
-                  data={motion.weight}
-                  svg={{ stroke: "rgb(134, 65, 244)" }}
-                  contentInset={{ top: 20, bottom: 20 }}
-                  gridMin={0}
-                  gridMax={Math.max(...motion.weight) + 20}
-                >
-                </LineChart>
+                  <View style={{ flexDirection: 'row'}}>
+                    <YAxis
+                        data={motion.weight}
+                        contentInset={{ top: 10, bottom: 10 }}
+                        svg={{ fill: 'grey', fontSize: 10 }}
+                        numberOfTicks={5} 
+                        formatLabel={(value) => `${value}`} 
+                        min={0}
+                        max={Math.max(...motion.weight)}
+                        width={100}
+                    />
+                    <LineChart
+                        style={{ height: 200, width: width * 0.75 }}
+                        data={motion.weight}
+                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
+                        contentInset={{ top: 10, bottom: 10 }}
+                        gridMin={0}
+                        gridMax={Math.max(...motion.weight)}
+                    />
+                </View>
               <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
               {motion.days.map((day, index) => (
                 <Text key={index} style={{ textAlign: "center", width: `${100 / motion.days.length}%` }}>
@@ -198,7 +208,7 @@ const TotalTrainingRecords: React.FC = () => {
       </View>
 
       {/* 容量统计 */}
-      <View style={styles.container}>
+      <View style={[styles.container,{zIndex:0}]}>
         <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
           容量统计
         </ThemedText>
@@ -207,6 +217,10 @@ const TotalTrainingRecords: React.FC = () => {
   );
 };
 const styles = StyleSheet.create({
+  totalcontainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   container: {
     width: width * 0.9,
     padding: 20,
@@ -217,6 +231,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     marginTop: 10,
+    zIndex: 2,
   },
   cardContainer: {
     padding: 20,
@@ -242,6 +257,10 @@ const styles = StyleSheet.create({
   dropdown: {
     borderColor: "#007bff",
     borderRadius: 8,
+    top: 40,
+    zIndex: 2,
+    position: "absolute",
+    backgroundColor: '#f5f5f5',
   },
 });
 
