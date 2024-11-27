@@ -62,7 +62,6 @@ export default function TrainingScreen() {
       // time除以60000得到分钟数，然后转换为字符串
       clearCart();
       setM_id_list([1, 2, 3]);
-      const mins = (time / 60000).toString();
       console.log("当前的时间为：", mins);
 
       const hist = {
