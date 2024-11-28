@@ -189,7 +189,7 @@ export default function TrainingScreen() {
           <MainRecord date={date} />
           <RecordList date={date} />
         </ScrollView>
-        <View className="bg-white h-20 px-4 py-4">
+        <View className="bg-white h-12 px-4">
           <TouchableOpacity
             className="w-full h-full flex justify-center items-center bg-[#007BFF] rounded-md"
             onPress={toggleView}

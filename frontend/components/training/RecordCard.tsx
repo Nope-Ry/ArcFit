@@ -1,8 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ImageBackground } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { data } from '../../app/(tabs)/index';
 import { motion_imgs } from '@/res/motion/motion_img';
+
+import { Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const getExerciseData = (date: Date) => {
   const today = date.toISOString().split("T")[0]
@@ -26,7 +30,7 @@ const getExerciseData = (date: Date) => {
 function ExerciseItem({ type, sets, img }) {
   return (
     <View style={styles.exerciseItem}>
-      <Image source={img} style={styles.imgcontainer} />
+      <ImageBackground source={img} style={styles.imgcontainer} imageStyle={styles.imgstyle}/>
       <View style={styles.contentContainer}>
         <ThemedText type="subtitle">{type}</ThemedText>
         <View style={styles.divider} />
@@ -78,9 +82,13 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   imgcontainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: width * 0.15,
+    height: width * 0.15,
+    borderRadius: (width * 0.15) / 2,
+    overflow: 'hidden',
+  },
+  imgstyle: {
+    borderRadius: (width * 0.15) / 2,
   },
   contentContainer: {
     flex: 1,
