@@ -9,11 +9,16 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from "@/contexts/UserContext";
 
 function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+
+  const { setUser } = useUser();
 
   const handleLogin = async () => {
     // Call your API to authenticate the user
@@ -28,6 +33,10 @@ function LoginScreen() {
     if (response.ok) {
       // Handle successful login
       const data = await response.json();
+      await SecureStore.setItemAsync("access_token", data.token);
+      await AsyncStorage.setItem("userinfo", JSON.stringify(data));
+      setUser(data);
+
       Alert.alert("登录成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);
     } else {
       // Handle login error
