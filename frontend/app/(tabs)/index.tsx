@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "@/contexts/UserContext";
+import * as SecureStore from "expo-secure-store";
 
 const path = FileSystem.documentDirectory;
 export let data: any[] = [];
@@ -30,15 +31,15 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     const init = async () => {
-      let user = null;
-
       try {
         const userinfo = await AsyncStorage.getItem("userinfo");
         if (userinfo !== null) {
-          user = JSON.parse(userinfo);
+          const user = JSON.parse(userinfo);
           console.log("Loaded user info from AsyncStorage:", user);
           setUser(user);
         }
+        const token = await SecureStore.getItemAsync("access_token");
+        console.log("Access token is:", token);
       } catch (e) {
         console.warn("Exception when loading user info:", e);
       }
