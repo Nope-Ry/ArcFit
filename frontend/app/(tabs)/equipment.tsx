@@ -26,17 +26,19 @@ export default function TrainingScreen() {
       </View>
 
       {/* 图片卡片容器 */}
-      <ScrollView contentContainerStyle={styles.cardContainer}>
-        {cardData
-          .filter(
-            (card) =>
-              !selectedEquipment ||
-              bodypartData[selectedEquipment - 1].e_id.includes(card.e_id)
-          )
-          .map((card, index) => (
-            <EquipmentCard key={index} information={card} />
-          ))}
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.cardContainer}>
+          {cardData
+            .filter(
+              (card) =>
+                !selectedEquipment ||
+                bodypartData[selectedEquipment - 1].e_id.includes(card.e_id)
+            )
+            .map((card, index) => (
+              <EquipmentCard key={index} information={card} />
+            ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }

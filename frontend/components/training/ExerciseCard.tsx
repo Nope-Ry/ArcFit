@@ -6,6 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   TextInput,
+  ImageBackground,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Divider } from "@/components/ui/divider";
@@ -93,7 +94,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         onPress={() => setIsExpanded(!isExpanded)}
         style={styles.cardHeader}
       >
-        <Image source={exercise.image} style={styles.image} />
+        <ImageBackground source={exercise.image} style={styles.image} imageStyle={styles.imageStyle}/>
         <View style={styles.textContainer}>
           <ThemedText type="subtitle" style={styles.exerciseName}>
             {exercise.name}
@@ -211,8 +212,11 @@ const styles = StyleSheet.create({
   image: {
     width: width * 0.15,
     height: width * 0.15,
-    borderRadius: width * 0.08,
+    borderRadius: (width * 0.15) / 2,
     overflow: "hidden",
+  },
+  imageStyle: {
+    borderRadius: (width * 0.15) / 2,
   },
   textContainer: {
     marginTop: height * 0.01,
