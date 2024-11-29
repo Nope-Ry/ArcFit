@@ -69,7 +69,7 @@ def user_login(request, json_data):
                 format=knox_settings.EXPIRY_DATETIME_FORMAT  # type: ignore
             ).to_representation(instance.expiry),
             "token": token,
-            # 'username': instance.username
+            "user": UserSerializer(user).data
         },
         status=HTTP_200_OK,
     )
@@ -81,7 +81,7 @@ def user_login(request, json_data):
 @json_request
 def user_update(request, json_data):
     """Update user information. Only accessible to authenticated users."""
-    serializer = UserSerializer(instance=request.user, data=json_data)
+    serializer = UserUpdateSerializer(instance=request.user, data=json_data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 

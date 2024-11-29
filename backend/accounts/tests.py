@@ -231,11 +231,23 @@ class AccountTestCases(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         json_data = response.json()
-        self.assertSetEqual(set(json_data.keys()), {"expiry", "token"})
+        self.assertSetEqual(set(json_data.keys()), {"expiry", "token", "user"})
         self.assertRegex(
             json_data["expiry"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$"
         )
         self.assertRegex(json_data["token"], r"^[0-9a-f]{64}$")
+        self.assertSetEqual(
+            set(json_data["user"].keys()),
+            {
+                "username",
+                "first_name",
+                "last_name",
+                "email",
+                "age",
+                "gender",
+                "phone_number",
+            },
+        )
 
         token = json_data["token"]
 
@@ -283,9 +295,10 @@ class AccountTestCases(TestCase):
 
         # allow no-op (all fields optional)
         response = self.client.post(
-            reverse(user_update), data={}, content_type="application/json", headers={
-                "Authorization": f"Token {token}"
-            }
+            reverse(user_update),
+            data={},
+            content_type="application/json",
+            headers={"Authorization": f"Token {token}"},
         )
         self.assertEqual(response.status_code, 200)
 
@@ -296,12 +309,13 @@ class AccountTestCases(TestCase):
             "email": "hello@abc.com",
             "age": 18,
             "gender": 1,
-            "phone_number": "15576653524"
+            "phone_number": "15576653524",
         }
         response = self.client.post(
-            reverse(user_update), data=data, content_type="application/json", headers={
-                "Authorization": f"Token {token}"
-            }
+            reverse(user_update),
+            data=data,
+            content_type="application/json",
+            headers={"Authorization": f"Token {token}"},
         )
         self.assertEqual(response.status_code, 200)
         queryset = User.objects.filter(username="testuser")
