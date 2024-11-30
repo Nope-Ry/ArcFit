@@ -20,7 +20,7 @@ import cardData from "@/res/equipment/json/comb.json";
 import { RouteProp } from "@react-navigation/native";
 import { equipment_imgs } from "@/res/equipment/equipment_img";
 import Cart from "@/components/Cart";
-import { CartContext } from "@/components/CartContext";
+import { CartContext } from "@/contexts/CartContext";
 import { useContext } from "react";
 const { width, height } = Dimensions.get("window");
 

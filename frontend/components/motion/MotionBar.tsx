@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-import { CartContext } from "@/components/CartContext";
+import { CartContext } from "@/contexts/CartContext";
 import { useContext } from "react";
 
 const { width, height } = Dimensions.get("window");

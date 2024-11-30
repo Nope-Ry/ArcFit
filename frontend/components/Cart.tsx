@@ -3,7 +3,7 @@ import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { ThemedText } from "./ThemedText";
 import { useNavigation } from "@react-navigation/native";
-import { CartContext } from "@/components/CartContext";
+import { CartContext } from '@/contexts/CartContext';
 
 const { width } = Dimensions.get("window");
 

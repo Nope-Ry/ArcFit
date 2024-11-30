@@ -9,29 +9,43 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from "@/contexts/UserContext";
+import { login_api } from "@/constants/APIs";
 
 function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
+  const { setUser } = useUser();
+
   const handleLogin = async () => {
     // Call your API to authenticate the user
-    const response = await fetch("http://101.34.70.123:8000/api/accounts/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const response = await fetch(login_api, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    if (response.ok) {
-      // Handle successful login
-      const data = await response.json();
-      Alert.alert("登录成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);
-    } else {
-      // Handle login error
-      Alert.alert("登录失败", "用户名或密码错误");
+      if (response.ok) {
+        // Handle successful login
+        const { token, user } = await response.json();
+        await SecureStore.setItemAsync("access_token", token);
+        await AsyncStorage.setItem("userinfo", JSON.stringify(user));
+        setUser({ ...user, is_login: true });
+
+        Alert.alert("登录成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);
+      } else {
+        // Handle login error
+        Alert.alert("登录失败", "用户名或密码错误");
+      }
+    } catch (e) {
+      Alert.alert("登录失败", `错误：${e}`);
     }
   };
 

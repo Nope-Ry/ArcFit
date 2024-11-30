@@ -12,7 +12,7 @@ import { data } from "../../app/(tabs)/index";
 import * as FileSystem from "expo-file-system";
 
 import { useContext } from "react";
-import { CartContext } from "@/components/CartContext";
+import { CartContext } from "@/contexts/CartContext";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
