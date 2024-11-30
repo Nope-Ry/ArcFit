@@ -24,7 +24,7 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
 
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (!isPaused) {
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1000); // Increment by 1000 milliseconds (1 second)
@@ -65,7 +65,7 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
         <ThemedText type="defaultBold">
           {new Date().toLocaleDateString()}
         </ThemedText>
-        <ThemedText type="defaultBold">1/8</ThemedText>
+        <ThemedText type="defaultBold"></ThemedText>
       </View>
     </View>
   );

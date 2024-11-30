@@ -11,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Divider } from "@/components/ui/divider";
 import Slider from "@react-native-community/slider";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 import { ThemedText } from "../ThemedText";
 const { width, height } = Dimensions.get("window");
@@ -26,6 +27,7 @@ interface ExerciseCardProps {
   ) => void;
   rating: number;
   setRating: (rating: number) => void;
+  onDelete: () => void;
 }
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
@@ -34,6 +36,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   setExerSets,
   rating,
   setRating,
+  onDelete,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   // const [rating, setRating] = useState(3);
@@ -55,6 +58,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         numericText = `${parts[0]}.${parts[1].slice(0, 1)}`;
       }
     }
+    if (/^0[0-9]+$/.test(numericText)) {
+      numericText = numericText.replace(/^0+/, "");
+    }
     updateSet(index, "weight", numericText);
   };
 
@@ -62,6 +68,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     let numericText = text.replace(/[^0-9]/g, "");
     if (parseInt(numericText, 10) > 100) {
       numericText = "100";
+    }
+    if (/^0[0-9]+$/.test(numericText)) {
+      numericText = numericText.replace(/^0+/, "");
     }
     updateSet(index, "reps", numericText);
   };
@@ -94,17 +103,23 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         onPress={() => setIsExpanded(!isExpanded)}
         style={styles.cardHeader}
       >
-        <ImageBackground source={exercise.image} style={styles.image} imageStyle={styles.imageStyle}/>
+        <ImageBackground
+          source={exercise.image}
+          style={styles.image}
+          imageStyle={styles.imageStyle}
+        />
         <View style={styles.textContainer}>
           <ThemedText type="subtitle" style={styles.exerciseName}>
             {exercise.name}
           </ThemedText>
           <ThemedText type="small" style={styles.groupInfo}>
-            111
+            已完成 {exerSets.filter((set) => set.checked).length} /{" "}
+            {exerSets.length} 组
           </ThemedText>
         </View>
-        <TouchableOpacity>
-          <Ionicons name="settings-outline" size={width * 0.06} />
+        <TouchableOpacity onPress={onDelete}>
+          {/* <Ionicons name="settings-outline" size={width * 0.06} /> */}
+          <MaterialIcons name="delete-forever" size={width * 0.07} color="black" />
         </TouchableOpacity>
       </TouchableOpacity>
 
