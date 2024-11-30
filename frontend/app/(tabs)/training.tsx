@@ -144,6 +144,20 @@ export default function TrainingScreen() {
     setIsTraining(!isTraining);
   };
 
+  const handleDelete = (item) => {
+    setM_id_list((prev) => prev.filter((id) => id !== item));
+    setExerSetsMap((prev) => {
+      const newMap = { ...prev };
+      delete newMap[item];
+      return newMap;
+    });
+    setRatingMap((prev) => {
+      const newMap = { ...prev };
+      delete newMap[item];
+      return newMap;
+    });
+  }
+
   if (isTraining) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -173,6 +187,7 @@ export default function TrainingScreen() {
               setRating={(newRating) =>
                 setRatingMap((prev) => ({ ...prev, [item]: newRating }))
               }
+              onDelete={() => {handleDelete(item)}}
             />
           ))}
         </ScrollView>
