@@ -8,3 +8,5 @@ class User(AbstractUser):
 
     gender_choices = ((0, "male"), (1, "female"), (2, "unknown"))
     gender = models.SmallIntegerField(choices=gender_choices, default=2)
+
+    avatar_url = models.CharField(max_length=128, default="")
