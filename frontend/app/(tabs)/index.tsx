@@ -5,9 +5,15 @@ import FunctionList from "@/components/FunctionList";
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "@/contexts/UserContext";
-import * as SecureStore from "expo-secure-store";
+
+// for Android
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import * as SecureStore from "expo-secure-store";
+
+// for IOS
+import { AsyncStorage } from "react-native";
+import { SecureStore } from "expo";
 
 const path = FileSystem.documentDirectory;
 export let data: any[] = [];
