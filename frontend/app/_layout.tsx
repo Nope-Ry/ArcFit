@@ -58,6 +58,10 @@ export default function RootLayout() {
               name="TrainingStatisticsScreen"
               options={{ headerTitle: "训练统计", headerBackTitle: "主页" }}
             />
+            <Stack.Screen
+              name="MotionScreen"
+              options={{ headerTitle: "动作详情", headerBackTitle: "返回" }}
+            />
           </Stack>
         </ThemeProvider>
       </ContextProviders>
