@@ -178,6 +178,7 @@ export default function TrainingScreen() {
               exercise={{
                 name: `${motionData[item - 1].name}`,
                 image: motion_imgs[item],
+                m_id: item,
               }}
               exerSets={exerSetsMap[item]}
               setExerSets={(newSets) =>

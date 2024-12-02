@@ -9,8 +9,13 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import * as SecureStore from "expo-secure-store";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// for Android
+// import * as SecureStore from "expo-secure-store";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// for IOS
+import { AsyncStorage } from "react-native";
+import { SecureStore } from "expo";
 import { useUser } from "@/contexts/UserContext";
 import { login_api } from "@/constants/APIs";
 

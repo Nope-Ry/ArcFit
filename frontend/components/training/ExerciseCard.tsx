@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Divider } from "@/components/ui/divider";
 import Slider from "@react-native-community/slider";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useNavigation } from "@react-navigation/native";
 
 import { ThemedText } from "../ThemedText";
 const { width, height } = Dimensions.get("window");
@@ -20,6 +21,7 @@ interface ExerciseCardProps {
   exercise: {
     name: string;
     image: any;
+    m_id: number;
   };
   exerSets: { reps: string; weight: string; checked: boolean }[];
   setExerSets: (
@@ -41,6 +43,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   // const [rating, setRating] = useState(3);
 
+  const navigation = useNavigation();
   const getSliderColor = (value) => {
     if (value <= 2) return "#4CAF50"; // 绿色
     if (value <= 4) return "#FFC107"; // 黄色
@@ -191,7 +194,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             </View>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MotionScreen', {m_id: exercise.m_id})}>
               <ThemedText type="defaultBold" style={styles.buttonText}>
                 动作纠正
               </ThemedText>
