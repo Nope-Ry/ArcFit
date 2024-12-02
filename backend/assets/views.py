@@ -7,9 +7,11 @@ from rest_framework.status import (
 )
 
 from django.utils.dateparse import parse_datetime
+from django.views.decorators.cache import cache_page
 from .models import Asset
 
 
+@cache_page(15 * 60)
 @api_view(["GET"])
 def get_asset_metadata(request):
     """
