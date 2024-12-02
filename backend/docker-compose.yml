@@ -15,6 +15,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - web_network
       - db_network
@@ -53,6 +55,22 @@ services:
       - app
     networks:
       - web_network
+  
+  redis:
+    image: redis:latest
+    expose:
+      - "6379"
+    volumes:
+      - /home/ubuntu/redis:/data
+      - ./redis-conf/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - db_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   web_network:
