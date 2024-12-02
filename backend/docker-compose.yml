@@ -44,11 +44,12 @@ services:
     restart: unless-stopped
     image: nginx:latest
     ports:
-      - "8000:8000"
+      - "443:443"
     volumes:
       - ./asset_files:/assets
       - ./static:/static
       - ./nginx/app.conf:/etc/nginx/conf.d/nginx.conf
+      - ./nginx/cert:/cert
     depends_on:
       - app
     networks:
