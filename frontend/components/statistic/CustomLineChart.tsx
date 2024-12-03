@@ -32,7 +32,7 @@ const CustomLineChart: React.FC<CustomLineChartProps> = ({ parameterLabels, para
             },
             decimalPlaces: 0,
         }}
-        yAxisLabel={parameterunit}
+        yAxisSuffix={parameterunit}
         bezier
         onDataPointClick={({ index }) => {showParameterInfo(index);}}
         style={{ marginVertical: 8, borderRadius: 16 }}
