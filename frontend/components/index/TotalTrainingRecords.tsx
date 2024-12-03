@@ -153,7 +153,7 @@ const TotalTrainingRecords = () => {
             <TouchableOpacity
               style={styles.motionBox}
               onPress={() => setModalVisible(true)}>
-              <ThemedText type="default">{bodyWeightTrend[selected].value}</ThemedText>
+                <ThemedText type="default" style={{ textAlign: "center" }}>{bodyWeightTrend[selected].value}</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -168,6 +168,7 @@ const TotalTrainingRecords = () => {
                   showParameterInfo={(index) => {
                     alert(`第${index + 1}天的容量为${motion.weight[index]}kg`);
                   }}
+                  parameterunit="kg"
                 />
               </View>
             </View>

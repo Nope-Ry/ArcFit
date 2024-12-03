@@ -116,6 +116,7 @@ const WeeklyTrainingRecords = () => {
                         showParameterInfo={(index) => {
                             alert(`第${index + 1}天的训练时长为${weeklyRecord[index]}分钟`);
                         }}
+                        parameterunit="mins"
                     />
                 </View>
             </View>
@@ -130,7 +131,7 @@ const WeeklyTrainingRecords = () => {
                         <TouchableOpacity
                             style={styles.motionBox}
                             onPress={() => setModalVisible(true)}>
-                            <ThemedText type="default">{weeklyBodyRecords[selected].value}</ThemedText> 
+                            <ThemedText type="default" style={{ textAlign: "center" }}>{weeklyBodyRecords[selected].value}</ThemedText> 
                         </TouchableOpacity>
                     </View>
                  </View>
@@ -142,6 +143,7 @@ const WeeklyTrainingRecords = () => {
                         showParameterInfo={(index) => {
                             alert(`第${index + 1}天的容量为${weeklyBodyRecords[selected].weight[index]}kg`);
                         }}
+                        parameterunit="kg"
                     />
                  </View>
                  <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
