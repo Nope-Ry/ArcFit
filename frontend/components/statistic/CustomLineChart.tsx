@@ -5,7 +5,7 @@ const { width, height } = Dimensions.get("window");
 interface CustomLineChartProps {
     parameterLabels: string[];  
     parameterData: number[];    
-    showParameterInfo(param: string): void;  
+    showParameterInfo(param: number): void;
 }
 
 
@@ -32,9 +32,7 @@ const CustomLineChart: React.FC<CustomLineChartProps> = ({ parameterLabels, para
             decimalPlaces: 0
         }}
         bezier
-        onDataPointClick={({ index }) => {
-            showParameterInfo(parameterLabels[index]);
-        }}
+        onDataPointClick={({ index }) => {showParameterInfo(index);}}
         style={{ marginVertical: 8, borderRadius: 16 }}
     />
     );

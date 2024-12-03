@@ -199,7 +199,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 动作纠正
               </ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TrainingStatisticsScreen')}>
               <ThemedText type="defaultBold" style={styles.buttonText}>
                 历史记录
               </ThemedText>
