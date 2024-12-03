@@ -9,14 +9,8 @@ import {
 } from "react-native";
 import { ScrollView, TouchableOpacity, Modal } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-
-import { SafeAreaView } from "react-native-safe-area-context";
-import { LineChart, PieChart } from "react-native-chart-kit";
-import { MaxEquation } from "three";
-import * as shape from "d3-shape";
-import { SelectList } from "react-native-dropdown-select-list";
-import * as FileSystem from "expo-file-system";
 import { data }from "../../app/(tabs)/index";
+import CustomLineChart from "../statistic/CustomLineChart";
 
 import motionData from "@/res/motion/json/comb.json";
 
@@ -112,7 +106,7 @@ const getBodyWeightTrend = () => {
   return bodyWeight;
 };
 
-const TotalTrainingRecords: React.FC = () => {
+const TotalTrainingRecords = () => {
   const totalRecords = getTotalTrainingRecords();
   const bodyWeightTrend = getBodyWeightTrend();
   const [selected, setSelected] = useState(1);
@@ -168,29 +162,11 @@ const TotalTrainingRecords: React.FC = () => {
             <View key={index}>
               <ThemedText type="defaultBold" style={{ textAlign: "center" }}>{motionData[motion.m_id - 1].name}</ThemedText>
               <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
-                <LineChart
-                  data={{
-                    labels: motion.days,
-                    datasets: [{data: motion.weight,},],
-                  }}
-                  width={width * 0.85}
-                  height={220}
-                  chartConfig={{
-                      backgroundGradientFrom: "#fb8c00",
-                      backgroundGradientTo: "#ffa726",
-                      color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                      labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                      style: { borderRadius: 16 },
-                      propsForDots: {
-                          r: "6",
-                          strokeWidth: "2",
-                          stroke: "#ffa726"
-                      }
-                  }}
-                  bezier
-                  style={{ marginVertical: 8, borderRadius: 16 }}
-                  onDataPointClick={({value, index}) => {
-                    alert(`第${index + 1}天的最大重量为${value}kg`);
+                <CustomLineChart
+                  parameterLabels={motion.days}
+                  parameterData={motion.weight}
+                  showParameterInfo={(index) => {
+                    alert(`第${index + 1}天的容量为${motion.weight[index]}kg`);
                   }}
                 />
               </View>
@@ -236,31 +212,24 @@ const TotalTrainingRecords: React.FC = () => {
 };
 const styles = StyleSheet.create({
   totalcontainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "row", 
+    justifyContent: "space-between", 
   },
   container: { 
     width: width * 0.9,
     padding: 20, 
-    backgroundColor: '555555', 
+    backgroundColor: '#f5f5f5',
     borderRadius: 10, 
     shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.2, 
+    shadowOpacity: 0.2,
     shadowRadius: 2,
-    marginTop: 10,
+    marginTop: 10, 
     zIndex: 2,
-},
-  cardContainer: {
-    padding: 20,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 20,
-    backgroundColor: "grey",
   },
   card: {
-    width: 100,
-    height: 100,
+    width: width * 0.25,
+    height: height * 0.1,
     backgroundColor: "white",
     borderRadius: 10,
     justifyContent: "center",
@@ -271,14 +240,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     width: width * 0.3,
-  },
-  dropdown: {
-    borderColor: "#007bff",
-    borderRadius: 8,
-    top: 40,
-    zIndex: 2,
-    position: "absolute",
-    backgroundColor: '#f5f5f5',
+    borderWidth: 1,
   },
   modalBackground: {
     flex: 1,
@@ -287,19 +249,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
-    height: height * 0.6,
+    height: height * 0.65,
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
-    width: 250,
+    width: width * 0.8,
     alignItems: 'center',
   },
   modalItem: {
+    width: width * 0.4,
     padding: 10,
-    margin: 5,
+    margin: 10,
     backgroundColor: '#ddd',
     borderRadius: 5,
-    width: '100%',
     alignItems: 'center',
   },
   closeButton: {
@@ -307,6 +269,8 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#ff5733',
     borderRadius: 5,
+    width: width * 0.5,
+    alignItems: 'center',
   },
 });
 

@@ -113,7 +113,7 @@ export default function TrainingScreen() {
         const records = {
           name: motionData[m_id_list[key] - 1].name,
           m_id: m_id_list[key],
-          b_id: b_id, // 寻找m_id到b_id的映射，未完成
+          b_id: b_id, 
           group: exerSetsMap[m_id_list[key]],
           rating: ratingMap[m_id_list[key]],
         };

@@ -19,6 +19,8 @@ import {
     ContributionGraph,
     StackedBarChart
   } from "react-native-chart-kit";
+import CustomLineChart from "../statistic/CustomLineChart";
+import CustomPieChart from "../statistic/CustomPieChart";
 const { width, height } = Dimensions.get("window");
 
 const getWeeklyDay = () => {
@@ -85,47 +87,20 @@ const getWeeklyBodyRecords = () => {
                             }
                         }
                         if (!flag) 
-                            motions.push({ m_id: m_id, value: reps * weightValue });
+                            motions.push({ m_id: m_id, value: reps * weightValue, name: motionData[m_id - 1].name});
                     }
                 }
             }
         }
     }
+
     return weights;
 }
 
-const getWeeklyBodyMotion = (weeklyBodyRecords) => {
-    const motionsratio = Array.from({ length: 18 }, (_, b_id) => ({ b_id, motions: [] }));
-    for (let i = 1; i < weeklyBodyRecords.length; i++) {
-        const motionsList = weeklyBodyRecords[i].motions;
-        let sum = 0;
-        for (let j = 0; j < motionsList.length; j++) 
-            sum += motionsList[j].value;
-        for (let j = 0; j < motionsList.length; j++) 
-            motionsratio[i].motions.push({ m_id: motionsList[j].m_id , value: (motionsList[j].value / sum).toFixed(2) });
-    }
-    return motionsratio;
-}
-
-interface WeeklyTrainingRecordsProps {
-
-}
-
-const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
+const WeeklyTrainingRecords = () => {
     const [selected, setSelected] = useState(1);
     const [isModalVisible, setModalVisible] = useState(false);
-    const nowday = new Date();
 
-    const getRandomColor = () => {
-        return '#' + Math.floor(Math.random() * 16777215).toString(16);
-    };
-    const handlePress = ({ motion }) => {
-        // 弹出消息框，显示动作的详细信息和统计数据
-        alert(`${motionData[motion.m_id - 1].name}的统计数据，占比：${motion.value}`);
-    }
-    const rs = () => {
-        alert('hello');
-    }
     const weeklyRecord = getWeeklyTrainingRecords();
     const weeklyBodyRecords = getWeeklyBodyRecords();
 
@@ -135,28 +110,12 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
             <View style={styles.container}>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <LineChart
-                        data={{
-                            labels: days,
-                            datasets: [{ data: weeklyRecord }]
+                    <CustomLineChart
+                        parameterData={weeklyRecord}
+                        parameterLabels={days}
+                        showParameterInfo={(index) => {
+                            alert(`第${index + 1}天的训练时长为${weeklyRecord[index]}分钟`);
                         }}
-                        width={width * 0.85}
-                        height={220}
-                        chartConfig={{
-                            backgroundGradientFrom: "#fb8c00",
-                            backgroundGradientTo: "#ffa726",
-                            color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                            labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                            style: { borderRadius: 16 },
-                            propsForDots: {
-                                r: "6",
-                                strokeWidth: "2",
-                                stroke: "#ffa726"
-                            }
-                        }}
-                        bezier
-                        style={{ marginVertical: 8, borderRadius: 16 }}
-                        onDataPointClick={({ index }) => alert(`第${index + 1}天训练时长：${weeklyRecord[index]}分钟`)}
                     />
                 </View>
             </View>
@@ -177,53 +136,21 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
                  </View>
                  <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计(kg)</ThemedText>
                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <LineChart
-                        data={{
-                            labels: days,
-                            datasets: [{ data: weeklyBodyRecords[selected].weight }]
+                    <CustomLineChart
+                        parameterLabels={days}
+                        parameterData={weeklyBodyRecords[selected].weight}
+                        showParameterInfo={(index) => {
+                            alert(`第${index + 1}天的容量为${weeklyBodyRecords[selected].weight[index]}kg`);
                         }}
-                        width={width * 0.85}
-                        height={220}
-                        chartConfig={{
-                            backgroundGradientFrom: "#fb8c00",
-                            backgroundGradientTo: "#ffa726",
-                            color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                            labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                            style: { borderRadius: 16 },
-                            propsForDots: {
-                                r: "6",
-                                strokeWidth: "2",
-                                stroke: "#ffa726"
-                            }
-                        }}
-                        bezier
-                        style={{ marginVertical: 8, borderRadius: 16 }}
-                        onDataPointClick={({ index }) => alert(`${days[index]}号训练容量：${weeklyBodyRecords[selected].weight[index]}kg`)}
                     />
                  </View>
                  <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                    <PieChart
-                        data={weeklyBodyRecords[selected].motions.map(motion => ({
-                            name: motionData[motion.m_id - 1].name,
-                            value: parseFloat(motion.value),
-                            color: getRandomColor(),
-                            legendFontColor: "#7F7F7F",
-                            legendFontSize: 15
+                    <CustomPieChart
+                        parameterdata={weeklyBodyRecords[selected].motions.map((item) => ({
+                            name: item.name,
+                            value: item.value,
                         }))}
-                        width={width * 0.85}
-                        height={220}
-                        chartConfig={{
-                            backgroundGradientFrom: "#fb8c00",
-                            backgroundGradientTo: "#ffa726",
-                            color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                            labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                            style: { borderRadius: 16 },
-                        }}
-                        accessor="value" 
-                        backgroundColor="transparent"
-                        paddingLeft="0"
-                        absolute={false}
                     />
                 </View>
             </View>
@@ -277,39 +204,32 @@ const styles = StyleSheet.create({
         zIndex: 2,
     },
     motionBox: {
-        borderColor: '#007bff',
+        borderColor: "#007bff",
         borderRadius: 8,
         padding: 10,
         width: width * 0.3,
-    },
-    dropdown: {
-        borderColor: "#007bff",
-        borderRadius: 8,
-        top: 40,
-        zIndex: 2,
-        position: "absolute",
-        backgroundColor: '#f5f5f5',
-    },
-    modalBackground: {
+        borderWidth: 1,
+      },
+      modalBackground: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
       },
       modalContainer: {
-        height: height * 0.6,
+        height: height * 0.65,
         backgroundColor: '#fff',
         padding: 20,
         borderRadius: 10,
-        width: 250,
+        width: width * 0.8,
         alignItems: 'center',
       },
       modalItem: {
+        width: width * 0.4,
         padding: 10,
-        margin: 5,
+        margin: 10,
         backgroundColor: '#ddd',
         borderRadius: 5,
-        width: '100%',
         alignItems: 'center',
       },
       closeButton: {
@@ -317,6 +237,8 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#ff5733',
         borderRadius: 5,
+        width: width * 0.5,
+        alignItems: 'center',
       },
 });
 
