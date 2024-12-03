@@ -1,18 +1,24 @@
 import React, { useState } from "react";
-import { View, Text, Button, Dimensions, StyleSheet, FlatList } from "react-native";
+import { View, Modal, Button, Dimensions, StyleSheet, FlatList } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import * as shape from "d3-shape";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text as SvgText } from 'react-native-svg';
-import { LineChart, Grid, PieChart, YAxis } from 'react-native-svg-charts';
 import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { data }from "../../app/(tabs)/index";
 
 import motionData from "@/res/motion/json/comb.json";
-
+import {
+    LineChart,
+    BarChart,
+    PieChart,
+    ProgressChart,
+    ContributionGraph,
+    StackedBarChart
+  } from "react-native-chart-kit";
 const { width, height } = Dimensions.get("window");
 
 const getWeeklyDay = () => {
@@ -101,54 +107,57 @@ const getWeeklyBodyMotion = (weeklyBodyRecords) => {
     return motionsratio;
 }
 
-
 interface WeeklyTrainingRecordsProps {
+
 }
 
 const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
-
-    const [selected, setSelected] = useState('1');
+    const [selected, setSelected] = useState(1);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const nowday = new Date();
 
     const getRandomColor = () => {
-        return `#${Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0')}`;
+        return '#' + Math.floor(Math.random() * 16777215).toString(16);
     };
     const handlePress = ({ motion }) => {
         // 弹出消息框，显示动作的详细信息和统计数据
         alert(`${motionData[motion.m_id - 1].name}的统计数据，占比：${motion.value}`);
     }
+    const rs = () => {
+        alert('hello');
+    }
     const weeklyRecord = getWeeklyTrainingRecords();
     const weeklyBodyRecords = getWeeklyBodyRecords();
-    const weeklyBodyMotion = getWeeklyBodyMotion(weeklyBodyRecords);
 
     return (
-        <ScrollView style={{padding: 10}}>
+        <ScrollView>
             {/* 训练时长柱状图 */}
             <View style={styles.container}>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
-                <View style={{ flexDirection: 'row'}}>
-                    <YAxis
-                        data={weeklyRecord}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        svg={{ fill: 'grey', fontSize: 10 }}
-                        numberOfTicks={5} 
-                        formatLabel={(value) => `${value}`} 
-                        min={0}
-                        max={Math.max(...weeklyRecord)}
-                        width={100}
-                    />
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <LineChart
-                        style={{ height: 200, width: width * 0.75 }}
-                        data={weeklyRecord}
-                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        gridMin={0}
-                        gridMax={Math.max(...weeklyRecord)}
+                        data={{
+                            labels: days,
+                            datasets: [{ data: weeklyRecord }]
+                        }}
+                        width={width * 0.85}
+                        height={220}
+                        chartConfig={{
+                            backgroundGradientFrom: "#fb8c00",
+                            backgroundGradientTo: "#ffa726",
+                            color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                            labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                            style: { borderRadius: 16 },
+                            propsForDots: {
+                                r: "6",
+                                strokeWidth: "2",
+                                stroke: "#ffa726"
+                            }
+                        }}
+                        bezier
+                        style={{ marginVertical: 8, borderRadius: 16 }}
+                        onDataPointClick={({ index }) => alert(`第${index + 1}天训练时长：${weeklyRecord[index]}分钟`)}
                     />
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    {days.map((day, index) => (
-                    <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
-                    ))}
                 </View>
             </View>
 
@@ -158,67 +167,98 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
                     <ThemedText type="defaultBold" style={{ textAlign: 'center', width: width * 0.63, alignSelf: 'center' }}>
                         动作统计
                     </ThemedText>
-                    {/* 下拉框 */}
                     <View>
-                        <SelectList
-                            setSelected={(value) => setSelected(value)}
-                            data={weeklyBodyRecords.slice(1).map(item => ({ key: item.key, value: item.value }))}
-                            placeholder="选择一个部位"
-                            boxStyles={styles.motionBox}
-                            dropdownStyles={styles.dropdown} 
-                            search={false}
-                            defaultOption={{ key: '1', value: '胸部' }}
-                        />
+                        <TouchableOpacity
+                            style={styles.motionBox}
+                            onPress={() => setModalVisible(true)}>
+                            <ThemedText type="default">{weeklyBodyRecords[selected].value}</ThemedText> 
+                        </TouchableOpacity>
                     </View>
                  </View>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>
-                        负重(kg)
-                </ThemedText>
-                <View style={{ flexDirection: 'row'}}>
-                    <YAxis
-                        data={weeklyBodyRecords[selected].weight}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        svg={{ fill: 'grey', fontSize: 10 }}
-                        numberOfTicks={5} 
-                        formatLabel={(value) => `${value}`} 
-                        min={0}
-                        max={Math.max(...weeklyBodyRecords[selected].weight)}
-                    />
+                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计(kg)</ThemedText>
+                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <LineChart
-                        style={{ height: 200, width: width * 0.75 }}
-                        data={weeklyBodyRecords[selected].weight}
-                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        gridMin={0}
-                        gridMax={Math.max(...weeklyBodyRecords[selected].weight)}
+                        data={{
+                            labels: days,
+                            datasets: [{ data: weeklyBodyRecords[selected].weight }]
+                        }}
+                        width={width * 0.85}
+                        height={220}
+                        chartConfig={{
+                            backgroundGradientFrom: "#fb8c00",
+                            backgroundGradientTo: "#ffa726",
+                            color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                            labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                            style: { borderRadius: 16 },
+                            propsForDots: {
+                                r: "6",
+                                strokeWidth: "2",
+                                stroke: "#ffa726"
+                            }
+                        }}
+                        bezier
+                        style={{ marginVertical: 8, borderRadius: 16 }}
+                        onDataPointClick={({ index }) => alert(`${days[index]}号训练容量：${weeklyBodyRecords[selected].weight[index]}kg`)}
+                    />
+                 </View>
+                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
+                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <PieChart
+                        data={weeklyBodyRecords[selected].motions.map(motion => ({
+                            name: motionData[motion.m_id - 1].name,
+                            value: parseFloat(motion.value),
+                            color: getRandomColor(),
+                            legendFontColor: "#7F7F7F",
+                            legendFontSize: 15
+                        }))}
+                        width={width * 0.85}
+                        height={220}
+                        chartConfig={{
+                            backgroundGradientFrom: "#fb8c00",
+                            backgroundGradientTo: "#ffa726",
+                            color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                            labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                            style: { borderRadius: 16 },
+                        }}
+                        accessor="value" 
+                        backgroundColor="transparent"
+                        paddingLeft="0"
+                        absolute={false}
                     />
                 </View>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    {days.map((day, index) => (
-                    <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
-                    ))}
+            </View>
+            <Modal
+                visible={isModalVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => setModalVisible(false)}>
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <ThemedText type="defaultBold">选择一个部位</ThemedText>
+                        <ScrollView>
+                            {weeklyBodyRecords.slice(1).map((part, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    style={styles.modalItem}
+                                    onPress={() => {
+                                        setSelected(index + 1);
+                                        setModalVisible(false);
+                                    }}>
+                                    <ThemedText type="default">{part.value}</ThemedText>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setModalVisible(false)}>
+                            <ThemedText type="defaultBold">关闭</ThemedText>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
-                <PieChart
-                    style={{ height: 200 }}
-                    data={weeklyBodyMotion[selected].motions.map(motion => ({
-                        key: motion.m_id,
-                        value: parseFloat(motion.value),
-                        svg: { 
-                            fill: getRandomColor(),
-                            onPress: () => handlePress({ motion }),
-                        },
-                    }))} 
-                    outerRadius={ width * 0.25 }
-                >
-                </PieChart>
-            </View>
-
-            {/* 容量统计 */}
-            <View style={[styles.container,{zIndex:0}]}>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>容量统计</ThemedText>
-            </View>
+            </Modal>
         </ScrollView>
+        
+        
     );
 
 };
@@ -227,7 +267,7 @@ const styles = StyleSheet.create({
     container: { 
         width: width * 0.9,
         padding: 20, 
-        backgroundColor: '#f5f5f5', 
+        backgroundColor: '555555', 
         borderRadius: 10, 
         shadowColor: '#000', 
         shadowOffset: { width: 0, height: 2 }, 
@@ -235,26 +275,6 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         marginTop: 10,
         zIndex: 2,
-    },
-    actionStatsContainer: { 
-        padding: 20, 
-        backgroundColor: '#f5f5f5', 
-        borderRadius: 10, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 2, 
-        marginTop: 20,
-    },
-    actionCard: { 
-        width: width * 0.3, 
-        padding: 10, 
-        borderRadius: 10, 
-        marginHorizontal: 5, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 2 
     },
     motionBox: {
         borderColor: '#007bff',
@@ -270,17 +290,34 @@ const styles = StyleSheet.create({
         position: "absolute",
         backgroundColor: '#f5f5f5',
     },
-    pieChartContainer: { 
-        height: height * 0.35, 
-        padding: 10, 
-        backgroundColor: '#f5f5f5', 
-        borderRadius: 10, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 2, 
-        marginTop: 20 
-    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+      modalContainer: {
+        height: height * 0.6,
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: 250,
+        alignItems: 'center',
+      },
+      modalItem: {
+        padding: 10,
+        margin: 5,
+        backgroundColor: '#ddd',
+        borderRadius: 5,
+        width: '100%',
+        alignItems: 'center',
+      },
+      closeButton: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#ff5733',
+        borderRadius: 5,
+      },
 });
 
 export default WeeklyTrainingRecords;

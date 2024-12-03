@@ -7,17 +7,18 @@ import {
   StyleSheet,
   FlatList,
 } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, Modal } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text as SvgText } from "react-native-svg";
-import { LineChart, Grid, PieChart, YAxis } from "react-native-svg-charts";
+import { LineChart, PieChart } from "react-native-chart-kit";
 import { MaxEquation } from "three";
 import * as shape from "d3-shape";
 import { SelectList } from "react-native-dropdown-select-list";
 import * as FileSystem from "expo-file-system";
 import { data }from "../../app/(tabs)/index";
+
+import motionData from "@/res/motion/json/comb.json";
 
 const { width, height } = Dimensions.get("window");
 
@@ -114,11 +115,11 @@ const getBodyWeightTrend = () => {
 const TotalTrainingRecords: React.FC = () => {
   const totalRecords = getTotalTrainingRecords();
   const bodyWeightTrend = getBodyWeightTrend();
-  const [selected, setSelected] = useState("1");
+  const [selected, setSelected] = useState(1);
+  const [isModalVisible, setModalVisible] = useState(false);
 
-
-  return (
-    <ScrollView style={{padding:10}}>
+  return( 
+    <ScrollView>
       {/* 预卡片总览 */}
       <View style={styles.container}>
         <ThemedText type="defaultBold" style={{ textAlign: "center", marginBottom: 10 }}>
@@ -142,7 +143,6 @@ const TotalTrainingRecords: React.FC = () => {
         </View>
       </View>
 
-      {/* 身体部位负重的趋势 */}
       <View style={styles.container}>
         <View style={{ flexDirection: "row", justifyContent: "space-around", zIndex: 2 }}>
           <ThemedText
@@ -155,64 +155,82 @@ const TotalTrainingRecords: React.FC = () => {
           >
             动作统计
           </ThemedText>
-          {/* 下拉框 */}
-          <SelectList
-            setSelected={(value) => setSelected(value)}
-            data={bodyWeightTrend
-              .slice(1)
-              .map((item) => ({ key: item.key, value: item.value }))}
-            placeholder="选择一个部位"
-            boxStyles={styles.motionBox}
-            dropdownStyles={styles.dropdown}
-            search={false}
-            defaultOption={{ key: "1", value: "胸部" }}
-          />
+          <View>
+            <TouchableOpacity
+              style={styles.motionBox}
+              onPress={() => setModalVisible(true)}>
+              <ThemedText type="default">{bodyWeightTrend[selected].value}</ThemedText>
+            </TouchableOpacity>
+          </View>
         </View>
         <View>
           {bodyWeightTrend[selected].motions.map((motion, index) => (
-            <View key={index} style={{ marginVertical: 10 }}>
-              <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-              动作ID: {motion.m_id}
-              </ThemedText>
-                  <View style={{ flexDirection: 'row'}}>
-                    <YAxis
-                        data={motion.weight}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        svg={{ fill: 'grey', fontSize: 10 }}
-                        numberOfTicks={5} 
-                        formatLabel={(value) => `${value}`} 
-                        min={0}
-                        max={Math.max(...motion.weight)}
-                        width={100}
-                    />
-                    <LineChart
-                        style={{ height: 200, width: width * 0.75 }}
-                        data={motion.weight}
-                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        gridMin={0}
-                        gridMax={Math.max(...motion.weight)}
-                    />
-                </View>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-              {motion.days.map((day, index) => (
-                <Text key={index} style={{ textAlign: "center", width: `${100 / motion.days.length}%` }}>
-                  {day}
-                </Text>
-              ))}
+            <View key={index}>
+              <ThemedText type="defaultBold" style={{ textAlign: "center" }}>{motionData[motion.m_id - 1].name}</ThemedText>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                <LineChart
+                  data={{
+                    labels: motion.days,
+                    datasets: [{data: motion.weight,},],
+                  }}
+                  width={width * 0.85}
+                  height={220}
+                  chartConfig={{
+                      backgroundGradientFrom: "#fb8c00",
+                      backgroundGradientTo: "#ffa726",
+                      color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                      labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+                      style: { borderRadius: 16 },
+                      propsForDots: {
+                          r: "6",
+                          strokeWidth: "2",
+                          stroke: "#ffa726"
+                      }
+                  }}
+                  bezier
+                  style={{ marginVertical: 8, borderRadius: 16 }}
+                  onDataPointClick={({value, index}) => {
+                    alert(`第${index + 1}天的最大重量为${value}kg`);
+                  }}
+                />
               </View>
             </View>
           ))}
         </View>
-
       </View>
 
-      {/* 容量统计 */}
-      <View style={[styles.container,{zIndex:0}]}>
-        <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-          容量统计
-        </ThemedText>
-      </View>
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <ThemedText type="defaultBold">选择一个部位</ThemedText>
+            <ScrollView>
+              {bodyWeightTrend.slice(1).map((part, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.modalItem}
+                  onPress={() => {
+                    setSelected(index + 1);
+                    setModalVisible(false);
+                  }}
+                >
+                  <ThemedText type="default">{part.value}</ThemedText>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <ThemedText type="defaultBold">关闭</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -221,18 +239,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  container: {
+  container: { 
     width: width * 0.9,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    padding: 20, 
+    backgroundColor: '555555', 
+    borderRadius: 10, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.2, 
     shadowRadius: 2,
     marginTop: 10,
     zIndex: 2,
-  },
+},
   cardContainer: {
     padding: 20,
     flexDirection: "row",
@@ -261,6 +279,34 @@ const styles = StyleSheet.create({
     zIndex: 2,
     position: "absolute",
     backgroundColor: '#f5f5f5',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    height: height * 0.6,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    width: 250,
+    alignItems: 'center',
+  },
+  modalItem: {
+    padding: 10,
+    margin: 5,
+    backgroundColor: '#ddd',
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#ff5733',
+    borderRadius: 5,
   },
 });
 

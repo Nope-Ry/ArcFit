@@ -25,7 +25,6 @@ let cnt = 0;
 
 export default function TrainingScreen() {
   const path = FileSystem.documentDirectory;
-  // console.log(path);
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
   const [time, setTime] = useState(0);
@@ -42,7 +41,6 @@ export default function TrainingScreen() {
   useEffect(() => {
     if (cart.length > 0 && currentRoute === "training" && isTraining) {
       setM_id_list((prevM_id_list) => [...prevM_id_list, ...cart]);
-      console.log("当前的m_id_list为：", m_id_list);
       setExerSetsMap((prevExerSetsMap) => ({
         ...prevExerSetsMap,
         ...cart.reduce((acc, id) => {
@@ -54,7 +52,6 @@ export default function TrainingScreen() {
           return acc;
         }, {}),
       }));
-      console.log("当前的exerSetsMap为：", exerSetsMap);
       setRatingMap((prevExerSetsMap) => ({
         ...prevExerSetsMap,
         ...cart.reduce((acc, id) => {
