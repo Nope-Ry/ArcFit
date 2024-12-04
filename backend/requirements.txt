@@ -6,3 +6,4 @@ gunicorn
 jsonschema==4.23.0
 django-cors-headers
 pillow==11.0.0
+redis
