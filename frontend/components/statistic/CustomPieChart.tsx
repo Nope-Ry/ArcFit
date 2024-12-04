@@ -12,7 +12,6 @@ const getRandomColor = () => {
 };
 
 const CustomPieChart: React.FC<CustomPieChartProps> = ({ parameterdata }) => {
-
     return (
         <PieChart
             data={parameterdata.map((item) => ({
@@ -22,7 +21,7 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ parameterdata }) => {
                 legendFontColor: "#7F7F7F",
                 legendFontSize: 15
             }))}
-            width={width * 0.85}
+            width={width * 0.90}
             height={220}
             chartConfig={{
                 backgroundGradientFrom: "#fb8c00",
