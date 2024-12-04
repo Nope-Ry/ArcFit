@@ -23,6 +23,59 @@ import { useNavigationState } from "@react-navigation/native";
 
 let cnt = 0;
 
+const getMotionHistory = (m_id) => {
+  // 出来一个弹窗，显示该动作的m_id，并利用CustomLineChart展示历史记录
+  const firstDay = new Date(
+    Math.min(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  const lastDay = new Date(
+    Math.max(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  const intervalDays =
+    Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
+    1;
+
+  const motionHistory = {
+    days: [],
+    groups: [],
+  }
+
+  data.forEach((item) => {
+    item.records.forEach((record) => {
+      const nowday =
+        Math.floor(
+          (new Date(item.date).getTime() - firstDay.getTime()) /
+            (1000 * 60 * 60 * 24)
+        ) + 1;
+
+      if (record.m_id === m_id) {
+        const dayIndex = motionHistory.days.indexOf(nowday);
+        if (dayIndex !== -1) {
+          record.group.forEach((group) => {
+            motionHistory.groups[dayIndex].push(JSON.parse(JSON.stringify(group)));
+          });
+        } else {
+          motionHistory.days.push(nowday);
+          motionHistory.groups.push(record.group.map((group) => JSON.parse(JSON.stringify(group))));
+        }
+      }
+    });
+  });
+
+  // 要根据days进行排序，同时也要对groups根据days进行排序
+  const sortedIndices = motionHistory.days
+    .map((day, index) => ({ day, index }))
+    .sort((a, b) => a.day - b.day)
+    .map(({ index }) => index);
+
+  motionHistory.days = sortedIndices.map(index => motionHistory.days[index]);
+  motionHistory.groups = sortedIndices.map(index => motionHistory.groups[index]);
+
+  return motionHistory;
+};
+
 export default function TrainingScreen() {
   const path = FileSystem.documentDirectory;
   // TODO: 更改为useContext
@@ -186,6 +239,7 @@ export default function TrainingScreen() {
                 setRatingMap((prev) => ({ ...prev, [item]: newRating }))
               }
               onDelete={() => {handleDelete(item)}}
+              motionHistory={getMotionHistory(item)}
             />
           ))}
         </ScrollView>

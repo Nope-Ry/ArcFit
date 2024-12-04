@@ -7,14 +7,19 @@ import {
   StyleSheet,
   TextInput,
   ImageBackground,
+  Modal,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Divider } from "@/components/ui/divider";
 import Slider from "@react-native-community/slider";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from "@react-navigation/native";
+import CustomLineChart from "../statistic/CustomLineChart";
+import { data } from "../../app/(tabs)/index";
 
 import { ThemedText } from "../ThemedText";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 const { width, height } = Dimensions.get("window");
 
 interface ExerciseCardProps {
@@ -30,7 +35,9 @@ interface ExerciseCardProps {
   rating: number;
   setRating: (rating: number) => void;
   onDelete: () => void;
+  motionHistory: any;
 }
+
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
   exercise,
@@ -39,8 +46,10 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   rating,
   setRating,
   onDelete,
+  motionHistory,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
   // const [rating, setRating] = useState(3);
 
   const navigation = useNavigation();
@@ -99,6 +108,14 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     newSets[index].checked = !newSets[index].checked;
     setExerSets(newSets);
   };
+
+  const getMaxWeights = (groups) => {
+    return groups.map(group => {
+      return Math.max(...group.map(set => set.weight));
+    });
+  };
+
+  const maxWeights = getMaxWeights(motionHistory.groups);
 
   return (
     <View style={styles.card}>
@@ -199,7 +216,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 动作纠正
               </ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TrainingStatisticsScreen')}>
+            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(true);}}>
               <ThemedText type="defaultBold" style={styles.buttonText}>
                 历史记录
               </ThemedText>
@@ -207,6 +224,49 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
           </View>
         </View>
       )}
+
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <ThemedText type="defaultBold">历史记录</ThemedText>
+            {motionHistory.days.length === 0 ? (
+              <ThemedText type="default">没有当前动作历史记录</ThemedText>
+            ) : (
+              <>
+              {/* 上次做此动作的信息 */}
+              <ThemedText type="default">上次做此动作是在{motionHistory.days[motionHistory.days.length - 1]}</ThemedText>
+              <ScrollView>
+                {motionHistory.groups[motionHistory.groups.length - 1].map((set, index) => (
+                <View key={index} style={{width: width * 0.8}}>
+                  <ThemedText type="defaultBold">{index + 1}</ThemedText>
+                  <ThemedText type="default">重量：{set.weight}kg</ThemedText>
+                  <ThemedText type="default">次数：{set.reps}次</ThemedText>
+                </View>
+                ))}
+              </ScrollView>
+              {/* 动作历史记录 */}
+              <CustomLineChart 
+                parameterData={maxWeights}
+                parameterLabels={motionHistory.days}
+                parameterunit="kg"
+                showParameterInfo={(index) => { console.log(index); }}
+              />
+              </>
+            )}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <ThemedText type="defaultBold">关闭</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -313,6 +373,28 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#FFFFFF",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: width * 0.9,
+    height: height * 0.9,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#ff5733',
+    borderRadius: 5,
+    width: width * 0.5,
+    alignItems: 'center',
   },
 });
 
