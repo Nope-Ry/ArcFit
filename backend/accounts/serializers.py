@@ -4,7 +4,12 @@ from django.core.validators import (
     MinValueValidator,
     MinLengthValidator,
 )
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import (
+    Serializer,
+    ModelSerializer,
+    CharField,
+    ImageField,
+)
 
 from .models import User
 
@@ -21,6 +26,7 @@ class UserSerializer(ModelSerializer):
             "age",
             "gender",
             "phone_number",
+            "avatar_url",
         )
         extra_kwargs = {
             "password": {
@@ -40,6 +46,7 @@ class UserSerializer(ModelSerializer):
                     RegexValidator(r"^1[3456789]\d{9}$", "Invalid phone number.")
                 ],
             },
+            "avatar_url": {"read_only": True},
         }
 
     def create(self, validated_data):
@@ -65,3 +72,6 @@ class UserUpdateSerializer(UserSerializer):
 
     username = CharField(max_length=150, required=False)
     password = CharField(max_length=128, required=False)
+
+class AvatarUploadSerializer(Serializer):
+    image = ImageField()

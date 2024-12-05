@@ -1,11 +1,27 @@
+import os
+import shutil
+import io
+
+from PIL import Image, ImageDraw
+
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test.utils import override_settings
+
+from knox.models import get_token_model
 
 from .models import User
-from .views import user_register, user_login, user_update, user_logout
+from .views import (
+    user_register,
+    user_login,
+    user_update,
+    user_logout,
+    user_upload_avatar,
+)
 
 
-class AccountTestCases(TestCase):
+class AccountTestCase(TestCase):
     def setUp(self):
         # Create a temporary user for testing login
         user = User(
@@ -246,6 +262,7 @@ class AccountTestCases(TestCase):
                 "age",
                 "gender",
                 "phone_number",
+                "avatar_url",
             },
         )
 
@@ -337,3 +354,80 @@ class AccountTestCases(TestCase):
             headers={"Authorization": f"Token {token}"},
         )
         self.assertEqual(response.status_code, 200)
+
+
+@override_settings(UPLOAD_AVATAR_PATH="test_static", MAX_AVATAR_SIZE=10 * 1024)
+class UploadImageTestCase(TestCase):
+    def create_test_image(self, size, xy):
+        # Create a temporary image for upload
+        image = Image.new("RGB", size, color="white")
+        draw = ImageDraw.Draw(image)
+        draw.rectangle(xy, outline="red", fill="blue")
+        image_buf = io.BytesIO()
+        image.save(image_buf, format="JPEG")
+        return image_buf.getvalue()
+
+    def setUp(self):
+        # Create user
+        self.client = Client()
+        self.user = User.objects.create_user(username="user", password="password")
+
+        # Generate tokens for authentication
+        TokenModel = get_token_model()
+        _, self.token = TokenModel.objects.create(user=self.user)  # type: ignore
+
+        # Base headers for authentication
+        self.auth_headers = {"AUTHORIZATION": f"Token {self.token}"}
+
+        # Create images
+        self.small_image = SimpleUploadedFile(
+            name="small_image.jpg",
+            content=self.create_test_image((100, 100), (30, 50, 40, 80)),
+            content_type="image/jpeg",
+        )
+        self.large_image = SimpleUploadedFile(
+            name="large_image.jpg",
+            content=self.create_test_image((3000, 3000), (400, 700, 600, 1200)),
+            content_type="image/jpeg",
+        )
+        self.invalid_image = SimpleUploadedFile(
+            name="invalid_image.txt",
+            content=b"This is not an image",
+            content_type="text/plain",
+        )
+
+    def test_upload_small_image(self):
+        response = self.client.post(
+            reverse(user_upload_avatar),
+            data={"image": self.small_image},
+            headers=self.auth_headers,
+        )
+        self.assertEqual(response.status_code, 201)
+        data = response.json()
+        self.assertSetEqual(set(data.keys()), {"avatar_url"})
+        self.assertTrue(data["avatar_url"].startswith("test_static"))
+        self.assertTrue(data["avatar_url"].endswith(".jpg"))
+
+    def test_upload_large_image(self):
+        response = self.client.post(
+            reverse(user_upload_avatar),
+            data={"image": self.large_image},
+            headers=self.auth_headers,
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertEqual(data, {"error": "Image file is too large."})
+
+    def test_upload_invalid_image(self):
+        response = self.client.post(
+            reverse(user_upload_avatar),
+            data={"image": self.invalid_image},
+            headers=self.auth_headers,
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertIn("image", data)
+
+    def tearDown(self):
+        if os.path.exists("test_static"):
+            shutil.rmtree("test_static")

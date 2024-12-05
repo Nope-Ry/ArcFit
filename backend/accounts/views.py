@@ -1,5 +1,8 @@
+import os
+
 from django.contrib.auth import authenticate
 from django.utils import timezone
+from django.conf import settings
 
 from rest_framework.decorators import (
     api_view,
@@ -9,6 +12,7 @@ from rest_framework.decorators import (
 from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_200_OK,
+    HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST,
 )
 from rest_framework.serializers import DateTimeField
@@ -19,7 +23,7 @@ from knox.auth import TokenAuthentication
 
 from utils.decorators import json_request
 
-from .serializers import UserSerializer, UserUpdateSerializer
+from .serializers import UserSerializer, UserUpdateSerializer, AvatarUploadSerializer
 
 
 @api_view(["POST"])
@@ -69,7 +73,7 @@ def user_login(request, json_data):
                 format=knox_settings.EXPIRY_DATETIME_FORMAT  # type: ignore
             ).to_representation(instance.expiry),
             "token": token,
-            "user": UserSerializer(user).data
+            "user": UserSerializer(user).data,
         },
         status=HTTP_200_OK,
     )
@@ -97,3 +101,38 @@ def user_logout(request):
     request.auth.delete()
 
     return Response({}, status=HTTP_200_OK)
+
+
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def user_upload_avatar(request):
+    """Uploads an avatar."""
+    serializer = AvatarUploadSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    image = serializer.validated_data["image"]  # type: ignore
+
+    max_file_size = getattr(
+        settings, "MAX_AVATAR_SIZE", 10 * 1024 * 1024
+    )  # 10MB in bytes
+    if image.size > max_file_size:
+        return Response(
+            {"error": "Image file is too large."}, status=HTTP_400_BAD_REQUEST
+        )
+
+    upload_path = getattr(settings, "UPLOAD_AVATAR_PATH", "static")
+
+    os.makedirs(upload_path, exist_ok=True)
+    file_path = os.path.join(upload_path, image.name)
+
+    with open(file_path, "wb+") as f:
+        for chunk in image.chunks():
+            f.write(chunk)
+
+    user = request.user
+    user.avatar_url = file_path
+    user.save()
+
+    return Response({"avatar_url": file_path}, status=HTTP_201_CREATED)
