@@ -8,7 +8,8 @@ import { useState } from "react";
 import EditModal, { InfoType } from "@/components/profile/EditModal";
 import { API } from "@/constants/APIs";
 import * as ImagePicker from "expo-image-picker";
-import { notify } from "@/services/UserService";
+import { notify, resetUser } from "@/services/UserService";
+import { useNavigation } from "@react-navigation/native";
 
 type InfoItem = InfoType & {
   label: string;
@@ -17,6 +18,7 @@ type InfoItem = InfoType & {
 
 export default function AccountScreen() {
   const { user, setUser } = useUser();
+  const navigation = useNavigation();
 
   const [isVisible, setIsVisible] = useState(false);
   const [curItem, setCurItem] = useState<InfoItem>(null);
@@ -88,6 +90,21 @@ export default function AccountScreen() {
     }
   };
 
+  const logout = async () => {
+    if (!user.isLogin) {
+      return;
+    }
+    
+    try {
+      await API.call(API.Account.logout, {});
+      resetUser();
+      navigation.navigate("profile");
+    } catch (e) {
+      console.error(e);
+      Alert.alert("退出登录失败，请稍后再试");
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* 用户头像区域 */}
@@ -115,9 +132,9 @@ export default function AccountScreen() {
         })}
       </InfoGroup>
 
-      {/* 编辑信息按钮 */}
-      <TouchableOpacity style={styles.editButton}>
-        <Text style={styles.editButtonText}>编辑信息</Text>
+      {/* 退出登录 */}
+      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+        <ThemedText style={styles.logoutButtonText}>退出登录</ThemedText>
       </TouchableOpacity>
       <EditModal
         visible={isVisible}
@@ -194,13 +211,13 @@ const styles = StyleSheet.create({
   },
   value: {
   },
-  editButton: {
+  logoutButton: {
     marginTop: 30,
     backgroundColor: '#007AFF',
     padding: 10,
     borderRadius: 5,
   },
-  editButtonText: {
+  logoutButtonText: {
     color: 'white',
     fontWeight: 'bold',
   },

@@ -49,7 +49,6 @@ export namespace API {
       needsAuth: true,
     };
 
-
     export const update: APISpec<{
       username?: string,
       password?: string,
