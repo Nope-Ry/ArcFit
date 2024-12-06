@@ -1,7 +1,9 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import * as FileSystem from 'expo-file-system';
 import { server } from '@/constants/APIs';
-import { AsyncStorage, SecureStore } from '@/imports/Storage';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import { Image } from "expo-image";
 import { ServerUserInfo, UserInfo } from '@/contexts/UserContext.types'
 import * as UserService from '@/services/UserService';
