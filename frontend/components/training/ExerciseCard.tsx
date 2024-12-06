@@ -396,6 +396,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: width * 0.5,
     alignItems: 'center',
+    position: 'absolute',
+    bottom: height * 0.05,
   },
 });
 
