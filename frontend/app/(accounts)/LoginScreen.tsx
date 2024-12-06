@@ -9,9 +9,11 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { UserInfo, useUser } from "@/contexts/UserContext";
+import { notify } from "@/services/UserService";
+import { useUser } from "@/contexts/UserContext";
+import { UserInfo } from "@/contexts/UserContext.types";
 import { API } from "@/constants/APIs";
-import { SecureStore, AsyncStorage } from "@/imports/Storage";
+import { SecureStore } from "@/imports/Storage";
 
 
 export default function LoginScreen() {
@@ -26,7 +28,7 @@ export default function LoginScreen() {
       const { token, user } = await API.call(API.Account.login, { username, password });
       const userLocal: UserInfo = { ...user, isLogin: true, avatarLocalUri: null };
       await SecureStore.setItemAsync("accessToken", token);
-      await AsyncStorage.setItem("userInfo", JSON.stringify(userLocal));
+      notify("userAvatarChanged");
       setUser(userLocal);
 
       Alert.alert("登录成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);

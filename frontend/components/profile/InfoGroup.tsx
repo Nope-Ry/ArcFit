@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
-import React, { useState } from "react";
-import EditModal from "./EditModal";
+import React from "react";
 
 
 interface InfoGroupProps {

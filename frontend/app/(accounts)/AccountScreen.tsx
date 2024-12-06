@@ -1,4 +1,5 @@
-import { useUser, translateGender, translateAge, ServerUserInfo, UserInfo } from "@/contexts/UserContext";
+import { UserInfo, ServerUserInfo } from "@/contexts/UserContext.types";
+import { useUser, translateGender, translateAge } from "@/contexts/UserContext";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import Avatar from "@/components/Avatar";
 import InfoGroup from "@/components/profile/InfoGroup";
@@ -6,8 +7,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { useState } from "react";
 import EditModal, { InfoType } from "@/components/profile/EditModal";
 import { API } from "@/constants/APIs";
-import { AsyncStorage } from "@/imports/Storage";
 import * as ImagePicker from "expo-image-picker";
+import { notify } from "@/services/UserService";
 
 type InfoItem = InfoType & {
   label: string;
@@ -45,7 +46,6 @@ export default function AccountScreen() {
           ...user,
           ...newServerUser,
         };
-        await AsyncStorage.setItem("userInfo", JSON.stringify(newUser));
         setUser(newUser);
       } catch (e) {
         console.error(e);
@@ -77,8 +77,8 @@ export default function AccountScreen() {
           ...response,
           avatarLocalUri: null,
         };
-        await AsyncStorage.setItem("userInfo", JSON.stringify(newUser));
         setUser(newUser);
+        notify("userAvatarChanged");
       } else {
         throw new Error(response);
       }

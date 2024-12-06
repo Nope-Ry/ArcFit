@@ -13,10 +13,31 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ContextProviders } from "@/contexts/ContextProviders";
-import { UserInfo } from "@/contexts/UserContext";
-import { AsyncStorage, SecureStore } from "@/imports/Storage";
+import { setUpCallbacks } from "@/contexts/UserContext";
+import * as UserService from "@/services/UserService";
+import { AsyncStorage } from "@/imports/Storage";
 
 
+const appInit = async () => {
+  const deInitUserCallbacks = setUpCallbacks();
+
+  console.log("Initializing user info");
+  try {
+    const userinfo = await AsyncStorage.getItem("userInfo");
+    if (userinfo !== null) {
+      const user = JSON.parse(userinfo);
+      console.log("User info loaded:", user);
+      UserService.notify("userInited");
+      UserService.setUser(user);
+    }
+  } catch (e) {
+    console.warn("Exception when loading user info:", e);
+  }
+
+  return () => {
+    deInitUserCallbacks();
+  };
+};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,47 +47,36 @@ export default function RootLayout() {
   const [fontLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  
-  const [user, setUser] = useState<UserInfo>(null);
-  const [userInited, setUserInited] = useState(false);
+
+  const [appInited, setAppInited] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
-      // await SecureStore.deleteItemAsync("accessToken");
-      // await AsyncStorage.removeItem("userInfo");
+    let deInit = () => {};
+    
+    appInit().then(func => {
+      deInit = func;
+      setAppInited(true);
+    });
 
-      console.log("Initializing user info");
-      try {
-        const userinfo = await AsyncStorage.getItem("userInfo");
-        if (userinfo !== null) {
-          const user = JSON.parse(userinfo);
-          console.log("User info loaded:", user);
-          setUser(user);
-        }
-      } catch (e) {
-        console.warn("Exception when loading user info:", e);
-      }
-
-      setUserInited(true);
+    return () => {
+      deInit();
     };
-
-    init();
   }, []);
 
   useEffect(() => {
-    if (fontLoaded && userInited) {
+    if (fontLoaded && appInited) {
       console.log("Initialized, hiding splash screen");
       SplashScreen.hideAsync();
     }
-  }, [fontLoaded, userInited]);
+  }, [appInited, fontLoaded]);
 
-  if (!fontLoaded ||!userInited) {
+  if (!fontLoaded || !appInited) {
     return null;
   }
 
   return (
     <GluestackUIProvider mode="light">
-      <ContextProviders initValues={{ userValue: user }}>
+      <ContextProviders>
         <ThemeProvider value={DefaultTheme}>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

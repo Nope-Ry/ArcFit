@@ -1,13 +1,9 @@
-import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AccountInfo from "@/components/profile/AccountInfo";
 import FunctionList from "@/components/FunctionList";
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import { useUser } from "@/contexts/UserContext";
-
-import { SecureStore, AsyncStorage } from "@/imports/Storage";
 
 const path = FileSystem.documentDirectory;
 export let data: any[] = [];

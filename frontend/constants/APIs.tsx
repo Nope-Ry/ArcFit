@@ -1,3 +1,4 @@
+import { notify } from "@/services/UserService";
 import { SecureStore } from "@/imports/Storage";
 import * as FileSystem from "expo-file-system";
 
@@ -8,8 +9,12 @@ type APISpec<T = {}> = {
   method: "GET" | "POST" | "PUT" | "DELETE";
   headers?: { [key: string]: string };
   needsAuth: boolean;
-  contentType: "application/json" | "multipart/form-data",
-};
+} & ({
+  contentType: "application/json";
+} | {
+  contentType: "multipart/form-data";
+  fieldName: string;
+});
 export namespace API {
   export const api = `${server}/api`;
   export namespace Account {
@@ -65,8 +70,50 @@ export namespace API {
       method: "POST",
       contentType: "multipart/form-data",
       needsAuth: true,
+      fieldName: "image",
     };
-    // export const refreshToken = `${api}/accounts/refresh-token`;
+  }
+
+  interface RequestResult {
+    status: number;
+    response: any;
+  };
+
+  async function makeJsonRequest(
+    url: string,
+    method: "GET" | "POST" | "PUT" | "DELETE",
+    headers: { [key: string]: string },
+    data: object
+  ): Promise<RequestResult> {
+    headers["Content-Type"] = "application/json";
+    const response = await fetch(url, {
+      method,
+      headers,
+      body: JSON.stringify(data),
+    });
+    return {
+      status: response.status,
+      response: await response.json(),
+    };
+  }
+
+  async function makeFormDataRequest(
+    url: string,
+    method: "POST" | "PUT",
+    headers: { [key: string]: string },
+    localUri: string,
+    fieldName?: string
+  ): Promise<RequestResult> {
+    const response = await FileSystem.uploadAsync(url, localUri, {
+      ...(fieldName ? { fieldName } : {}),
+      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+      httpMethod: method,
+      headers,
+    });
+    return {
+      status: response.status,
+      response: JSON.parse(response.body),
+    };
   }
 
   type deduceArgs<T extends APISpec> = T extends APISpec<infer U> ? U : never;
@@ -87,36 +134,36 @@ export namespace API {
 
     console.log(`Calling ${api.url}: method=${api.method}, headers=${JSON.stringify(headers)}, args=${JSON.stringify(args)}`);
 
-    const data = typeof args !== "string" ? JSON.stringify(args) : args;
-    if (api.contentType === "application/json") {
-      headers["Content-Type"] = "application/json";
-      const response = await fetch(api.url, {
-        method: api.method,
-        headers,
-        body: data,
-      });
-      const json = await response.json();
-      console.log(`Got response: ${JSON.stringify(json)}`);
-      if (response.ok) {
-        return json;
-      } else {
-        throw new Error(json);
+    const dispatchRequest = async () => {
+      if (api.contentType === "application/json") {
+        return await makeJsonRequest(api.url, api.method, headers, args as object);
+      } else if (api.contentType === "multipart/form-data") {
+        if (api.method !== "POST" && api.method !== "PUT") {
+          throw new Error(`${api.method} method not supported for multipart/form-data`);
+        }
+        return await makeFormDataRequest(api.url, api.method, headers, args as string, api.fieldName);
       }
-    } else if (api.contentType === "multipart/form-data") {
-      if (api.method !== "POST" && api.method !== "PUT") {
-        throw new Error(`${api.method} method not supported for multipart/form-data`);
-      }
-      console.log(`Uploading ${data} to ${api.url}, headers=${JSON.stringify(headers)}`);
-      const response = await FileSystem.uploadAsync(api.url, data, {
-        fieldName: "image",
-        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
-        httpMethod: api.method,
-        headers,
-      });
-      console.log(`Got response: ${response.body}`);
-      return JSON.parse(response.body);
-    }
+      throw new Error(`Unsupported content type`);
+    };
 
-    throw new Error(`Unsupported content type ${api.contentType}`);
+    try {
+      const result = await dispatchRequest();
+      if (200 <= result.status && result.status < 300) {
+        console.log(`API call successful: ${JSON.stringify(result.response)}`);
+        return result.response;
+      } else if (result.status === 401) {
+        notify("userLoginExpired");
+        throw new Error("Login expired");
+      } else {
+        throw new Error(result.response);
+      }
+    } catch (error) {
+      console.error(`API call failed: ${JSON.stringify(error)}`);
+      if (error instanceof TypeError) {
+        // Indicates a network error
+        throw new Error("Network error");
+      }
+      throw error;
+    }
   }
 }
