@@ -13,7 +13,8 @@ import { notify } from "@/services/UserService";
 import { useUser } from "@/contexts/UserContext";
 import { UserInfo } from "@/contexts/UserContext.types";
 import { API } from "@/constants/APIs";
-import { SecureStore } from "@/imports/Storage";
+
+import * as SecureStore from "expo-secure-store";
 
 
 export default function LoginScreen() {

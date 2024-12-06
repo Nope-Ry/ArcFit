@@ -15,8 +15,8 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { ContextProviders } from "@/contexts/ContextProviders";
 import { setUpCallbacks } from "@/contexts/UserContext";
 import * as UserService from "@/services/UserService";
-import { AsyncStorage } from "@/imports/Storage";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const appInit = async () => {
   const deInitUserCallbacks = setUpCallbacks();

@@ -1,5 +1,6 @@
 import { notify } from "@/services/UserService";
-import { SecureStore } from "@/imports/Storage";
+
+import * as SecureStore from "expo-secure-store";
 import * as FileSystem from "expo-file-system";
 
 export const server = "https://arcfit.xyz";
