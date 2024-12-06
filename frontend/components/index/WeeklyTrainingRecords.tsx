@@ -1,18 +1,26 @@
 import React, { useState } from "react";
-import { View, Text, Button, Dimensions, StyleSheet, FlatList } from "react-native";
+import { View, Modal, Button, Dimensions, StyleSheet, FlatList } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import * as shape from "d3-shape";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text as SvgText } from 'react-native-svg';
-import { LineChart, Grid, PieChart, YAxis } from 'react-native-svg-charts';
 import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
 import { data }from "../../app/(tabs)/profile";
 
 import motionData from "@/res/motion/json/comb.json";
-
+import {
+    LineChart,
+    BarChart,
+    PieChart,
+    ProgressChart,
+    ContributionGraph,
+    StackedBarChart
+  } from "react-native-chart-kit";
+import CustomLineChart from "../statistic/CustomLineChart";
+import CustomPieChart from "../statistic/CustomPieChart";
 const { width, height } = Dimensions.get("window");
 
 const getWeeklyDay = () => {
@@ -79,76 +87,44 @@ const getWeeklyBodyRecords = () => {
                             }
                         }
                         if (!flag) 
-                            motions.push({ m_id: m_id, value: reps * weightValue });
+                            motions.push({ m_id: m_id, value: reps * weightValue, name: motionData[m_id - 1].name});
                     }
                 }
             }
         }
     }
+
     return weights;
 }
 
-const getWeeklyBodyMotion = (weeklyBodyRecords) => {
-    const motionsratio = Array.from({ length: 18 }, (_, b_id) => ({ b_id, motions: [] }));
-    for (let i = 1; i < weeklyBodyRecords.length; i++) {
-        const motionsList = weeklyBodyRecords[i].motions;
-        let sum = 0;
-        for (let j = 0; j < motionsList.length; j++) 
-            sum += motionsList[j].value;
-        for (let j = 0; j < motionsList.length; j++) 
-            motionsratio[i].motions.push({ m_id: motionsList[j].m_id , value: (motionsList[j].value / sum).toFixed(2) });
-    }
-    return motionsratio;
+const getPreviousDate = (daysAgo) => {
+    const today = new Date();
+    const previousDate = new Date(today);
+    previousDate.setDate(today.getDate() - daysAgo);
+    return previousDate.toISOString().split('T')[0];
 }
+const WeeklyTrainingRecords = () => {
+    const [selected, setSelected] = useState(1);
+    const [isModalVisible, setModalVisible] = useState(false);
 
-
-interface WeeklyTrainingRecordsProps {
-}
-
-const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
-
-    const [selected, setSelected] = useState('1');
-
-    const getRandomColor = () => {
-        return `#${Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, '0')}`;
-    };
-    const handlePress = ({ motion }) => {
-        // 弹出消息框，显示动作的详细信息和统计数据
-        alert(`${motionData[motion.m_id - 1].name}的统计数据，占比：${motion.value}`);
-    }
     const weeklyRecord = getWeeklyTrainingRecords();
     const weeklyBodyRecords = getWeeklyBodyRecords();
-    const weeklyBodyMotion = getWeeklyBodyMotion(weeklyBodyRecords);
 
     return (
-        <ScrollView style={{padding: 10}}>
+        <ScrollView>
             {/* 训练时长柱状图 */}
             <View style={styles.container}>
                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
-                <View style={{ flexDirection: 'row'}}>
-                    <YAxis
-                        data={weeklyRecord}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        svg={{ fill: 'grey', fontSize: 10 }}
-                        numberOfTicks={5} 
-                        formatLabel={(value) => `${value}`} 
-                        min={0}
-                        max={Math.max(...weeklyRecord)}
-                        width={100}
+                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <CustomLineChart
+                        parameterData={weeklyRecord}
+                        parameterLabels={days}
+                        showParameterInfo={(index) => {
+                            const previousDate = getPreviousDate(7 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
+                            alert(`${previousDate}的训练时长为${weeklyRecord[index]}分钟`);
+                        }}
+                        parameterunit="mins"
                     />
-                    <LineChart
-                        style={{ height: 200, width: width * 0.75 }}
-                        data={weeklyRecord}
-                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        gridMin={0}
-                        gridMax={Math.max(...weeklyRecord)}
-                    />
-                </View>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    {days.map((day, index) => (
-                    <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
-                    ))}
                 </View>
             </View>
 
@@ -158,67 +134,68 @@ const WeeklyTrainingRecords: React.FC<WeeklyTrainingRecordsProps> = () => {
                     <ThemedText type="defaultBold" style={{ textAlign: 'center', width: width * 0.63, alignSelf: 'center' }}>
                         动作统计
                     </ThemedText>
-                    {/* 下拉框 */}
                     <View>
-                        <SelectList
-                            setSelected={(value) => setSelected(value)}
-                            data={weeklyBodyRecords.slice(1).map(item => ({ key: item.key, value: item.value }))}
-                            placeholder="选择一个部位"
-                            boxStyles={styles.motionBox}
-                            dropdownStyles={styles.dropdown} 
-                            search={false}
-                            defaultOption={{ key: '1', value: '胸部' }}
-                        />
+                        <TouchableOpacity
+                            style={styles.motionBox}
+                            onPress={() => setModalVisible(true)}>
+                            <ThemedText type="default" style={{ textAlign: "center" }}>{weeklyBodyRecords[selected].value}</ThemedText> 
+                        </TouchableOpacity>
                     </View>
                  </View>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>
-                        负重(kg)
-                </ThemedText>
-                <View style={{ flexDirection: 'row'}}>
-                    <YAxis
-                        data={weeklyBodyRecords[selected].weight}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        svg={{ fill: 'grey', fontSize: 10 }}
-                        numberOfTicks={5} 
-                        formatLabel={(value) => `${value}`} 
-                        min={0}
-                        max={Math.max(...weeklyBodyRecords[selected].weight)}
+                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计(kg)</ThemedText>
+                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <CustomLineChart
+                        parameterLabels={days}
+                        parameterData={weeklyBodyRecords[selected].weight}
+                        showParameterInfo={(index) => {
+                            const previousDate = getPreviousDate(7 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
+                            alert(`${previousDate}的${weeklyBodyRecords[selected].value}容量为${weeklyBodyRecords[selected].weight[index]}kg`);
+                        }}
+                        parameterunit="kg"
                     />
-                    <LineChart
-                        style={{ height: 200, width: width * 0.75 }}
-                        data={weeklyBodyRecords[selected].weight}
-                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        gridMin={0}
-                        gridMax={Math.max(...weeklyBodyRecords[selected].weight)}
+                 </View>
+                 <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
+                 <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                    <CustomPieChart
+                        parameterdata={weeklyBodyRecords[selected].motions.map((item) => ({
+                            name: item.name,
+                            value: item.value,
+                        }))}
                     />
                 </View>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    {days.map((day, index) => (
-                    <ThemedText type="default" key={index} style={{ textAlign: 'center', width: `${100 / 7}%`}}>{day}</ThemedText>
-                    ))}
+            </View>
+            <Modal
+                visible={isModalVisible}
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => setModalVisible(false)}>
+                <View style={styles.modalBackground}>
+                    <View style={styles.modalContainer}>
+                        <ThemedText type="defaultBold">选择一个部位</ThemedText>
+                        <ScrollView>
+                            {weeklyBodyRecords.slice(1).map((part, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    style={styles.modalItem}
+                                    onPress={() => {
+                                        setSelected(index + 1);
+                                        setModalVisible(false);
+                                    }}>
+                                    <ThemedText type="default">{part.value}</ThemedText>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setModalVisible(false)}>
+                            <ThemedText type="defaultBold">关闭</ThemedText>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
-                <PieChart
-                    style={{ height: 200 }}
-                    data={weeklyBodyMotion[selected].motions.map(motion => ({
-                        key: motion.m_id,
-                        value: parseFloat(motion.value),
-                        svg: { 
-                            fill: getRandomColor(),
-                            onPress: () => handlePress({ motion }),
-                        },
-                    }))} 
-                    outerRadius={ width * 0.25 }
-                >
-                </PieChart>
-            </View>
-
-            {/* 容量统计 */}
-            <View style={[styles.container,{zIndex:0}]}>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>容量统计</ThemedText>
-            </View>
+            </Modal>
         </ScrollView>
+        
+        
     );
 
 };
@@ -227,60 +204,52 @@ const styles = StyleSheet.create({
     container: { 
         width: width * 0.9,
         padding: 20, 
-        backgroundColor: '#f5f5f5', 
+        backgroundColor: '#f5f5f5',
         borderRadius: 10, 
         shadowColor: '#000', 
         shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
+        shadowOpacity: 0.2,
         shadowRadius: 2,
-        marginTop: 10,
+        marginTop: 10, 
         zIndex: 2,
-    },
-    actionStatsContainer: { 
-        padding: 20, 
-        backgroundColor: '#f5f5f5', 
-        borderRadius: 10, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 2, 
-        marginTop: 20,
-    },
-    actionCard: { 
-        width: width * 0.3, 
-        padding: 10, 
-        borderRadius: 10, 
-        marginHorizontal: 5, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 2 
-    },
+      },
     motionBox: {
-        borderColor: '#007bff',
+        borderColor: "#007bff",
         borderRadius: 8,
         padding: 10,
         width: width * 0.3,
-    },
-    dropdown: {
-        borderColor: "#007bff",
-        borderRadius: 8,
-        top: 40,
-        zIndex: 2,
-        position: "absolute",
-        backgroundColor: '#f5f5f5',
-    },
-    pieChartContainer: { 
-        height: height * 0.35, 
-        padding: 10, 
-        backgroundColor: '#f5f5f5', 
-        borderRadius: 10, 
-        shadowColor: '#000', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.2, 
-        shadowRadius: 2, 
-        marginTop: 20 
-    },
+        borderWidth: 1,
+      },
+      modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+      modalContainer: {
+        height: height * 0.65,
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        width: width * 0.8,
+        alignItems: 'center',
+      },
+      modalItem: {
+        width: width * 0.4,
+        padding: 10,
+        margin: 10,
+        backgroundColor: '#ddd',
+        borderRadius: 5,
+        alignItems: 'center',
+      },
+      closeButton: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#ff5733',
+        borderRadius: 5,
+        width: width * 0.5,
+        alignItems: 'center',
+      },
 });
 
 export default WeeklyTrainingRecords;
