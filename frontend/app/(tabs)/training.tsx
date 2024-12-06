@@ -23,9 +23,61 @@ import { useNavigationState } from "@react-navigation/native";
 
 let cnt = 0;
 
+const getMotionHistory = (m_id) => {
+  // 出来一个弹窗，显示该动作的m_id，并利用CustomLineChart展示历史记录
+  const firstDay = new Date(
+    Math.min(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  const lastDay = new Date(
+    Math.max(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  const intervalDays =
+    Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
+    1;
+
+  const motionHistory = {
+    days: [],
+    groups: [],
+  }
+
+  data.forEach((item) => {
+    item.records.forEach((record) => {
+      const nowday =
+        Math.floor(
+          (new Date(item.date).getTime() - firstDay.getTime()) /
+            (1000 * 60 * 60 * 24)
+        ) + 1;
+
+      if (record.m_id === m_id) {
+        const dayIndex = motionHistory.days.indexOf(nowday);
+        if (dayIndex !== -1) {
+          record.group.forEach((group) => {
+            motionHistory.groups[dayIndex].push(JSON.parse(JSON.stringify(group)));
+          });
+        } else {
+          motionHistory.days.push(nowday);
+          motionHistory.groups.push(record.group.map((group) => JSON.parse(JSON.stringify(group))));
+        }
+      }
+    });
+  });
+
+  // 要根据days进行排序，同时也要对groups根据days进行排序
+  const sortedIndices = motionHistory.days
+    .map((day, index) => ({ day, index }))
+    .sort((a, b) => a.day - b.day)
+    .map(({ index }) => index);
+
+  motionHistory.days = sortedIndices.map(index => motionHistory.days[index]);
+  motionHistory.groups = sortedIndices.map(index => motionHistory.groups[index]);
+
+  return motionHistory;
+};
+
 export default function TrainingScreen() {
   const path = FileSystem.documentDirectory;
-  // console.log(path);
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
   const [time, setTime] = useState(0);
@@ -42,7 +94,6 @@ export default function TrainingScreen() {
   useEffect(() => {
     if (cart.length > 0 && currentRoute === "training" && isTraining) {
       setM_id_list((prevM_id_list) => [...prevM_id_list, ...cart]);
-      console.log("当前的m_id_list为：", m_id_list);
       setExerSetsMap((prevExerSetsMap) => ({
         ...prevExerSetsMap,
         ...cart.reduce((acc, id) => {
@@ -54,7 +105,6 @@ export default function TrainingScreen() {
           return acc;
         }, {}),
       }));
-      console.log("当前的exerSetsMap为：", exerSetsMap);
       setRatingMap((prevExerSetsMap) => ({
         ...prevExerSetsMap,
         ...cart.reduce((acc, id) => {
@@ -116,7 +166,7 @@ export default function TrainingScreen() {
         const records = {
           name: motionData[m_id_list[key] - 1].name,
           m_id: m_id_list[key],
-          b_id: b_id, // 寻找m_id到b_id的映射，未完成
+          b_id: b_id, 
           group: exerSetsMap[m_id_list[key]],
           rating: ratingMap[m_id_list[key]],
         };
@@ -189,6 +239,7 @@ export default function TrainingScreen() {
                 setRatingMap((prev) => ({ ...prev, [item]: newRating }))
               }
               onDelete={() => {handleDelete(item)}}
+              motionHistory={getMotionHistory(item)}
             />
           ))}
         </ScrollView>
