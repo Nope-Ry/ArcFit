@@ -1,115 +1,60 @@
-import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
+import EquipmentHeader from "../../components/equipment/EquipmentHeader";
+import EquipmentCard from "../../components/equipment/EquipmentCard";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AccountInfo from "@/components/AccountInfo";
-import FunctionList from "@/components/FunctionList";
-import * as FileSystem from "expo-file-system";
-import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import { useUser } from "@/contexts/UserContext";
+import cardData from "../../res/equipment/json/comb.json";
+import bodypartData from "@/res/bodypart/json/comb.json";
+import Icon from "react-native-vector-icons/Ionicons";
+import { ThemedText } from "@/components/ThemedText";
+import Cart from "@/components/Cart";
 
-// for Android
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import * as SecureStore from "expo-secure-store";
+const { width, height } = Dimensions.get("window");
 
-// for IOS
-import { AsyncStorage } from "react-native";
-import { SecureStore } from "expo";
+export default function TrainingScreen() {
+  const [selectedEquipment, setSelectedEquipment] = useState(0);
 
-const path = FileSystem.documentDirectory;
-export let data: any[] = [];
-FileSystem.readDirectoryAsync(path).then((files) => {
-  files = files.filter((file) => file.endsWith(".json"));
-  Promise.all(
-    files.map((file) => FileSystem.readAsStringAsync(path + file))
-  ).then((contents) => {
-    contents.forEach((content) => {
-      data.push(JSON.parse(content));
-    });
-  });
-});
-
-export default function ProfileScreen() {
-  const navigation = useNavigation();
-  const path = FileSystem.documentDirectory;
-
-  const [userInited, setUserInited] = useState(false);
-  const { user, setUser } = useUser();
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const userinfo = await AsyncStorage.getItem("userinfo");
-        if (userinfo !== null) {
-          const user = JSON.parse(userinfo);
-          console.log("Loaded user info from AsyncStorage:", user);
-          setUser(user);
-        }
-        const token = await SecureStore.getItemAsync("access_token");
-        console.log("Access token is:", token);
-      } catch (e) {
-        console.warn("Exception when loading user info:", e);
-      }
-
-      // await AsyncStorage.removeItem("userinfo");
-      setUserInited(true);
-    };
-
-    console.log("Init called");
-    init();
-  }, [setUser]);
-
-  if (!userInited) {
-    return null;
-  }
-
-  console.log("Redraw triggered");
+  const handleEquipmentSelect = (index) => {
+    setSelectedEquipment(index);
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        {/* 个人资料卡片 */}
-        <AccountInfo
-          avatar={require("../../assets/images/icon.png")}
-          username={user.username}
-          email={user.email}
-          onPress={() => navigation.navigate("AccountScreen")}
-        />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      {/* 上部容器 */}
+      <View style={styles.upContainer}>
+        <EquipmentHeader OnSelect={handleEquipmentSelect} />
+      </View>
 
-        {/* 按钮列表 */}
-        <View style={{ flex: 1 }}>
-          <FunctionList
-            items={[
-              {
-                icon: require("../../assets/images/favicon.png"),
-                text: "偏好设置",
-                onPress: () => { },
-              },
-              {
-                icon: require("../../assets/images/favicon.png"),
-                text: "照片时刻",
-                onPress: () => { },
-              },
-              {
-                icon: require("../../assets/images/favicon.png"),
-                text: "模式切换",
-                onPress: () => { },
-              },
-              {
-                icon: require("../../assets/images/favicon.png"),
-                text: "训练统计",
-                onPress: () => navigation.navigate("TrainingStatisticsScreen"),
-              },
-            ]}
-          />
-        </View>
-      </ScrollView>
+      {/* 图片卡片容器 */}
+      <View style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.cardContainer}>
+          {cardData
+            .filter(
+              (card) =>
+                !selectedEquipment ||
+                bodypartData[selectedEquipment - 1].e_id.includes(card.e_id)
+            )
+            .map((card, index) => (
+              <EquipmentCard key={index} information={card} />
+            ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
+  cardContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    margin: width * 0.05,
+    rowGap: height * 0.02,
+    columnGap: width * 0.04,
+    gap: width * 0.05,
+  },
+  upContainer: {
+    padding: 15,
+    backgroundColor: "white",
   },
 });

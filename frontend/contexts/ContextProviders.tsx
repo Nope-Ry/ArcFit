@@ -2,7 +2,7 @@ import React from 'react';
 import { UserProvider } from './UserContext';
 import { CartProvider } from './CartContext';
 
-export const ContextProviders = ({ children }) => {
+export const ContextProviders = ({children}) => {
   return (
     <UserProvider>
       <CartProvider>
@@ -11,3 +11,4 @@ export const ContextProviders = ({ children }) => {
     </UserProvider>
   );
 };
+

@@ -1,35 +1,36 @@
 import React from "react";
 import {
   View,
-  Text,
-  Image,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import { ThemedText } from "./ThemedText";
+import { ThemedText } from "../ThemedText";
+import Avatar from "../Avatar";
+import { useUser } from "@/contexts/UserContext";
+import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
 // TODO: 响应设计
-interface AccountInfoProps {
-  avatar: any;
-  username: string;
-  email: string;
-  onPress: () => void;
-}
 
-const AccountInfo: React.FC<AccountInfoProps> = ({
-  avatar,
-  username,
-  email,
-  onPress,
-}) => {
+export default function AccountInfo() {
+  const { user } = useUser();
+  const navigation = useNavigation();
+
+  const onAccountInfoPress = () => {
+    if (user.isLogin) {
+      navigation.navigate("(accounts)/AccountScreen");
+    } else {
+      navigation.navigate("(accounts)/LoginScreen");
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={avatar} style={styles.avatar} />
+    <TouchableOpacity style={styles.container} onPress={onAccountInfoPress}>
+      <Avatar size={width * 0.12} />
       <View style={styles.infoContainer}>
-        <ThemedText type='subtitle'>{username}</ThemedText>
-        <ThemedText type='default'>{email}</ThemedText>
+        <ThemedText type='subtitle'>{user.username}</ThemedText>
+        <ThemedText type='default'>{user.email}</ThemedText>
       </View>
     </TouchableOpacity>
   );
@@ -59,5 +60,3 @@ const styles = StyleSheet.create({
     marginLeft: width * 0.04, // 4% of screen width
   },
 });
-
-export default AccountInfo;

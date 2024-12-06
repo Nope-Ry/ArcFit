@@ -8,30 +8,69 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ContextProviders } from "@/contexts/ContextProviders";
+import { setUpCallbacks } from "@/contexts/UserContext";
+import * as UserService from "@/services/UserService";
+import { AsyncStorage } from "@/imports/Storage";
 
 
+const appInit = async () => {
+  const deInitUserCallbacks = setUpCallbacks();
+
+  console.log("Initializing user info");
+  try {
+    const userinfo = await AsyncStorage.getItem("userInfo");
+    if (userinfo !== null) {
+      const user = JSON.parse(userinfo);
+      console.log("User info loaded:", user);
+      UserService.notify("userInited");
+      UserService.setUser(user);
+    }
+  } catch (e) {
+    console.warn("Exception when loading user info:", e);
+  }
+
+  return () => {
+    deInitUserCallbacks();
+  };
+};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+  const [fontLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  const [appInited, setAppInited] = useState(false);
+
   useEffect(() => {
-    if (loaded) {
+    let deInit = () => {};
+    
+    appInit().then(func => {
+      deInit = func;
+      setAppInited(true);
+    });
+
+    return () => {
+      deInit();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (fontLoaded && appInited) {
+      console.log("Initialized, hiding splash screen");
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [appInited, fontLoaded]);
 
-  if (!loaded) {
+  if (!fontLoaded || !appInited) {
     return null;
   }
 
@@ -43,8 +82,12 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
             <Stack.Screen
-              name="AccountScreen"
-              options={{ headerBackTitle: "未登录", headerTitle: "Login" }}
+              name="(accounts)/AccountScreen"
+              options={{ headerTitle: "个人信息", headerBackTitle: "返回" }}
+            />
+            <Stack.Screen
+              name="(accounts)/LoginScreen"
+              options={{ headerTitle: "登录/注册", headerBackTitle: "返回" }}
             />
             <Stack.Screen
               name="EquipmentScreen"

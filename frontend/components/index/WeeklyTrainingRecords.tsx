@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text as SvgText } from 'react-native-svg';
 import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
-import { data }from "../../app/(tabs)/index";
+import { data }from "../../app/(tabs)/profile";
 
 import motionData from "@/res/motion/json/comb.json";
 import {
