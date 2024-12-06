@@ -50,6 +50,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [showindex, setShowindex] = useState(1);
   // const [rating, setRating] = useState(3);
 
   const navigation = useNavigation();
@@ -239,9 +240,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             ) : (
               <>
               {/* 上次做此动作的信息 */}
-              <ThemedText type="default">上次做此动作是在{motionHistory.days[motionHistory.days.length - 1]}</ThemedText>
+              <ThemedText type="default">上次做此动作是在{motionHistory.days[showindex]}</ThemedText>
               <ScrollView>
-                {motionHistory.groups[motionHistory.groups.length - 1].map((set, index) => (
+                {motionHistory.groups[showindex].map((set, index) => (
                 <View key={index} style={{width: width * 0.8}}>
                   <ThemedText type="defaultBold">{index + 1}</ThemedText>
                   <ThemedText type="default">重量：{set.weight}kg</ThemedText>
@@ -254,7 +255,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 parameterData={maxWeights}
                 parameterLabels={motionHistory.days}
                 parameterunit="kg"
-                showParameterInfo={(index) => { console.log(index); }}
+                showParameterInfo={(index) => { setShowindex(index); console.log(showindex); }}
               />
               </>
             )}

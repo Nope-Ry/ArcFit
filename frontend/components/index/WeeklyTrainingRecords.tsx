@@ -97,6 +97,12 @@ const getWeeklyBodyRecords = () => {
     return weights;
 }
 
+const getPreviousDate = (daysAgo) => {
+    const today = new Date();
+    const previousDate = new Date(today);
+    previousDate.setDate(today.getDate() - daysAgo);
+    return previousDate.toISOString().split('T')[0];
+}
 const WeeklyTrainingRecords = () => {
     const [selected, setSelected] = useState(1);
     const [isModalVisible, setModalVisible] = useState(false);
@@ -114,7 +120,8 @@ const WeeklyTrainingRecords = () => {
                         parameterData={weeklyRecord}
                         parameterLabels={days}
                         showParameterInfo={(index) => {
-                            alert(`第${index + 1}天的训练时长为${weeklyRecord[index]}分钟`);
+                            const previousDate = getPreviousDate(7 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
+                            alert(`${previousDate}的训练时长为${weeklyRecord[index]}分钟`);
                         }}
                         parameterunit="mins"
                     />
@@ -141,7 +148,8 @@ const WeeklyTrainingRecords = () => {
                         parameterLabels={days}
                         parameterData={weeklyBodyRecords[selected].weight}
                         showParameterInfo={(index) => {
-                            alert(`第${index + 1}天的容量为${weeklyBodyRecords[selected].weight[index]}kg`);
+                            const previousDate = getPreviousDate(7 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
+                            alert(`${previousDate}的${weeklyBodyRecords[selected].value}容量为${weeklyBodyRecords[selected].weight[index]}kg`);
                         }}
                         parameterunit="kg"
                     />
