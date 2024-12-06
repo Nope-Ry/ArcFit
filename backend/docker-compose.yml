@@ -51,7 +51,7 @@ services:
       - ./asset_files:/assets
       - ./static:/static
       - ./nginx/app.conf:/etc/nginx/conf.d/nginx.conf
-      - ./nginx/cert:/cert
+      - /etc/letsencrypt:/cert
     depends_on:
       - app
     networks:
