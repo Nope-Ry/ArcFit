@@ -3,6 +3,7 @@ import os
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from django.conf import settings
+from django.utils.crypto import get_random_string
 
 from rest_framework.decorators import (
     api_view,
@@ -90,7 +91,7 @@ def user_update(request, json_data):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
     serializer.save()
-    return Response({}, status=HTTP_200_OK)
+    return Response(UserSerializer(request.user).data, status=HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -123,13 +124,28 @@ def user_upload_avatar(request):
         )
 
     upload_path = getattr(settings, "UPLOAD_AVATAR_PATH", "static")
-
     os.makedirs(upload_path, exist_ok=True)
-    file_path = os.path.join(upload_path, image.name)
+
+    ext = image.content_type.split("/")[-1]
+
+    user = request.user
+    file_name = f"{user.id}-{get_random_string(length=12)}.{ext}"
+    file_path = os.path.join(upload_path, file_name)
 
     with open(file_path, "wb+") as f:
         for chunk in image.chunks():
             f.write(chunk)
+
+    def is_under_path(path, parent_path):
+        path, parent_path = os.path.abspath(path), os.path.abspath(parent_path)
+        return path.startswith(parent_path)
+
+    if (
+        user.avatar_url
+        and is_under_path(user.avatar_url, upload_path)
+        and os.path.exists(user.avatar_url)
+    ):
+        os.remove(user.avatar_url)
 
     user = request.user
     user.avatar_url = file_path

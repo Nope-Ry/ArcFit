@@ -406,7 +406,7 @@ class UploadImageTestCase(TestCase):
         data = response.json()
         self.assertSetEqual(set(data.keys()), {"avatar_url"})
         self.assertTrue(data["avatar_url"].startswith("test_static"))
-        self.assertTrue(data["avatar_url"].endswith(".jpg"))
+        self.assertTrue(data["avatar_url"].endswith(".jpeg"))
 
     def test_upload_large_image(self):
         response = self.client.post(
