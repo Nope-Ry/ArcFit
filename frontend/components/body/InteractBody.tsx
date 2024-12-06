@@ -125,7 +125,7 @@ const InteractBody = () => {
             trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
           />
         </View>
-        <View style={{ alignItems: "center" }}>
+        {/* <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isSimple ? "简单" : "复杂"}
           </ThemedText>
@@ -136,7 +136,7 @@ const InteractBody = () => {
             thumbColor={isSimple ? "#FFFFFF" : "#FFA07A"}
             trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
           />
-        </View>
+        </View> */}
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isFront ? "前面" : "后面"}
