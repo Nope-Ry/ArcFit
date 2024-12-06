@@ -17,7 +17,7 @@ import { MaxEquation } from "three";
 import * as shape from "d3-shape";
 import { SelectList } from "react-native-dropdown-select-list";
 import * as FileSystem from "expo-file-system";
-import { data }from "../../app/(tabs)/index";
+import { data }from "../../app/(tabs)/profile";
 
 const { width, height } = Dimensions.get("window");
 

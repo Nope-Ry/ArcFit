@@ -8,7 +8,7 @@ import RecordList from "@/components/training/RecordCard";
 import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
 
-import { data } from "../../app/(tabs)/index";
+import { data } from "./profile";
 import * as FileSystem from "expo-file-system";
 
 import { useContext } from "react";

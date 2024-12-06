@@ -1,13 +1,23 @@
 import React from 'react';
-import { UserProvider } from './UserContext';
+import { UserInfo, UserProvider } from './UserContext';
 import { CartProvider } from './CartContext';
 
-export const ContextProviders = ({ children }) => {
+interface ContextProvidersProps {
+  children: React.ReactNode;
+  initValues?: {
+    userValue: UserInfo;
+  };
+}
+
+export const ContextProviders = (props: ContextProvidersProps) => {
+  const userValue = props.initValues?.userValue;
+
   return (
-    <UserProvider>
+    <UserProvider userValue={userValue}>
       <CartProvider>
-        {children}
+        {props.children}
       </CartProvider>
     </UserProvider>
   );
 };
+

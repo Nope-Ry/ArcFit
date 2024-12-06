@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, ImageBackground } from 'react-native';
 import { ThemedText } from '../ThemedText';
-import { data } from '../../app/(tabs)/index';
+import { data } from '../../app/(tabs)/profile';
 import { motion_imgs } from '@/res/motion/motion_img';
 
 import { Dimensions } from 'react-native';

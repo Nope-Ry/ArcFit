@@ -9,7 +9,7 @@ import { Text as SvgText } from 'react-native-svg';
 import { LineChart, Grid, PieChart, YAxis } from 'react-native-svg-charts';
 import { MaxEquation } from "three";
 import { SelectList } from 'react-native-dropdown-select-list';
-import { data }from "../../app/(tabs)/index";
+import { data }from "../../app/(tabs)/profile";
 
 import motionData from "@/res/motion/json/comb.json";
 
