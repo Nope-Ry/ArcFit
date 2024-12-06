@@ -21,18 +21,17 @@ const CustomPieChart: React.FC<CustomPieChartProps> = ({ parameterdata }) => {
                 legendFontColor: "#7F7F7F",
                 legendFontSize: 15
             }))}
-            width={width * 0.90}
-            height={220}
+            width={width * 0.9}
+            height={200}
             chartConfig={{
                 backgroundGradientFrom: "#fb8c00",
                 backgroundGradientTo: "#ffa726",
                 color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
                 labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-                style: { borderRadius: 16 },
             }}
             accessor="value" 
             backgroundColor="transparent"
-            paddingLeft="0"
+            paddingLeft="-10"
             absolute={false}
         />
     );

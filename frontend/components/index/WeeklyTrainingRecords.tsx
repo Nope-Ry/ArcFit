@@ -114,7 +114,7 @@ const WeeklyTrainingRecords = () => {
         <ScrollView>
             {/* 训练时长柱状图 */}
             <View style={styles.container}>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
+                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长</ThemedText>
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <CustomLineChart
                         parameterData={weeklyRecord}
@@ -142,7 +142,7 @@ const WeeklyTrainingRecords = () => {
                         </TouchableOpacity>
                     </View>
                  </View>
-                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计(kg)</ThemedText>
+                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计</ThemedText>
                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <CustomLineChart
                         parameterLabels={days}
