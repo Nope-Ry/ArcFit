@@ -9,29 +9,19 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { API } from "@/constants/APIs";
 
-function LoginScreen() {
+function RegisterScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
 
-  const handleLogin = async () => {
-    // Call your API to authenticate the user
-    const response = await fetch("http://101.34.70.123:8000/api/accounts/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-      // Handle successful login
-      const data = await response.json();
+  const handleRegister = async () => {
+    try {
+      const response = await API.call(API.Account.register, { username, password });
       Alert.alert("注册成功", `欢迎回来，${username}`, [{ text: "确定", onPress: () => navigation.navigate("index") }]);
-    } else {
-      // Handle login error
-      Alert.alert("注册失败", "用户名或密码错误");
+    } catch (e) {
+      Alert.alert("注册失败", `错误：${e}`);
     }
   };
 
@@ -57,7 +47,7 @@ function LoginScreen() {
       />
 
       {/* 登录按钮 */}
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>注册</Text>
       </TouchableOpacity>
 
@@ -110,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

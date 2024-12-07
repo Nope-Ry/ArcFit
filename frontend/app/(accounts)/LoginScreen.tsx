@@ -68,7 +68,7 @@ return (
     <View style={styles.registerContainer}>
       <Text>还没有账号？</Text>
       <TouchableOpacity>
-        <Text style={styles.registerText} onPress={() => navigation.navigate("Register")}>立即注册</Text>
+        <Text style={styles.registerText} onPress={() => navigation.navigate("(accounts)/RegisterScreen")}>立即注册</Text>
       </TouchableOpacity>
     </View>
   </View>

@@ -7,13 +7,12 @@ const { width, height } = Dimensions.get("window");
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: "default" | "title" | "defaultBold" | "subtitle" | "link" | "small";
+  type?: "default" | "title" | "defaultBold" | "subtitle" | "link" | "small" | "medium";
 };
 
 export function ThemedText({
   style,
   lightColor,
-  darkColor,
   type = "default",
   ...rest
 }: ThemedTextProps) {
@@ -28,6 +27,7 @@ export function ThemedText({
         type === "title" ? styles.title : undefined,
         type === "defaultBold" ? styles.defaultBold : undefined,
         type === "subtitle" ? styles.subtitle : undefined,
+        type === "medium" ? styles.medium : undefined,
         type === "link" ? styles.link : undefined,
         type === "small" ? styles.small : undefined,
         style,
@@ -55,6 +55,9 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: width * 0.05, // Example: 5% of the screen width
     fontWeight: 'bold',
+  },
+  medium:{
+    fontSize: width * 0.05, // Example: 10% of the screen width
   },
   small: {
     fontSize: width * 0.03, // Example: 3% of the screen width
