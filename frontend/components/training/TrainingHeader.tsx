@@ -33,7 +33,7 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, time, setTime]);
 
   const formatTime = (milliseconds: number) => {
     const seconds = Math.floor(milliseconds / 1000);
@@ -84,11 +84,11 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: width * 0.02,
-    backgroundColor: "#007BFF",
+    backgroundColor: "#FFA07A",
     borderRadius: width * 0.02,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#260d01",
   },
   line2: {
     flexDirection: "row",

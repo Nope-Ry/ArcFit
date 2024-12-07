@@ -68,7 +68,7 @@ const getExerciseData = (date: Date) => {
   return exerciseData;
 };
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 interface MainRecordProps {
   date: Date;
 }
@@ -85,49 +85,47 @@ export default function MainRecord({ date }: MainRecordProps) {
   );
 
   const { isMale } = useGender();
-
+  const color = "#FFF5EE";
+  const activeColor = "#FFA07A";
   return (
     <View style={styles.container}>
       {/* 左侧的图像 */}
-      {/* <Image
-        source={require("../../assets/images/body.png")}
-        style={styles.bodyImage}
-        resizeMode="contain"
-      /> */}
 
       {isMale ? (
         <FrontMale
-          color={"#FFF5EE"}
-          activeColor={"#FFA07A"}
+          color={color}
+          activeColor={activeColor}
           activeGroup={activeGroup}
         />
       ) : (
         <FrontFemale
-          color={"#FFF5EE"}
-          activeColor={"#FFA07A"}
+          color={color}
+          activeColor={activeColor}
           activeGroup={activeGroup}
         />
       )}
 
-
-      {/* 右侧的锻炼信息 */}
-      <View style={styles.infoBox}>
-        <ThemedText type="default">开始时间</ThemedText>
-        <ThemedText type="defaultBold">{times}</ThemedText>
-        <ThemedText type="default">运动时长</ThemedText>
-        <ThemedText type="defaultBold">{duration}分钟</ThemedText>
+      {/* 中间的锻炼信息 */}
+      <View style={styles.infoBoxContainer}>
+        <View style={styles.infoBox}>
+          <ThemedText type="default">开始时间</ThemedText>
+          <ThemedText type="defaultBold">{times}</ThemedText>
+        </View>
+        <View style={styles.infoBox}>
+          <ThemedText type="default">运动时长</ThemedText>
+          <ThemedText type="defaultBold">{duration}分钟</ThemedText>
+        </View>
       </View>
-
       {isMale ? (
         <BackMale
-          color={"#FFF5EE"}
-          activeColor={"#FFA07A"}
+          color={color}
+          activeColor={activeColor}
           activeGroup={activeGroup}
         />
       ) : (
         <BackFemale
-          color={"#FFF5EE"}
-          activeColor={"#FFA07A"}
+          color={color}
+          activeColor={activeColor}
           activeGroup={activeGroup}
         />
       )}
@@ -147,19 +145,23 @@ const styles = StyleSheet.create({
   bodyImage: {
     width: width * 0.4,
   },
+  infoBoxContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: height * 0.24,
+  },
   infoBox: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFAF0",
     maxWidth: width * 0.2,
+    height: height * 0.1,
     alignContent: "center",
     justifyContent: "center",
-    // paddingHorizontal: 20,
-    paddingVertical: 10,
     borderRadius: 10,
 
     elevation: 3,
-    shadowColor: "#000",
+    shadowColor: "#8B4513",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
   },
 });

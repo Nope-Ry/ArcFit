@@ -13,10 +13,10 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Divider } from "@/components/ui/divider";
 import Slider from "@react-native-community/slider";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import CustomLineChart from "../statistic/CustomLineChart";
-import { data } from "../../app/(tabs)/index";
+import data from "../../app/(tabs)/index";
 
 import { ThemedText } from "../ThemedText";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
@@ -37,7 +37,6 @@ interface ExerciseCardProps {
   onDelete: () => void;
   motionHistory: any;
 }
-
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
   exercise,
@@ -111,8 +110,8 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   };
 
   const getMaxWeights = (groups) => {
-    return groups.map(group => {
-      return Math.max(...group.map(set => set.weight));
+    return groups.map((group) => {
+      return Math.max(...group.map((set) => set.weight));
     });
   };
 
@@ -140,7 +139,11 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         </View>
         <TouchableOpacity onPress={onDelete}>
           {/* <Ionicons name="settings-outline" size={width * 0.06} /> */}
-          <MaterialIcons name="delete-forever" size={width * 0.07} color="black" />
+          <MaterialIcons
+            name="delete-forever"
+            size={width * 0.07}
+            color="black"
+          />
         </TouchableOpacity>
       </TouchableOpacity>
 
@@ -212,12 +215,22 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             </View>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MotionScreen', {m_id: exercise.m_id})}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() =>
+                navigation.navigate("MotionScreen", { m_id: exercise.m_id })
+              }
+            >
               <ThemedText type="defaultBold" style={styles.buttonText}>
                 动作纠正
               </ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => {setModalVisible(true);}}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            >
               <ThemedText type="defaultBold" style={styles.buttonText}>
                 历史记录
               </ThemedText>
@@ -239,24 +252,31 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
               <ThemedText type="default">没有当前动作历史记录</ThemedText>
             ) : (
               <>
-              {/* 上次做此动作的信息 */}
-              <ThemedText type="default">上次做此动作是在{motionHistory.days[showindex]}</ThemedText>
-              <ScrollView>
-                {motionHistory.groups[showindex].map((set, index) => (
-                <View key={index} style={{width: width * 0.8}}>
-                  <ThemedText type="defaultBold">{index + 1}</ThemedText>
-                  <ThemedText type="default">重量：{set.weight}kg</ThemedText>
-                  <ThemedText type="default">次数：{set.reps}次</ThemedText>
-                </View>
-                ))}
-              </ScrollView>
-              {/* 动作历史记录 */}
-              <CustomLineChart 
-                parameterData={maxWeights}
-                parameterLabels={motionHistory.days}
-                parameterunit="kg"
-                showParameterInfo={(index) => { setShowindex(index); console.log(showindex); }}
-              />
+                {/* 上次做此动作的信息 */}
+                <ThemedText type="default">
+                  上次做此动作是在{motionHistory.days[showindex]}
+                </ThemedText>
+                <ScrollView>
+                  {motionHistory.groups[showindex].map((set, index) => (
+                    <View key={index} style={{ width: width * 0.8 }}>
+                      <ThemedText type="defaultBold">{index + 1}</ThemedText>
+                      <ThemedText type="default">
+                        重量：{set.weight}kg
+                      </ThemedText>
+                      <ThemedText type="default">次数：{set.reps}次</ThemedText>
+                    </View>
+                  ))}
+                </ScrollView>
+                {/* 动作历史记录 */}
+                <CustomLineChart
+                  parameterData={maxWeights}
+                  parameterLabels={motionHistory.days}
+                  parameterunit="kg"
+                  showParameterInfo={(index) => {
+                    setShowindex(index);
+                    console.log(showindex);
+                  }}
+                />
               </>
             )}
             <TouchableOpacity
@@ -367,35 +387,35 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     padding: width * 0.03,
-    backgroundColor: "#007BFF",
+    backgroundColor: "#FFA07A",
     borderRadius: width * 0.02,
     alignItems: "center",
     marginHorizontal: width * 0.01,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#260d01",
   },
   modalBackground: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContainer: {
     width: width * 0.9,
     height: height * 0.9,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#ff5733',
+    backgroundColor: "#ff5733",
     borderRadius: 5,
     width: width * 0.5,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });
 

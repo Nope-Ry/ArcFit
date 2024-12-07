@@ -1,7 +1,7 @@
 import { View, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AccountInfo from "@/components/profile/AccountInfo";
-import FunctionList from "@/components/FunctionList";
+import FunctionList from "@/components/profile/FunctionList"; 
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
 
@@ -33,22 +33,17 @@ export default function ProfileScreen() {
           <FunctionList
             items={[
               {
-                icon: require("../../assets/images/favicon.png"),
+                icon: require("../../assets/images/setting.png"),
                 text: "偏好设置",
                 onPress: () => { },
               },
               {
-                icon: require("../../assets/images/favicon.png"),
+                icon: require("../../assets/images/images.png"),
                 text: "照片时刻",
                 onPress: () => { },
               },
               {
-                icon: require("../../assets/images/favicon.png"),
-                text: "模式切换",
-                onPress: () => { },
-              },
-              {
-                icon: require("../../assets/images/favicon.png"),
+                icon: require("../../assets/images/statistics.png"),
                 text: "训练统计",
                 onPress: () => navigation.navigate("TrainingStatisticsScreen"),
               },
@@ -63,6 +58,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
   },
 });
