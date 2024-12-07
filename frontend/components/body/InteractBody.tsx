@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -17,6 +17,7 @@ import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
 import { FrontFemaleSimple } from "./FrontFemaleSimple";
 import { BackFemaleSimple } from "./BackFemaleSimple";
+import { useGender } from "@/contexts/GenderContext";
 
 const { width, height } = Dimensions.get("window");
 
@@ -45,7 +46,8 @@ const mapBodyPart = (group) => {
 
 const InteractBody = () => {
   const [pageView, setPageView] = useState("FrontMaleSimple");
-  const [isMale, setIsMale] = useState(true);
+  // const [isMale, setIsMale] = useState(true);
+  const { isMale, setIsMale } = useGender();
   const [isSimple, setIsSimple] = useState(true);
   const [isFront, setIsFront] = useState(true);
   const [activeGroup, setActiveGroup] = useState("chest");
@@ -117,12 +119,12 @@ const InteractBody = () => {
       >
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">{isMale ? "男性" : "女性"}</ThemedText>
-          <Switch
-            value={isMale}
-            onValueChange={setIsMale}
-            thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
+            <Switch
+              value={isMale}
+              onValueChange={setIsMale}
+              thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
+              trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
+            />
         </View>
         {/* <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">

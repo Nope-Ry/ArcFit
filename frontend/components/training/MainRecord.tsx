@@ -4,6 +4,7 @@ import { ThemedText } from "../ThemedText";
 import { Dimensions } from "react-native";
 import { data } from "../../app/(tabs)/profile";
 
+import { useGender } from "@/contexts/GenderContext";
 import { FrontMale } from "../statistic/body/FrontMale";
 import { BackMale } from "../statistic/body/BackMale";
 import { BackFemale } from "../statistic/body/BackFemale";
@@ -82,7 +83,8 @@ export default function MainRecord({ date }: MainRecordProps) {
   const activeGroup = activeGroup_id.map((item) =>
     map_bodyPart(bodypartData[item - 1].name)
   );
-  console.log(activeGroup);
+
+  const { isMale } = useGender();
 
   return (
     <View style={styles.container}>
@@ -93,25 +95,42 @@ export default function MainRecord({ date }: MainRecordProps) {
         resizeMode="contain"
       /> */}
 
-      <FrontMale
-        color={"#FFF5EE"}
-        activeColor={"#FFA07A"}
-        activeGroup={activeGroup}
-      />
+      {isMale ? (
+        <FrontMale
+          color={"#FFF5EE"}
+          activeColor={"#FFA07A"}
+          activeGroup={activeGroup}
+        />
+      ) : (
+        <FrontFemale
+          color={"#FFF5EE"}
+          activeColor={"#FFA07A"}
+          activeGroup={activeGroup}
+        />
+      )}
+
 
       {/* 右侧的锻炼信息 */}
       <View style={styles.infoBox}>
         <ThemedText type="default">开始时间</ThemedText>
-        <ThemedText type="subtitle">{times}</ThemedText>
+        <ThemedText type="defaultBold">{times}</ThemedText>
         <ThemedText type="default">运动时长</ThemedText>
-        <ThemedText type="subtitle">{duration}分钟</ThemedText>
+        <ThemedText type="defaultBold">{duration}分钟</ThemedText>
       </View>
 
-      <BackMale
-        color={"#FFF5EE"}
-        activeColor={"#FFA07A"}
-        activeGroup={activeGroup}
-      />
+      {isMale ? (
+        <BackMale
+          color={"#FFF5EE"}
+          activeColor={"#FFA07A"}
+          activeGroup={activeGroup}
+        />
+      ) : (
+        <BackFemale
+          color={"#FFF5EE"}
+          activeColor={"#FFA07A"}
+          activeGroup={activeGroup}
+        />
+      )}
     </View>
   );
 }
