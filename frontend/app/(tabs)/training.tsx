@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Button } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
 import ExerciseCard from "../../components/training/ExerciseCard";
 import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
@@ -21,6 +26,8 @@ import { motion_imgs } from "@/res/motion/motion_img";
 
 import { useNavigationState } from "@react-navigation/native";
 
+const { width, height } = Dimensions.get("window");
+
 let cnt = 0;
 
 const getMotionHistory = (m_id) => {
@@ -34,13 +41,14 @@ const getMotionHistory = (m_id) => {
   );
 
   const intervalDays =
-    Math.floor((lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)) +
-    1;
+    Math.floor(
+      (lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)
+    ) + 1;
 
   const motionHistory = {
     days: [],
     groups: [],
-  }
+  };
 
   data.forEach((item) => {
     item.records.forEach((record) => {
@@ -54,11 +62,15 @@ const getMotionHistory = (m_id) => {
         const dayIndex = motionHistory.days.indexOf(nowday);
         if (dayIndex !== -1) {
           record.group.forEach((group) => {
-            motionHistory.groups[dayIndex].push(JSON.parse(JSON.stringify(group)));
+            motionHistory.groups[dayIndex].push(
+              JSON.parse(JSON.stringify(group))
+            );
           });
         } else {
           motionHistory.days.push(nowday);
-          motionHistory.groups.push(record.group.map((group) => JSON.parse(JSON.stringify(group))));
+          motionHistory.groups.push(
+            record.group.map((group) => JSON.parse(JSON.stringify(group)))
+          );
         }
       }
     });
@@ -70,8 +82,10 @@ const getMotionHistory = (m_id) => {
     .sort((a, b) => a.day - b.day)
     .map(({ index }) => index);
 
-  motionHistory.days = sortedIndices.map(index => motionHistory.days[index]);
-  motionHistory.groups = sortedIndices.map(index => motionHistory.groups[index]);
+  motionHistory.days = sortedIndices.map((index) => motionHistory.days[index]);
+  motionHistory.groups = sortedIndices.map(
+    (index) => motionHistory.groups[index]
+  );
 
   return motionHistory;
 };
@@ -114,7 +128,7 @@ export default function TrainingScreen() {
       }));
       clearCart();
     }
-  }, [cart, currentRoute, isTraining]);
+  }, [cart, currentRoute, isTraining, clearCart]);
 
   const [exerSetsMap, setExerSetsMap] = useState(
     m_id_list.reduce((acc, id) => {
@@ -166,7 +180,7 @@ export default function TrainingScreen() {
         const records = {
           name: motionData[m_id_list[key] - 1].name,
           m_id: m_id_list[key],
-          b_id: b_id, 
+          b_id: b_id,
           group: exerSetsMap[m_id_list[key]],
           rating: ratingMap[m_id_list[key]],
         };
@@ -206,7 +220,7 @@ export default function TrainingScreen() {
       delete newMap[item];
       return newMap;
     });
-  }
+  };
 
   if (isTraining) {
     return (
@@ -238,7 +252,9 @@ export default function TrainingScreen() {
               setRating={(newRating) =>
                 setRatingMap((prev) => ({ ...prev, [item]: newRating }))
               }
-              onDelete={() => {handleDelete(item)}}
+              onDelete={() => {
+                handleDelete(item);
+              }}
               motionHistory={getMotionHistory(item)}
             />
           ))}
@@ -247,26 +263,32 @@ export default function TrainingScreen() {
     );
   } else {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <HistoryRecordHeader
-          date={date}
-          setDate={(newDate) => setDate(newDate)}
-        />
-        <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
-          <MainRecord date={date} />
-          <RecordList date={date} />
-        </ScrollView>
-        <View className="bg-white h-12 px-4">
-          <TouchableOpacity
-            className="w-full h-full flex justify-center items-center bg-[#007BFF] rounded-md"
-            onPress={toggleView}
-          >
-            <ThemedText type="default" lightColor="white">
-              开始训练
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <View style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+          <HistoryRecordHeader
+            date={date}
+            setDate={(newDate) => setDate(newDate)}
+          />
+          <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
+            <MainRecord date={date} />
+            <RecordList date={date} />
+          </ScrollView>
+        </SafeAreaView>
+
+        <TouchableOpacity style={styles.button} onPress={toggleView}>
+          <ThemedText type="defaultBold">开始训练</ThemedText>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  button: {
+    height: height * 0.05,
+    width: width,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFA07A",
+  },
+});
