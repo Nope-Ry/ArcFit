@@ -6,35 +6,87 @@ import {
   Dimensions,
   StyleSheet,
   TextInput,
+  ImageBackground,
+  Modal,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Divider } from "@/components/ui/divider";
-import Slider from '@react-native-community/slider';
+import Slider from "@react-native-community/slider";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import CustomLineChart from "../statistic/CustomLineChart";
+import data from "../../app/(tabs)/index";
 
 import { ThemedText } from "../ThemedText";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 const { width, height } = Dimensions.get("window");
 
 interface ExerciseCardProps {
   exercise: {
     name: string;
     image: any;
+    m_id: number;
   };
   exerSets: { reps: string; weight: string; checked: boolean }[];
-  setExerSets: (sets: { reps: string; weight: string; checked: boolean }[]) => void;
+  setExerSets: (
+    sets: { reps: string; weight: string; checked: boolean }[]
+  ) => void;
   rating: number;
   setRating: (rating: number) => void;
+  onDelete: () => void;
+  motionHistory: any;
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExerSets, rating, setRating }) => {
+const ExerciseCard: React.FC<ExerciseCardProps> = ({
+  exercise,
+  exerSets,
+  setExerSets,
+  rating,
+  setRating,
+  onDelete,
+  motionHistory,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [showindex, setShowindex] = useState(1);
   // const [rating, setRating] = useState(3);
 
+  const navigation = useNavigation();
   const getSliderColor = (value) => {
     if (value <= 2) return "#4CAF50"; // 绿色
     if (value <= 4) return "#FFC107"; // 黄色
     return "#FF5252"; // 红色
   };
-  
+
+  const handleWeightChange = (text, index) => {
+    let numericText = text.replace(/[^0-9.]/g, "");
+    if (parseFloat(numericText) > 500) {
+      numericText = "500";
+    }
+    if (numericText.includes(".")) {
+      const parts = numericText.split(".");
+      if (parts[1].length > 1) {
+        numericText = `${parts[0]}.${parts[1].slice(0, 1)}`;
+      }
+    }
+    if (/^0[0-9]+$/.test(numericText)) {
+      numericText = numericText.replace(/^0+/, "");
+    }
+    updateSet(index, "weight", numericText);
+  };
+
+  const handleRepsChange = (text, index) => {
+    let numericText = text.replace(/[^0-9]/g, "");
+    if (parseInt(numericText, 10) > 100) {
+      numericText = "100";
+    }
+    if (/^0[0-9]+$/.test(numericText)) {
+      numericText = numericText.replace(/^0+/, "");
+    }
+    updateSet(index, "reps", numericText);
+  };
+
   const addSet = () => {
     const lastSet = exerSets[exerSets.length - 1];
     setExerSets([...exerSets, { ...lastSet, checked: false }]);
@@ -57,23 +109,41 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
     setExerSets(newSets);
   };
 
+  const getMaxWeights = (groups) => {
+    return groups.map((group) => {
+      return Math.max(...group.map((set) => set.weight));
+    });
+  };
+
+  const maxWeights = getMaxWeights(motionHistory.groups);
+
   return (
     <View style={styles.card}>
       <TouchableOpacity
         onPress={() => setIsExpanded(!isExpanded)}
         style={styles.cardHeader}
       >
-        <Image source={exercise.image} style={styles.image} />
+        <ImageBackground
+          source={exercise.image}
+          style={styles.image}
+          imageStyle={styles.imageStyle}
+        />
         <View style={styles.textContainer}>
           <ThemedText type="subtitle" style={styles.exerciseName}>
             {exercise.name}
           </ThemedText>
           <ThemedText type="small" style={styles.groupInfo}>
-            111
+            已完成 {exerSets.filter((set) => set.checked).length} /{" "}
+            {exerSets.length} 组
           </ThemedText>
         </View>
-        <TouchableOpacity>
-          <Ionicons name="settings-outline" size={width * 0.06} />
+        <TouchableOpacity onPress={onDelete}>
+          {/* <Ionicons name="settings-outline" size={width * 0.06} /> */}
+          <MaterialIcons
+            name="delete-forever"
+            size={width * 0.07}
+            color="black"
+          />
         </TouchableOpacity>
       </TouchableOpacity>
 
@@ -81,7 +151,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
         <View style={styles.expandedContent}>
           {/* 训练组信息 */}
           <Divider />
-          <View style={{flex: 1, height: height * 0.015,}}/>
+          <View style={{ flex: 1, height: height * 0.015 }} />
 
           {exerSets.map((set, index) => (
             <View key={index} style={styles.row}>
@@ -90,19 +160,23 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
                 <TextInput
                   style={styles.input}
                   value={set.weight}
-                  onChangeText={(text) => updateSet(index, "weight", text)}
+                  onChangeText={(text) => handleWeightChange(text, index)}
                   keyboardType="numeric"
                 />
-                <ThemedText type="small" style={styles.unitText}>kg</ThemedText>
+                <ThemedText type="small" style={styles.unitText}>
+                  kg
+                </ThemedText>
               </View>
               <View style={styles.inputContainer}>
                 <TextInput
                   style={styles.input}
                   value={set.reps}
-                  onChangeText={(text) => updateSet(index, "reps", text)}
+                  onChangeText={(text) => handleRepsChange(text, index)}
                   keyboardType="numeric"
                 />
-                <ThemedText type="small" style={styles.unitText}>次</ThemedText>
+                <ThemedText type="small" style={styles.unitText}>
+                  次
+                </ThemedText>
               </View>
               <TouchableOpacity onPress={() => deleteSet(index)}>
                 <Ionicons name="trash-outline" size={width * 0.06} />
@@ -122,7 +196,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
               <Ionicons name="add-circle-outline" size={width * 0.06} />
             </TouchableOpacity>
             <View style={styles.ratingContainer}>
-              <View style={{flex: 1}}/>
+              <View style={{ flex: 1 }} />
               {/* <ThemedText type="defaultBold">强度</ThemedText> */}
               <Slider
                 style={styles.slider}
@@ -141,18 +215,82 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, exerSets, setExer
             </View>
           </View>
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.button}>
-              <ThemedText type="defaultBold" style={styles.buttonText}>动作纠正</ThemedText>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() =>
+                navigation.navigate("MotionScreen", { m_id: exercise.m_id })
+              }
+            >
+              <ThemedText type="defaultBold" style={styles.buttonText}>
+                动作纠正
+              </ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <ThemedText type="defaultBold" style={styles.buttonText}>历史记录</ThemedText>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            >
+              <ThemedText type="defaultBold" style={styles.buttonText}>
+                历史记录
+              </ThemedText>
             </TouchableOpacity>
           </View>
         </View>
       )}
+
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <ThemedText type="defaultBold">历史记录</ThemedText>
+            {motionHistory.days.length === 0 ? (
+              <ThemedText type="default">没有当前动作历史记录</ThemedText>
+            ) : (
+              <>
+                {/* 上次做此动作的信息 */}
+                <ThemedText type="default">
+                  上次做此动作是在{motionHistory.days[showindex]}
+                </ThemedText>
+                <ScrollView>
+                  {motionHistory.groups[showindex].map((set, index) => (
+                    <View key={index} style={{ width: width * 0.8 }}>
+                      <ThemedText type="defaultBold">{index + 1}</ThemedText>
+                      <ThemedText type="default">
+                        重量：{set.weight}kg
+                      </ThemedText>
+                      <ThemedText type="default">次数：{set.reps}次</ThemedText>
+                    </View>
+                  ))}
+                </ScrollView>
+                {/* 动作历史记录 */}
+                <CustomLineChart
+                  parameterData={maxWeights}
+                  parameterLabels={motionHistory.days}
+                  parameterunit="kg"
+                  showParameterInfo={(index) => {
+                    setShowindex(index);
+                    console.log(showindex);
+                  }}
+                />
+              </>
+            )}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <ThemedText type="defaultBold">关闭</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   card: {
@@ -173,8 +311,11 @@ const styles = StyleSheet.create({
   image: {
     width: width * 0.15,
     height: width * 0.15,
-    borderRadius: width * 0.08,
+    borderRadius: (width * 0.15) / 2,
     overflow: "hidden",
+  },
+  imageStyle: {
+    borderRadius: (width * 0.15) / 2,
   },
   textContainer: {
     marginTop: height * 0.01,
@@ -204,7 +345,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
   },
   inputContainer: {
-    position: 'relative',
+    position: "relative",
     width: width * 0.2,
   },
   input: {
@@ -216,17 +357,17 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
   },
   unitText: {
-    position: 'absolute',
+    position: "absolute",
     right: width * 0.02,
     top: -height * 0.01,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: width * 0.01,
   },
   ratingContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 'auto',
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: "auto",
     width: width * 0.6,
   },
   slider: {
@@ -236,7 +377,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     width: width * 0.08,
-    textAlign: 'center',
+    textAlign: "center",
   },
   buttonRow: {
     flexDirection: "row",
@@ -246,13 +387,35 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     padding: width * 0.03,
-    backgroundColor: "#007BFF",
+    backgroundColor: "#FFA07A",
     borderRadius: width * 0.02,
     alignItems: "center",
     marginHorizontal: width * 0.01,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#260d01",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContainer: {
+    width: width * 0.9,
+    height: height * 0.9,
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#ff5733",
+    borderRadius: 5,
+    width: width * 0.5,
+    alignItems: "center",
   },
 });
 

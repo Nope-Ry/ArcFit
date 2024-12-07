@@ -1,7 +1,6 @@
 import React from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
@@ -9,7 +8,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { ThemedText } from "./ThemedText";
+import { ThemedText } from "../ThemedText";
 const { width, height } = Dimensions.get("window");
 
 interface FunctionListProps {
@@ -26,7 +25,7 @@ const FunctionList: React.FC<FunctionListProps> = ({ items }) => {
           onPress={item.onPress}
         >
           <Image source={item.icon} style={styles.icon} />
-          <ThemedText type="default" style={styles.text}>{item.text}</ThemedText>
+          <ThemedText type="medium" style={styles.text}>{item.text}</ThemedText>
           <Ionicons
             name="chevron-forward"
             size={width * 0.06}
@@ -49,13 +48,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: height * 0.02, // 2% of screen height
     paddingHorizontal: width * 0.05, // 5% of screen width
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFAF0",
     borderRadius: width * 0.02, // 2% of screen width
-    marginVertical: height * 0.003, // 1% of screen height
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: height * 0.01 }, // 1% of screen height
+    marginVertical: height * 0.006, // 1% of screen height
+    shadowColor: "#8B4513",
+    shadowOffset: { width: 0, height: 1 }, 
     shadowOpacity: 0.1,
-    shadowRadius: width * 0.02, // 2% of screen width
+    shadowRadius: 2, // 2% of screen width
     elevation: 5,
   },
   icon: {
@@ -65,6 +64,8 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
+    color: "#000",
+    marginLeft: width * 0.05,
   },
   arrow: {
     marginLeft: width * 0.04, // 4% of screen width

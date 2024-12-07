@@ -10,14 +10,15 @@ import {
   Dimensions,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
-import { CartContext } from "@/components/CartContext";
+import { useNavigation } from "@react-navigation/native";
+import { CartContext } from "@/contexts/CartContext";
 import { useContext } from "react";
 
 const { width, height } = Dimensions.get("window");
 
 const MotionBar = ({ name, m_id }) => {
   const { cart, incrementCart } = useContext(CartContext);
+  const navigation = useNavigation();
   return (
     <View style={styles.recommendedAction}>
       <TouchableOpacity style={styles.plusButton}
@@ -34,7 +35,7 @@ const MotionBar = ({ name, m_id }) => {
           {name}
         </ThemedText>}
       </View>
-      <TouchableOpacity style={styles.infoButton}>
+      <TouchableOpacity style={styles.infoButton} onPress={() => navigation.navigate('MotionScreen', {m_id})}>
         <FontAwesome name="info-circle" size={width * 0.06} color="#000" />
       </TouchableOpacity>
     </View>

@@ -41,3 +41,12 @@ https://www.waldo.com/blog/react-native-run-ios
 https://docs.expo.dev/develop/development-builds/create-a-build/#create-a-build-for-emulatorsimulator
 
 不更新版本
+
+- prebuild
+
+```bash
+npx expo prebuild -p ios
+cd ios
+pod install
+open ArcFit.xcworkspace
+```
