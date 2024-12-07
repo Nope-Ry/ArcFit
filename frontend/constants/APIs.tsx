@@ -1,4 +1,4 @@
-import { notify } from "@/services/UserService";
+import { emitUserEvent } from "@/contexts/UserContext";
 
 import * as SecureStore from "expo-secure-store";
 import * as FileSystem from "expo-file-system";
@@ -10,6 +10,7 @@ type APISpec<T = {}> = {
   method: "GET" | "POST" | "PUT" | "DELETE";
   headers?: { [key: string]: string };
   needsAuth: boolean;
+  __dummyArg?: T;
 } & ({
   contentType: "application/json";
 } | {
@@ -152,13 +153,13 @@ export namespace API {
         console.log(`API call successful: ${JSON.stringify(result.response)}`);
         return result.response;
       } else if (result.status === 401) {
-        notify("userLoginExpired");
+        emitUserEvent("loginExpired");
         throw new Error("Login expired");
       } else {
         throw new Error(result.response);
       }
     } catch (error) {
-      console.error(`API call failed: ${JSON.stringify(error)}`);
+      console.error(`API call failed: ${error}`);
       if (error instanceof TypeError) {
         // Indicates a network error
         throw new Error("Network error");

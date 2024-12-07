@@ -1,67 +1,50 @@
-import { UserInfo } from "@/contexts/UserContext.types";
+import { downloadAvatarAsync } from "@/components/Avatar";
+import { subscribeUserEvents } from "@/contexts/UserContext";
+import { server } from "@/constants/APIs";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const defaultUserInfo: UserInfo = {
-  isLogin: false,
-  username: "未登录",
-  first_name: "",
-  last_name: "",
-  email: "",
-  age: 0,
-  gender: 2,
-  phone_number: "",
-  avatar_url: null,
-  avatarLocalUri: null,
-};
-
-type CallbackType = ((user: UserInfo) => void) | ((user: UserInfo) => Promise<void>);
-
-let user: UserInfo = defaultUserInfo;
-const subscribers: Map<string, Set<CallbackType>> = new Map();
-
-export const subscribe = (event: string | string[], subscriber: CallbackType) => {
-  const subscribeSingleEvent = (event: string) => {
-    if (!subscribers.has(event)) {
-      subscribers.set(event, new Set());
-    }
-    subscribers.get(event)!.add(subscriber);
-    return () => {
-      subscribers.get(event)!.delete(subscriber);
-    }
-  }
-
-  if (Array.isArray(event)) {
-    const unsubs = event.map(subscribeSingleEvent);
-    return () => {
-      unsubs.forEach((unsub) => unsub());
-    }
-  } else {
-    return subscribeSingleEvent(event);
-  }
-};
-
-export const notify = (event: string) => {
-  if (subscribers.has(event)) {
-    subscribers.get(event)!.forEach((subscriber) => {
-      if (subscriber.constructor.name === "AsyncFunction") {
-        (subscriber(user) as Promise<void>).catch((error) => {
-          console.error(error);
-        });
-      } else {
-        subscriber(user);
+export const setUpCallbacks = () => {
+  const unsubLoadUser = subscribeUserEvents("userInited", async (ctx) => {
+    try {
+      const userinfo = await AsyncStorage.getItem("userInfo");
+      if (userinfo !== null) {
+        const user = JSON.parse(userinfo);
+        console.log("User info loaded:", user);
+        ctx.setUser(user);
       }
-    });
+    } catch (e) {
+      console.warn("Exception when loading user info:", e);
+    }
+  });
+
+  const unsubPrepareAvatar = subscribeUserEvents(["userInited", "userAvatarChanged"], async (ctx) => {
+    const { user, setUser } = ctx;
+    console.log('Preparing avatar for user:', user);
+    
+    if (user.avatarLocalUri === null && user.avatar_url) {
+      try {
+        const newAvatarLocalUri = await downloadAvatarAsync(`${server}/${user.avatar_url}`);
+        const newUser = {
+          ...user,
+          avatarLocalUri: newAvatarLocalUri,
+        };
+        setUser(newUser);
+      } catch (e) {
+        console.log('Failed to download avatar:', e);
+      }
+    }
+  });
+
+  const unsubLoginExpired = subscribeUserEvents("loginExpired", async (ctx) => {
+    console.log('Login expired, resetting user');
+    await SecureStore.deleteItemAsync('accessToken');
+    ctx.resetUser();
+  });
+
+  return () => {
+    unsubLoadUser();
+    unsubPrepareAvatar();
+    unsubLoginExpired();
   }
-};
-
-export const getUser = (): UserInfo => {
-  return user;
-};
-
-export const setUser = (newUser: UserInfo) => {
-  user = newUser;
-  notify("userChanged");
-};
-
-export const resetUser = () => {
-  setUser(defaultUserInfo);
-};
+}

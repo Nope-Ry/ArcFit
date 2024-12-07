@@ -8,7 +8,7 @@ import { useState } from "react";
 import EditModal, { InfoType } from "@/components/profile/EditModal";
 import { API } from "@/constants/APIs";
 import * as ImagePicker from "expo-image-picker";
-import { notify, resetUser } from "@/services/UserService";
+import { emitUserEvent } from "@/contexts/UserContext";
 import { useNavigation } from "@react-navigation/native";
 
 type InfoItem = InfoType & {
@@ -80,7 +80,7 @@ export default function AccountScreen() {
           avatarLocalUri: null,
         };
         setUser(newUser);
-        notify("userAvatarChanged");
+        emitUserEvent("userAvatarChanged");
       } else {
         throw new Error(response);
       }
