@@ -114,7 +114,7 @@ export default function TrainingScreen() {
       }));
       clearCart();
     }
-  }, [cart, currentRoute, isTraining]);
+  }, [cart, currentRoute, isTraining, clearCart]);
 
   const [exerSetsMap, setExerSetsMap] = useState(
     m_id_list.reduce((acc, id) => {

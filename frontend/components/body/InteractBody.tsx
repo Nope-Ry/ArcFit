@@ -17,27 +17,28 @@ import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
 import { FrontFemaleSimple } from "./FrontFemaleSimple";
 import { BackFemaleSimple } from "./BackFemaleSimple";
+
 const { width, height } = Dimensions.get("window");
 
 const mapBodyPart = (group) => {
   const bodyParts = {
-    "chest": "胸部",
+    chest: "胸部",
     "front-shoulders": "前肩",
-    "traps": "斜方肌",
-    "biceps": "肱二头肌",
-    "forearms": "前臂",
-    "hands": "手",
-    "obliques": "腹外斜肌",
-    "abdominals": "腹肌",
-    "quads": "股四头肌",
-    "calves": "小腿",
+    traps: "斜方肌",
+    biceps: "肱二头肌",
+    forearms: "前臂",
+    hands: "手",
+    obliques: "腹外斜肌",
+    abdominals: "腹肌",
+    quads: "股四头肌",
+    calves: "小腿",
     "rear-shoulders": "后肩",
-    "triceps": "肱三头肌",
-    "lats": "背阔肌",
-    "glutes": "臀部",
+    triceps: "肱三头肌",
+    lats: "背阔肌",
+    glutes: "臀部",
     "traps-middle": "斜方肌中部",
-    "lowerback": "下背",
-    "hamstrings": "腿后肌",
+    lowerback: "下背",
+    hamstrings: "腿后肌",
   };
   return bodyParts[group];
 };
@@ -115,9 +116,7 @@ const InteractBody = () => {
         }}
       >
         <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">
-            {isMale ? "男性" : "女性"}
-          </ThemedText>
+          <ThemedText type="defaultBold">{isMale ? "男性" : "女性"}</ThemedText>
           <Switch
             value={isMale}
             onValueChange={setIsMale}
@@ -125,7 +124,7 @@ const InteractBody = () => {
             trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
           />
         </View>
-        <View style={{ alignItems: "center" }}>
+        {/* <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isSimple ? "简单" : "复杂"}
           </ThemedText>
@@ -136,7 +135,7 @@ const InteractBody = () => {
             thumbColor={isSimple ? "#FFFFFF" : "#FFA07A"}
             trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
           />
-        </View>
+        </View> */}
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isFront ? "前面" : "后面"}
@@ -153,7 +152,9 @@ const InteractBody = () => {
       <View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("BodyInfoScreen", {name: mapBodyPart(activeGroup)});
+            navigation.navigate("BodyInfoScreen", {
+              name: mapBodyPart(activeGroup),
+            });
           }}
           style={{
             backgroundColor: "#FFA07A",
