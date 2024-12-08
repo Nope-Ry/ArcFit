@@ -18,7 +18,7 @@ import * as shape from "d3-shape";
 import { SelectList } from "react-native-dropdown-select-list";
 import * as FileSystem from "expo-file-system";
 import { data }from "../../app/(tabs)/profile";
-
+import { Alert } from "react-native";
 import CustomLineChart from "../statistic/CustomLineChart";
 
 import motionData from "@/res/motion/json/comb.json";
@@ -37,6 +37,7 @@ const getTotalTrainingRecords = () => {
   const totalDays = new Set(data.map((item) => item.date));
   const totalDuration = Math.floor(data.reduce((acc, item) => acc + item.duration, 0));
   const avgDuration = Math.floor(totalDuration / totalDays.size);
+
   if (isNaN(avgDuration)) {
     return {
       totalDays: 0,
@@ -115,6 +116,13 @@ const getBodyWeightTrend = () => {
   });
   return bodyWeight;
 };
+const showAlert = (formattedDate, weight) => {
+  Alert.alert(
+    "继续加油💪",
+    `${formattedDate} 容量为 ${weight}kg`,
+    [{ text: "OK" }]
+  );
+};
 
 const TotalTrainingRecords = () => {
   const totalRecords = getTotalTrainingRecords();
@@ -176,7 +184,10 @@ const TotalTrainingRecords = () => {
                   parameterLabels={motion.days}
                   parameterData={motion.weight}
                   showParameterInfo={(index) => {
-                    alert(`第${index + 1}天的容量为${motion.weight[index]}kg`);
+                    const date = new Date(firstDay);
+                    date.setDate(date.getDate() + motion.days[index] - 1);
+                    const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+                    showAlert(formattedDate, motion.weight[index]);
                   }}
                   parameterunit="kg"
                 />
@@ -229,7 +240,7 @@ const styles = StyleSheet.create({
   container: { 
     width: width * 0.9,
     padding: 20, 
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#FFFAF0",
     borderRadius: 10, 
     shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 }, 
@@ -241,13 +252,13 @@ const styles = StyleSheet.create({
   card: {
     width: width * 0.25,
     height: height * 0.1,
-    backgroundColor: "white",
+    backgroundColor: "#FFDEAD",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   motionBox: {
-    borderColor: "#007bff",
+    borderColor: "#FFA07A",
     borderRadius: 8,
     padding: 10,
     width: width * 0.3,
@@ -271,7 +282,7 @@ const styles = StyleSheet.create({
     width: width * 0.4,
     padding: 10,
     margin: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: '#FFDEAD',
     borderRadius: 5,
     alignItems: 'center',
   },

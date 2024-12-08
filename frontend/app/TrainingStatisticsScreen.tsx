@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd', 
   },
   selectedButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#FFA07A',
   },
 });
 
