@@ -48,6 +48,7 @@ export default function EquipmentScreen() {
     navigation.getState().routes[navigation.getState().index - 1]?.name;
 
   const [responseData, setResponseData] = useState(null);
+  const [activeGroup, setActiveGroup] = useState([]);
   // 百度API
   const AK = "8PQjHiFUFS4lN97Wdj70m2XY";
   const SK = "43K1K47lBQbNH5xKTZRs3OsD9C86Gtbl";
@@ -110,12 +111,21 @@ export default function EquipmentScreen() {
 
   const color = "#FFF5EE";
   const activeColor = "#FFA07A";
-  const activeGroup = [""];
+  const handleClick = (group) => {
+    setActiveGroup((prevGroups) => {
+      if (prevGroups.includes(group)) {
+        return prevGroups.filter((g) => g !== group);
+      } else {
+        return [...prevGroups, group];
+      }
+    });
+  };
 
   let prompt = "请给出关于以下动作的纠正意见：";
   prompt += motionData[id - 1].name;
   prompt += "。";
   console.log("prompt: ", prompt);
+  console.log(activeGroup);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Cart />
@@ -167,7 +177,7 @@ export default function EquipmentScreen() {
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
-                handleClick={() => {}}
+                handleClick={handleClick}
                 width={width * 0.3}
                 height={height * 0.3}
               />
@@ -176,7 +186,7 @@ export default function EquipmentScreen() {
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
-                handleClick={() => {}}
+                handleClick={handleClick}
                 width={width * 0.3}
                 height={height * 0.3}
               />
@@ -186,7 +196,7 @@ export default function EquipmentScreen() {
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
-                handleClick={() => {}}
+                handleClick={handleClick}
                 width={width * 0.3}
                 height={height * 0.3}
               />
@@ -195,7 +205,7 @@ export default function EquipmentScreen() {
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
-                handleClick={() => {}}
+                handleClick={handleClick}
                 width={width * 0.3}
                 height={height * 0.3}
               />
