@@ -13,7 +13,27 @@ FileSystem.readDirectoryAsync(path).then((files) => {
     files.map((file) => FileSystem.readAsStringAsync(path + file))
   ).then((contents) => {
     contents.forEach((content) => {
-      data.push(JSON.parse(content));
+      const parsedContent = JSON.parse(content);
+      const requiredFields = ["duration", "date", "time", "cnt", "records"];
+      const recordFields = ["name", "m_id", "group", "rating"];
+      const groupFields = ["weight", "reps"];
+
+      const hasRequiredFields = requiredFields.every(field => field in parsedContent);
+      if (!hasRequiredFields) return;
+
+      const hasValidRecords = parsedContent.records.every(record => {
+        const hasRecordFields = recordFields.every(field => field in record);
+        if (!hasRecordFields) return false;
+
+        const hasValidGroups = record.group.every(group => 
+          groupFields.every(field => field in group)
+        );
+        return hasValidGroups;
+      });
+
+      if (hasValidRecords) {
+        data.push(parsedContent);
+      }
     });
   });
 });

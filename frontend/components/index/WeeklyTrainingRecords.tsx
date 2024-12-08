@@ -3,6 +3,7 @@ import { View, Modal, Button, Dimensions, StyleSheet, FlatList } from "react-nat
 import { ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import * as shape from "d3-shape";
+import { Alert } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text as SvgText } from 'react-native-svg';
@@ -22,6 +23,22 @@ import {
 import CustomLineChart from "../statistic/CustomLineChart";
 import CustomPieChart from "../statistic/CustomPieChart";
 const { width, height } = Dimensions.get("window");
+
+const showAlertDuration = (formattedDate, weight) => {
+  Alert.alert(
+    "继续保持💪",
+    `${formattedDate}的训练时长为${weight}分钟`,
+    [{ text: "OK" }]
+  );
+};
+
+const showAlertWeight = (formattedDate, weight) => {
+    Alert.alert(
+        "继续努力💪",
+        `${formattedDate}的训练容量为${weight}kg`,
+        [{ text: "OK" }]
+    );
+};
 
 const getWeeklyDay = () => {
     const today = new Date();
@@ -114,14 +131,14 @@ const WeeklyTrainingRecords = () => {
         <ScrollView>
             {/* 训练时长柱状图 */}
             <View style={styles.container}>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长（分钟）</ThemedText>
+                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长</ThemedText>
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <CustomLineChart
                         parameterData={weeklyRecord}
                         parameterLabels={days}
                         showParameterInfo={(index) => {
-                            const previousDate = getPreviousDate(7 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
-                            alert(`${previousDate}的训练时长为${weeklyRecord[index]}分钟`);
+                            const previousDate = getPreviousDate(6 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
+                            showAlertDuration(previousDate, weeklyRecord[index]);
                         }}
                         parameterunit="mins"
                     />
@@ -142,14 +159,14 @@ const WeeklyTrainingRecords = () => {
                         </TouchableOpacity>
                     </View>
                  </View>
-                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计(kg)</ThemedText>
+                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计</ThemedText>
                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <CustomLineChart
                         parameterLabels={days}
                         parameterData={weeklyBodyRecords[selected].weight}
                         showParameterInfo={(index) => {
-                            const previousDate = getPreviousDate(7 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
-                            alert(`${previousDate}的${weeklyBodyRecords[selected].value}容量为${weeklyBodyRecords[selected].weight[index]}kg`);
+                            const previousDate = getPreviousDate(6 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
+                            showAlertWeight(previousDate, weeklyBodyRecords[selected].weight[index]);
                         }}
                         parameterunit="kg"
                     />
@@ -204,7 +221,7 @@ const styles = StyleSheet.create({
     container: { 
         width: width * 0.9,
         padding: 20, 
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#FFFAF0',
         borderRadius: 10, 
         shadowColor: '#000', 
         shadowOffset: { width: 0, height: 2 }, 
@@ -214,7 +231,7 @@ const styles = StyleSheet.create({
         zIndex: 2,
       },
     motionBox: {
-        borderColor: "#007bff",
+        borderColor: "#FFA07A",
         borderRadius: 8,
         padding: 10,
         width: width * 0.3,
@@ -238,7 +255,7 @@ const styles = StyleSheet.create({
         width: width * 0.4,
         padding: 10,
         margin: 10,
-        backgroundColor: '#ddd',
+        backgroundColor: '#FFDEAD',
         borderRadius: 5,
         alignItems: 'center',
       },

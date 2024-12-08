@@ -16,7 +16,8 @@ import Slider from "@react-native-community/slider";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import CustomLineChart from "../statistic/CustomLineChart";
-import data from "../../app/(tabs)/index";
+import { data } from "../../app/(tabs)/profile";
+import { Alert } from "react-native";
 
 import { ThemedText } from "../ThemedText";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
@@ -49,15 +50,30 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [showindex, setShowindex] = useState(1);
+  const [showindex, setShowindex] = useState(0);
   // const [rating, setRating] = useState(3);
 
   const navigation = useNavigation();
+
+  const showAlert = (formattedDate, weight) => {
+    Alert.alert(
+      "继续加油💪",
+      `${formattedDate} 容量为 ${weight}kg`,
+      [{ text: "OK" }]
+    );
+  };
   const getSliderColor = (value) => {
     if (value <= 2) return "#4CAF50"; // 绿色
     if (value <= 4) return "#FFC107"; // 黄色
     return "#FF5252"; // 红色
   };
+
+  const firstDay = new Date(
+    Math.min(...data.map((item) => new Date(item.date).getTime()))
+  );
+  const date = new Date(firstDay);
+  date.setDate(date.getDate() + showindex);
+  const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 
   const handleWeightChange = (text, index) => {
     let numericText = text.replace(/[^0-9.]/g, "");
@@ -254,7 +270,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
               <>
                 {/* 上次做此动作的信息 */}
                 <ThemedText type="default">
-                  上次做此动作是在{motionHistory.days[showindex]}
+                  上次做此动作是在{formattedDate}
                 </ThemedText>
                 <ScrollView>
                   {motionHistory.groups[showindex].map((set, index) => (
@@ -274,7 +290,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                   parameterunit="kg"
                   showParameterInfo={(index) => {
                     setShowindex(index);
-                    console.log(showindex);
+                    showAlert(formattedDate, maxWeights[index]);
                   }}
                 />
               </>
@@ -403,7 +419,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: width * 0.9,
-    height: height * 0.9,
+    height: height * 0.8,
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
