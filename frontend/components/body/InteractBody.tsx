@@ -75,6 +75,8 @@ const InteractBody = () => {
           activeColor={activeColor}
           activeGroup={activeGroup}
           handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
         />
       );
     } else if (pageView === "BackMaleSimple") {
@@ -84,6 +86,8 @@ const InteractBody = () => {
           activeColor={activeColor}
           activeGroup={activeGroup}
           handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
         />
       );
     } else if (pageView === "FrontFemaleSimple") {
@@ -93,6 +97,8 @@ const InteractBody = () => {
           activeColor={activeColor}
           activeGroup={activeGroup}
           handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
         />
       );
     } else if (pageView === "BackFemaleSimple") {
@@ -102,6 +108,8 @@ const InteractBody = () => {
           activeColor={activeColor}
           activeGroup={activeGroup}
           handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
         />
       );
     } else {
@@ -119,12 +127,12 @@ const InteractBody = () => {
       >
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">{isMale ? "男性" : "女性"}</ThemedText>
-            <Switch
-              value={isMale}
-              onValueChange={setIsMale}
-              thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
-              trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-            />
+          <Switch
+            value={isMale}
+            onValueChange={setIsMale}
+            thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
+            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
+          />
         </View>
         {/* <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">

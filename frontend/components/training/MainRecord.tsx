@@ -5,10 +5,11 @@ import { Dimensions } from "react-native";
 import { data } from "../../app/(tabs)/profile";
 
 import { useGender } from "@/contexts/GenderContext";
-import { FrontMale } from "../statistic/body/FrontMale";
-import { BackMale } from "../statistic/body/BackMale";
-import { BackFemale } from "../statistic/body/BackFemale";
-import { FrontFemale } from "../statistic/body/FrontFemale";
+import { FrontMaleSimple } from "../body/FrontMaleSimple";
+import { BackMaleSimple } from "../body/BackMaleSimple";
+import { FrontFemaleSimple } from "../body/FrontFemaleSimple";
+import { BackFemaleSimple } from "../body/BackFemaleSimple";
+
 import motionData from "@/res/motion/json/comb.json";
 import bodypartData from "@/res/bodypart/json/comb.json";
 
@@ -92,16 +93,22 @@ export default function MainRecord({ date }: MainRecordProps) {
       {/* 左侧的图像 */}
 
       {isMale ? (
-        <FrontMale
+        <FrontMaleSimple
           color={color}
           activeColor={activeColor}
           activeGroup={activeGroup}
+          handleClick={() => {}}
+          width={width * 0.35}
+          height={height * 0.3}
         />
       ) : (
-        <FrontFemale
+        <FrontFemaleSimple
           color={color}
           activeColor={activeColor}
           activeGroup={activeGroup}
+          handleClick={() => {}}
+          width={width * 0.35}
+          height={height * 0.3}
         />
       )}
 
@@ -117,16 +124,22 @@ export default function MainRecord({ date }: MainRecordProps) {
         </View>
       </View>
       {isMale ? (
-        <BackMale
+        <BackMaleSimple
           color={color}
           activeColor={activeColor}
           activeGroup={activeGroup}
+          handleClick={() => {}}
+          width={width * 0.35}
+          height={height * 0.3}
         />
       ) : (
-        <BackFemale
+        <BackFemaleSimple
           color={color}
           activeColor={activeColor}
           activeGroup={activeGroup}
+          handleClick={() => {}}
+          width={width * 0.35}
+          height={height * 0.3}
         />
       )}
     </View>

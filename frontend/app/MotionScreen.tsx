@@ -158,14 +158,18 @@ export default function EquipmentScreen() {
         </View>
 
         {/* baidu API 在 getInfor 里面编辑 prompt 调取有点慢 点击 baidu Button 直接显示返回结果 */}
-        <View style={styles.descriptionBox}>
-          <View style={{ alignItems: "center", flexDirection: "column" }}>
+        <View style={styles.correctBox}>
+          <View
+            style={styles.bodyBox}
+          >
             {isMale ? (
               <FrontMaleSimple
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
                 handleClick={() => {}}
+                width={width * 0.3}
+                height={height * 0.3}
               />
             ) : (
               <FrontFemaleSimple
@@ -173,6 +177,8 @@ export default function EquipmentScreen() {
                 activeColor={activeColor}
                 activeGroup={activeGroup}
                 handleClick={() => {}}
+                width={width * 0.3}
+                height={height * 0.3}
               />
             )}
             {isMale ? (
@@ -181,6 +187,8 @@ export default function EquipmentScreen() {
                 activeColor={activeColor}
                 activeGroup={activeGroup}
                 handleClick={() => {}}
+                width={width * 0.3}
+                height={height * 0.3}
               />
             ) : (
               <BackFemaleSimple
@@ -188,6 +196,8 @@ export default function EquipmentScreen() {
                 activeColor={activeColor}
                 activeGroup={activeGroup}
                 handleClick={() => {}}
+                width={width * 0.3}
+                height={height * 0.3}
               />
             )}
           </View>
@@ -233,6 +243,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 5,
     marginBottom: 20,
+  },
+  correctBox: {
+    flex: 1,
+    width: width * 0.8,
+    alignSelf: "center",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    padding: 10,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    marginBottom: 20,
+  },
+  bodyBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: width * 0.8,
+    flex: 1,
   },
   text: {
     margin: 10,
