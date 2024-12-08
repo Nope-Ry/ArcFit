@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import { useRoute } from "@react-navigation/native";
-import { useEffect } from "react";
+import { useState } from "react";
 import { RouteProp } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -22,6 +22,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import motionData from "@/res/motion/json/comb.json";
 import { motion_imgs } from "@/res/motion/motion_img";
 import { Divider } from "@/components/ui/divider";
+import axios from 'axios';
 
 const { width, height } = Dimensions.get("window");
 
@@ -39,6 +40,63 @@ export default function EquipmentScreen() {
   const navigation = useNavigation();
   const previousRoute =
     navigation.getState().routes[navigation.getState().index - 1]?.name;
+
+  const [responseData, setResponseData] = useState(null);
+  // 百度API
+  const AK = "8PQjHiFUFS4lN97Wdj70m2XY"
+  const SK = "43K1K47lBQbNH5xKTZRs3OsD9C86Gtbl"
+
+  async function getInfor(userMessage: string) {
+      var options = {
+          'method': 'POST',
+          'url': 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-lite-8k?access_token=' + await getAccessToken(),
+          'headers': {
+                  'Content-Type': 'application/json'
+          },
+          data: JSON.stringify({
+                  "messages": [
+                          {
+                                  "role": "user",
+                                  "content": userMessage,
+                          }
+                  ],
+                  "temperature": 0.95,
+                  "top_p": 0.7,
+                  "penalty_score": 1
+          })
+
+      };
+
+      axios(options)
+          .then(response => {
+              console.log(response.data);
+              setResponseData(response.data);
+          })
+          .catch(error => {
+              throw new Error(error);
+          })
+  }
+
+  /**
+   * 使用 AK，SK 生成鉴权签名（Access Token）
+   * @return string 鉴权签名信息（Access Token）
+   */
+  function getAccessToken() {
+
+      let options = {
+          'method': 'POST',
+          'url': 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=' + AK + '&client_secret=' + SK,
+      }
+      return new Promise((resolve, reject) => {
+        axios(options)
+            .then(res => {
+                resolve(res.data.access_token)
+            })
+            .catch(error => {
+                reject(error)
+            })
+      })
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -78,6 +136,19 @@ export default function EquipmentScreen() {
         <View style={styles.descriptionBox}>
           <ThemedText type="default" style={styles.text}>
             {motionData[id - 1].info}
+          </ThemedText>
+        </View>
+
+        {/* baidu API 在 getInfor 里面编辑 prompt 调取有点慢 点击 baidu Button 直接显示返回结果 */}
+        <View style={styles.descriptionBox}>
+          <TouchableOpacity onPress={async () => await getInfor("在健身房练腿的动作要领")}
+          >
+            <ThemedText type="default" style={styles.text}>
+              baidu Button
+            </ThemedText>
+          </TouchableOpacity>
+          <ThemedText type="default" style={styles.text}>
+            {responseData ? responseData.result : "No response"}
           </ThemedText>
         </View>
       </ScrollView>
