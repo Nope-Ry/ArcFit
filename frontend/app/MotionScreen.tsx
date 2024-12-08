@@ -9,7 +9,7 @@ import {
   View,
   Dimensions,
 } from "react-native";
-
+import Markdown from "react-native-markdown-display";
 import { useRoute } from "@react-navigation/native";
 import { useState } from "react";
 import { RouteProp } from "@react-navigation/native";
@@ -22,7 +22,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import motionData from "@/res/motion/json/comb.json";
 import { motion_imgs } from "@/res/motion/motion_img";
 import { Divider } from "@/components/ui/divider";
-import axios from 'axios';
+import axios from "axios";
+import { useGender } from "@/contexts/GenderContext";
+import { FrontMaleSimple } from "@/components/body/FrontMaleSimple";
+import { BackMaleSimple } from "@/components/body/BackMaleSimple";
+import { FrontFemaleSimple } from "@/components/body/FrontFemaleSimple";
+import { BackFemaleSimple } from "@/components/body/BackFemaleSimple";
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,6 +40,7 @@ type RouteParams = {
 export default function EquipmentScreen() {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const { cart, incrementCart } = useContext(CartContext);
+  const { isMale } = useGender();
   const { m_id } = route.params;
   const id = m_id;
   const navigation = useNavigation();
@@ -43,38 +49,39 @@ export default function EquipmentScreen() {
 
   const [responseData, setResponseData] = useState(null);
   // 百度API
-  const AK = "8PQjHiFUFS4lN97Wdj70m2XY"
-  const SK = "43K1K47lBQbNH5xKTZRs3OsD9C86Gtbl"
+  const AK = "8PQjHiFUFS4lN97Wdj70m2XY";
+  const SK = "43K1K47lBQbNH5xKTZRs3OsD9C86Gtbl";
 
   async function getInfor(userMessage: string) {
-      var options = {
-          'method': 'POST',
-          'url': 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-lite-8k?access_token=' + await getAccessToken(),
-          'headers': {
-                  'Content-Type': 'application/json'
+    var options = {
+      method: "POST",
+      url:
+        "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-lite-8k?access_token=" +
+        (await getAccessToken()),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({
+        messages: [
+          {
+            role: "user",
+            content: userMessage,
           },
-          data: JSON.stringify({
-                  "messages": [
-                          {
-                                  "role": "user",
-                                  "content": userMessage,
-                          }
-                  ],
-                  "temperature": 0.95,
-                  "top_p": 0.7,
-                  "penalty_score": 1
-          })
+        ],
+        temperature: 0.95,
+        top_p: 0.7,
+        penalty_score: 1,
+      }),
+    };
 
-      };
-
-      axios(options)
-          .then(response => {
-              console.log(response.data);
-              setResponseData(response.data);
-          })
-          .catch(error => {
-              throw new Error(error);
-          })
+    axios(options)
+      .then((response) => {
+        console.log(response.data);
+        setResponseData(response.data);
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   }
 
   /**
@@ -82,22 +89,33 @@ export default function EquipmentScreen() {
    * @return string 鉴权签名信息（Access Token）
    */
   function getAccessToken() {
-
-      let options = {
-          'method': 'POST',
-          'url': 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=' + AK + '&client_secret=' + SK,
-      }
-      return new Promise((resolve, reject) => {
-        axios(options)
-            .then(res => {
-                resolve(res.data.access_token)
-            })
-            .catch(error => {
-                reject(error)
-            })
-      })
+    let options = {
+      method: "POST",
+      url:
+        "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" +
+        AK +
+        "&client_secret=" +
+        SK,
+    };
+    return new Promise((resolve, reject) => {
+      axios(options)
+        .then((res) => {
+          resolve(res.data.access_token);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   }
 
+  const color = "#FFF5EE";
+  const activeColor = "#FFA07A";
+  const activeGroup = [""];
+
+  let prompt = "请给出关于以下动作的纠正意见：";
+  prompt += motionData[id - 1].name;
+  prompt += "。";
+  console.log("prompt: ", prompt);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Cart />
@@ -141,15 +159,47 @@ export default function EquipmentScreen() {
 
         {/* baidu API 在 getInfor 里面编辑 prompt 调取有点慢 点击 baidu Button 直接显示返回结果 */}
         <View style={styles.descriptionBox}>
-          <TouchableOpacity onPress={async () => await getInfor("在健身房练腿的动作要领")}
-          >
-            <ThemedText type="default" style={styles.text}>
-              baidu Button
+          <View style={{ alignItems: "center", flexDirection: "column" }}>
+            {isMale ? (
+              <FrontMaleSimple
+                color={color}
+                activeColor={activeColor}
+                activeGroup={activeGroup}
+                handleClick={() => {}}
+              />
+            ) : (
+              <FrontFemaleSimple
+                color={color}
+                activeColor={activeColor}
+                activeGroup={activeGroup}
+                handleClick={() => {}}
+              />
+            )}
+            {isMale ? (
+              <BackMaleSimple
+                color={color}
+                activeColor={activeColor}
+                activeGroup={activeGroup}
+                handleClick={() => {}}
+              />
+            ) : (
+              <BackFemaleSimple
+                color={color}
+                activeColor={activeColor}
+                activeGroup={activeGroup}
+                handleClick={() => {}}
+              />
+            )}
+          </View>
+          <TouchableOpacity onPress={async () => await getInfor(prompt)}>
+            <ThemedText type="subtitle" style={styles.text}>
+              开始分析
             </ThemedText>
           </TouchableOpacity>
-          <ThemedText type="default" style={styles.text}>
-            {responseData ? responseData.result : "No response"}
-          </ThemedText>
+          <Divider />
+          <Markdown style={markdownStyles}>
+            {responseData ? responseData.result : ""}
+          </Markdown>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -180,12 +230,37 @@ const styles = StyleSheet.create({
     padding: 15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
+    shadowOpacity: 0.5,
     shadowRadius: 5,
     marginBottom: 20,
   },
   text: {
     margin: 10,
     padding: 5,
+  },
+});
+
+const markdownStyles = StyleSheet.create({
+  text: {
+    color: "#000",
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: "black",
+  },
+  listItem: {
+    fontSize: 16,
+    marginVertical: 4,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  ordered_list_icon: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginRight: 8,
+  },
+  ordered_list_content: {
+    flex: 1,
+    fontSize: 16,
+    lineHeight: 24,
   },
 });
