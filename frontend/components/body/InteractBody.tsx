@@ -72,95 +72,29 @@ const InteractBody = () => {
   const navigation = useNavigation();
 
   const currentPage = () => {
-    if (pageView === "FrontMaleSimple") {
-      return (
-        <FrontMaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackMaleSimple") {
-      return (
-        <BackMaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "FrontFemaleSimple") {
-      return (
-        <FrontFemaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackFemaleSimple") {
-      return (
-        <BackFemaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "FrontMaleComplex") {
-      return (
-        <FrontMaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackMaleComplex") {
-      return (
-        <BackMaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "FrontFemaleComplex") {
-      return (
-        <FrontFemaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackFemaleComplex") {
-      return (
-        <BackFemaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    }
+    const componentsMap = {
+      FrontMaleSimple,
+      BackMaleSimple,
+      FrontFemaleSimple,
+      BackFemaleSimple,
+      FrontMaleComplex,
+      BackMaleComplex,
+      FrontFemaleComplex,
+      BackFemaleComplex,
+    };
+
+    const SelectedComponent = componentsMap[pageView];
+
+    return (
+      <SelectedComponent
+        color={color}
+        activeColor={activeColor}
+        activeGroup={activeGroup}
+        handleClick={handleClick}
+        width={width * 0.8}
+        height={height * 0.7}
+      />
+    );
   };
 
   return (
