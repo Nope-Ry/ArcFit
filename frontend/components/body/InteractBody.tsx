@@ -140,44 +140,31 @@ const InteractBody = () => {
       </SafeAreaView>
       {currentPage()}
       <View>
-        {isSimple && (
-          <TouchableOpacity
-            onPress={() => {
+        <TouchableOpacity
+          onPress={() => {
+            const bodypart = mapBodyPart(activeGroup);
+            if (bodypart) {
               navigation.navigate("BodyInfoScreen", {
-                name: mapBodyPart(activeGroup),
+                name: bodypart,
               });
-            }}
-            style={{
-              backgroundColor: "#FFA07A",
-              width: width,
-              height: height * 0.05,
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: height * 0.04,
-            }}
-          >
-            <ThemedText type="defaultBold">
-              {mapBodyPart(activeGroup)}
-            </ThemedText>
-          </TouchableOpacity>
-        )}
-        {!isSimple && (
-          <TouchableOpacity
-            onPress={() => {
-              alert("暂时不支持复杂模式动作");
-            }}
-            style={{
-              backgroundColor: "#FFA07A",
-              width: width,
-              height: height * 0.05,
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: height * 0.04,
-            }}
-          >
-            <ThemedText type="defaultBold">{activeGroup}</ThemedText>
-          </TouchableOpacity>
-        )}
+            } else {
+              alert("敬请期待！");
+            }
+          }}
+          style={{
+            backgroundColor: "#FFA07A",
+            width: width,
+            height: height * 0.05,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: height * 0.04,
+          }}
+        >
+          <ThemedText type="defaultBold">
+            {mapBodyPart(activeGroup) && mapBodyPart(activeGroup)}
+            {!mapBodyPart(activeGroup) && activeGroup}
+          </ThemedText>
+        </TouchableOpacity>
       </View>
     </View>
   );
