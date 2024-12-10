@@ -1,19 +1,25 @@
 import { UserInfo, ServerUserInfo } from "@/contexts/UserContext.types";
 import { useUser, translateGender, translateAge } from "@/contexts/UserContext";
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from "react-native";
 import Avatar from "@/components/Avatar";
 import InfoGroup from "@/components/profile/InfoGroup";
 import { ThemedText } from "@/components/ThemedText";
 import { useState } from "react";
 import EditModal, { InfoType } from "@/components/profile/EditModal";
+import ProfileInfo from "@/components/profile/ProfileInfo";
 import { API } from "@/constants/APIs";
 import * as ImagePicker from "expo-image-picker";
 import { emitUserEvent } from "@/contexts/UserContext";
 import { useNavigation } from "@react-navigation/native";
+import { Dimensions } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+
+const { width, height } = Dimensions.get("window");
 
 type InfoItem = InfoType & {
   label: string;
   field: keyof ServerUserInfo;
+  icon: any;
 };
 
 export default function AccountScreen() {
@@ -107,41 +113,48 @@ export default function AccountScreen() {
 
   return (
     <View style={styles.container}>
-      {/* 用户头像区域 */}
-      <TouchableOpacity style={styles.avatarContainer} onPress={uploadAvatar}>
-        <Avatar size={styles.avatarContainer.width} />
-      </TouchableOpacity>
-      {/* 用户名区域 */}
-      <ThemedText type="title">{user.username}</ThemedText>
-      {/* 个人资料详情区域 */}
-      <InfoGroup groupName={"基本信息"}>
-        {[
-          { label: "性别", field: "gender", value: translateGender(user.gender), type: "select", options: ["男", "女", "保密"] },
-          { label: "年龄", field: "age", value: translateAge(user.age), type: "text" },
-          { label: "邮箱", field: "email", value: user.email, type: "text" },
-          { label: "手机", field: "phone_number", value: user.phone_number, type: "text" },
-        ].map((item: InfoItem, index) => {
-          return (
-            <TouchableOpacity key={index} onPress={() => setVisible(item)}>
-              <View style={styles.item}>
-                <ThemedText type="defaultBold" style={styles.label}>{item.label}</ThemedText>
-                <ThemedText type="default" style={styles.value}>{item.value}</ThemedText>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
-      </InfoGroup>
+      {/* 封面区域 */}
+      <View>
+        <Image source={require("../../coverimage/image.png")} style={styles.cover} />
+        <TouchableOpacity style={styles.coverButton}>
+          <Ionicons name="image" size={24} color="white" />
+          <ThemedText style={{ color: "white" }}> 更换封面</ThemedText>
+        </TouchableOpacity>
+      </View>
+      <View style={{ padding: 15, marginTop: -85 }}>
+        {/* 用户头像区域 */}
+        <TouchableOpacity style={styles.avatarContainer} onPress={uploadAvatar}>
+          <Avatar size={styles.avatarContainer.width} />
+        </TouchableOpacity>
+        {/* 用户名区域 */}
+        <ThemedText type="title">{user.username}</ThemedText>
+        {/* 个人资料详情区域 */}
+        <InfoGroup groupName={"基本信息"}>
+          {[
+            { label: "性别", field: "gender", value: translateGender(user.gender), type: "select", options: ["男", "女", "保密"], icon: require("../../assets/images/gender.png") },
+            { label: "年龄", field: "age", value: translateAge(user.age), type: "text", icon: require("../../assets/images/age.png") },
+            { label: "邮箱", field: "email", value: user.email, type: "text", icon: require("../../assets/images/email.png") },
+            { label: "手机", field: "phone_number", value: user.phone_number, type: "text", icon: require("../../assets/images/phone.png") },
+          ].map((item: InfoItem, index) => {
+            return (
+              <TouchableOpacity key={index} onPress={() => setVisible(item)}>
+                <ProfileInfo label={item.label} value={item.value} icon={item.icon} />
+              </TouchableOpacity>
+            );
+          })}
+        </InfoGroup>
 
-      {/* 退出登录 */}
-      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-        <ThemedText style={styles.logoutButtonText}>退出登录</ThemedText>
-      </TouchableOpacity>
-      <EditModal
-        visible={isVisible}
-        title={title}
-        info={info}
-        onClose={setInvisible}
-        onSave={onEdit} />
+        {/* 退出登录 */}
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <ThemedText style={styles.logoutButtonText}>退出登录</ThemedText>
+        </TouchableOpacity>
+        <EditModal
+          visible={isVisible}
+          title={title}
+          info={info}
+          onClose={setInvisible}
+          onSave={onEdit} />
+      </View>
     </View>
   );
 };
@@ -149,9 +162,21 @@ export default function AccountScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 30,
-    paddingHorizontal: 30,
     backgroundColor: "#fff",
+  },
+  cover: {
+    width: width,
+    height: 200,
+  },
+  coverButton: {
+    // 水平排列
+    flexDirection: "row",
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10,
+    borderRadius: 20,
   },
   title: {
     fontSize: 32,
@@ -190,9 +215,10 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   avatarContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    alignSelf: 'center',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     borderWidth: 2,
     borderColor: '#ccc',
     marginBottom: 20,
@@ -213,11 +239,12 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: 30,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF6347',
     padding: 10,
     borderRadius: 5,
   },
   logoutButtonText: {
+    textAlign: 'center',
     color: 'white',
     fontWeight: 'bold',
   },
