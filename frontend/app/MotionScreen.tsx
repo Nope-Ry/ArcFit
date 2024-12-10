@@ -1,5 +1,5 @@
 import { ThemedText } from "@/components/ThemedText";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   View,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { useRoute } from "@react-navigation/native";
@@ -24,10 +25,10 @@ import { motion_imgs } from "@/res/motion/motion_img";
 import { Divider } from "@/components/ui/divider";
 import axios from "axios";
 import { useGender } from "@/contexts/GenderContext";
-import { FrontMaleSimple } from "@/components/body/FrontMaleSimple";
-import { BackMaleSimple } from "@/components/body/BackMaleSimple";
-import { FrontFemaleSimple } from "@/components/body/FrontFemaleSimple";
-import { BackFemaleSimple } from "@/components/body/BackFemaleSimple";
+import { FrontMaleComplex } from "@/components/body/FrontMaleComplex";
+import { BackMaleComplex } from "@/components/body/BackMaleComplex";
+import { FrontFemaleComplex } from "@/components/body/FrontFemaleComplex";
+import { BackFemaleComplex } from "@/components/body/BackFemaleComplex";
 import token from "@/token.json";
 
 const { width, height } = Dimensions.get("window");
@@ -50,10 +51,11 @@ export default function EquipmentScreen() {
 
   const [responseData, setResponseData] = useState(null);
   const [activeGroup, setActiveGroup] = useState([]);
-  // 百度API
-  const AK = token['AK'];
-  const SK = token['SK'];
+  const [loading, setLoading] = useState(false);
 
+  // 百度API
+  const AK = token["AK"];
+  const SK = token["SK"];
 
   async function getInfor(userMessage: string) {
     var options = {
@@ -81,6 +83,7 @@ export default function EquipmentScreen() {
       .then((response) => {
         console.log(response.data);
         setResponseData(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         throw new Error(error);
@@ -123,29 +126,27 @@ export default function EquipmentScreen() {
     });
   };
 
+  useEffect(() => {
+    console.log(loading);
+  }, [loading]);
+
+  const handlePress = async () => {
+    setLoading(true);
+    const response = await getInfor(prompt);
+    console.log(response);
+    setResponseData(response);
+  };
+  console.log(loading);
   let prompt = "请给出关于以下动作的纠正意见：";
   prompt += motionData[id - 1].name;
   prompt += "。";
-  prompt += "我的发力点包括了："
+  prompt += "我的发力点包括了：";
   prompt += activeGroup.join("、");
-  prompt += "。请分析我的发力点是否正确，如果不正确，给出应该如何修改动作。"; 
-  console.log("prompt: ", prompt);
+  prompt += "。请分析我的发力点是否正确，如果不正确，给出应该如何修改动作。";
+  // console.log("prompt: ", prompt);
 
-  console.log(activeGroup);
-  const debugtext = `对于“斯万推胸”这个动作，发力点的准确性对于锻炼效果和避免受伤都非常重要。根据您提供的发力点“chest”和“biceps”，我们来分析一下。
+  // console.log(activeGroup);
 
-首先，“chest”即胸部，是推胸动作的主要发力部位，这是正确的。推胸动作主要锻炼的就是胸大肌，所以胸部应该是主要的发力点。
-
-然而，“biceps”指的是二头肌，这通常是在做臂部动作时的主要发力肌肉。在推胸动作中，虽然手臂的参与是必要的，以帮助稳定身体和推动重量，但二头肌并不是推胸动作的主要发力点。
-
-因此，您的发力点在某种程度上是正确的，但可以更专注于胸部肌肉的发力。为了更准确地执行这个动作，您可以尝试以下建议来修改动作：
-
-- 集中注意力在胸部肌肉上。当您进行推胸动作时，要时刻关注胸部的肌肉收缩和伸展感。
-- 确保手臂的角度和位置正确。手臂应该稍微弯曲，以减轻二头肌的负担，让更多的力量转移到胸部肌肉上。
-3. 注重呼吸配合。在推胸动作中，吸气时准备并收紧胸部肌肉，呼气时则用力推起重量，这样可以帮助您更好地集中力量并感受胸部的发力。
-4. 可以在专业教练的指导下进行训练，他们可以提供更具体的指导，帮助您纠正动作和调整发力点。
-
-综上所述，您在进行斯万推胸动作时，应该将注意力更多地放在胸部肌肉上，而不仅仅是二头肌。通过以上建议的修改，您可以更有效地锻炼到胸部肌肉，并避免不必要的伤害。`;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Cart />
@@ -189,9 +190,10 @@ export default function EquipmentScreen() {
 
         {/* baidu API 在 getInfor 里面编辑 prompt 调取有点慢 点击 baidu Button 直接显示返回结果 */}
         <View style={styles.correctBox}>
+          <ThemedText type="defaultBold">点击发力点部位</ThemedText>
           <View style={styles.bodyBox}>
             {isMale ? (
-              <FrontMaleSimple
+              <FrontMaleComplex
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
@@ -200,7 +202,7 @@ export default function EquipmentScreen() {
                 height={height * 0.3}
               />
             ) : (
-              <FrontFemaleSimple
+              <FrontFemaleComplex
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
@@ -210,7 +212,7 @@ export default function EquipmentScreen() {
               />
             )}
             {isMale ? (
-              <BackMaleSimple
+              <BackMaleComplex
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
@@ -219,7 +221,7 @@ export default function EquipmentScreen() {
                 height={height * 0.3}
               />
             ) : (
-              <BackFemaleSimple
+              <BackFemaleComplex
                 color={color}
                 activeColor={activeColor}
                 activeGroup={activeGroup}
@@ -229,15 +231,20 @@ export default function EquipmentScreen() {
               />
             )}
           </View>
-          <TouchableOpacity onPress={async () => await getInfor(prompt)}>
+          <TouchableOpacity onPress={handlePress}>
             <ThemedText type="subtitle" style={styles.text}>
               开始分析
             </ThemedText>
           </TouchableOpacity>
           <Divider />
+          {loading && (
+            <View style={{ flex: 1, padding: 8 }}>
+              <ActivityIndicator size="large" color="#000" />
+              <ThemedText type="subtitle">正在分析中...</ThemedText>
+            </View>
+          )}
           <Markdown style={markdownStyles}>
             {responseData ? responseData.result : ""}
-            {/* {debugtext} */}
           </Markdown>
         </View>
       </ScrollView>
@@ -308,10 +315,14 @@ const markdownStyles = StyleSheet.create({
     fontWeight: "black",
   },
   list_item: {
-    fontSize: 16,
+    fontSize: 14,
     lineHeight: 24,
-    marginEnd: 20,
+    fontWeight: "bold",
     alignSelf: "flex-start",
     flex: 0,
+    marginVertical: 5,
+  },
+  paragraph: {
+    marginStart: 14,
   },
 });
