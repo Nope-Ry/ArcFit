@@ -17,6 +17,10 @@ import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
 import { FrontFemaleSimple } from "./FrontFemaleSimple";
 import { BackFemaleSimple } from "./BackFemaleSimple";
+import { FrontMaleComplex } from "./FrontMaleComplex";
+import { BackMaleComplex } from "./BackMaleComplex";
+import { FrontFemaleComplex } from "./FrontFemaleComplex";
+import { BackFemaleComplex } from "./BackFemaleComplex";
 import { useGender } from "@/contexts/GenderContext";
 
 const { width, height } = Dimensions.get("window");
@@ -112,8 +116,50 @@ const InteractBody = () => {
           height={height * 0.7}
         />
       );
-    } else {
-      return <Text>Not Found</Text>;
+    } else if (pageView === "FrontMaleComplex") {
+      return (
+        <FrontMaleComplex
+          color={color}
+          activeColor={activeColor}
+          activeGroup={activeGroup}
+          handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
+        />
+      );
+    } else if (pageView === "BackMaleComplex") {
+      return (
+        <BackMaleComplex
+          color={color}
+          activeColor={activeColor}
+          activeGroup={activeGroup}
+          handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
+        />
+      );
+    } else if (pageView === "FrontFemaleComplex") {
+      return (
+        <FrontFemaleComplex
+          color={color}
+          activeColor={activeColor}
+          activeGroup={activeGroup}
+          handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
+        />
+      );
+    } else if (pageView === "BackFemaleComplex") {
+      return (
+        <BackFemaleComplex
+          color={color}
+          activeColor={activeColor}
+          activeGroup={activeGroup}
+          handleClick={handleClick}
+          width={width * 0.8}
+          height={height * 0.7}
+        />
+      );
     }
   };
 
@@ -134,18 +180,18 @@ const InteractBody = () => {
             trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
           />
         </View>
-        {/* <View style={{ alignItems: "center" }}>
+        <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isSimple ? "简单" : "复杂"}
           </ThemedText>
           <Switch
             value={isSimple}
             onValueChange={setIsSimple}
-            disabled
+            // disabled
             thumbColor={isSimple ? "#FFFFFF" : "#FFA07A"}
             trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
           />
-        </View> */}
+        </View>
         <View style={{ alignItems: "center" }}>
           <ThemedText type="defaultBold">
             {isFront ? "前面" : "后面"}
@@ -160,24 +206,44 @@ const InteractBody = () => {
       </SafeAreaView>
       {currentPage()}
       <View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("BodyInfoScreen", {
-              name: mapBodyPart(activeGroup),
-            });
-          }}
-          style={{
-            backgroundColor: "#FFA07A",
-            width: width,
-            height: height * 0.05,
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: height * 0.04,
-          }}
-        >
-          <ThemedText type="defaultBold">{mapBodyPart(activeGroup)}</ThemedText>
-          {/* <ThemedText type="defaultBold">{activeGroup}</ThemedText> */}
-        </TouchableOpacity>
+        {isSimple && (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("BodyInfoScreen", {
+                name: mapBodyPart(activeGroup),
+              });
+            }}
+            style={{
+              backgroundColor: "#FFA07A",
+              width: width,
+              height: height * 0.05,
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: height * 0.04,
+            }}
+          >
+            <ThemedText type="defaultBold">
+              {mapBodyPart(activeGroup)}
+            </ThemedText>
+          </TouchableOpacity>
+        )}
+        {!isSimple && (
+          <TouchableOpacity
+            onPress={() => {
+              alert("暂时不支持复杂模式动作");
+            }}
+            style={{
+              backgroundColor: "#FFA07A",
+              width: width,
+              height: height * 0.05,
+              alignItems: "center",
+              justifyContent: "center",
+              marginTop: height * 0.04,
+            }}
+          >
+            <ThemedText type="defaultBold">{activeGroup}</ThemedText>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

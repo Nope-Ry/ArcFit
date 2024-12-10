@@ -1,3 +1,4 @@
+// this model is based on https://musclewiki.com
 import React from "react";
 import { View } from "react-native";
 import Svg, {
@@ -8,8 +9,6 @@ import Svg, {
   Path,
   Line,
 } from "react-native-svg";
-import { Dimensions } from "react-native";
-const { width, height } = Dimensions.get("window");
 
 export const BackMaleSimple = ({
   color,
