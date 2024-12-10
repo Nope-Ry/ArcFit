@@ -145,7 +145,16 @@ export default function EquipmentScreen() {
   prompt += "。请分析我的发力点是否正确，如果不正确，给出应该如何修改动作。";
   // console.log("prompt: ", prompt);
 
-  // console.log(activeGroup);
+  const renderComplex = (Component: React.ElementType) => (
+    <Component
+      color={color}
+      activeColor={activeColor}
+      activeGroup={activeGroup}
+      handleClick={handleClick}
+      width={width * 0.3}
+      height={height * 0.3}
+    />
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -192,44 +201,12 @@ export default function EquipmentScreen() {
         <View style={styles.correctBox}>
           <ThemedText type="defaultBold">点击发力点部位</ThemedText>
           <View style={styles.bodyBox}>
-            {isMale ? (
-              <FrontMaleComplex
-                color={color}
-                activeColor={activeColor}
-                activeGroup={activeGroup}
-                handleClick={handleClick}
-                width={width * 0.3}
-                height={height * 0.3}
-              />
-            ) : (
-              <FrontFemaleComplex
-                color={color}
-                activeColor={activeColor}
-                activeGroup={activeGroup}
-                handleClick={handleClick}
-                width={width * 0.3}
-                height={height * 0.3}
-              />
-            )}
-            {isMale ? (
-              <BackMaleComplex
-                color={color}
-                activeColor={activeColor}
-                activeGroup={activeGroup}
-                handleClick={handleClick}
-                width={width * 0.3}
-                height={height * 0.3}
-              />
-            ) : (
-              <BackFemaleComplex
-                color={color}
-                activeColor={activeColor}
-                activeGroup={activeGroup}
-                handleClick={handleClick}
-                width={width * 0.3}
-                height={height * 0.3}
-              />
-            )}
+            {isMale
+              ? renderComplex(FrontMaleComplex)
+              : renderComplex(FrontFemaleComplex)}
+            {isMale
+              ? renderComplex(BackMaleComplex)
+              : renderComplex(BackFemaleComplex)}
           </View>
           <TouchableOpacity onPress={handlePress}>
             <ThemedText type="subtitle" style={styles.text}>
