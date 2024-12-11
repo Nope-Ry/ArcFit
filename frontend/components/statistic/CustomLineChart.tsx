@@ -5,12 +5,11 @@ const { width, height } = Dimensions.get("window");
 interface CustomLineChartProps {
     parameterLabels: string[];  
     parameterData: number[];    
-    parameterunit: string;
     showParameterInfo(param: number): void;
 }
 
 
-const CustomLineChart: React.FC<CustomLineChartProps> = ({ parameterLabels, parameterData, parameterunit, showParameterInfo }) => {
+const CustomLineChart: React.FC<CustomLineChartProps> = ({ parameterLabels, parameterData, showParameterInfo }) => {
     return (
         <LineChart
         data={{
@@ -20,19 +19,21 @@ const CustomLineChart: React.FC<CustomLineChartProps> = ({ parameterLabels, para
         width={width * 0.85}
         height={height * 0.3}
         chartConfig={{
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
-            color: (opacity) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity) => `rgba(255, 255, 255, ${opacity})`,
+            backgroundGradientFrom: "#F5F5F5",
+            backgroundGradientTo: "#F5F5F5",
+            color: (opacity) => `rgba(128, 128, 128, ${opacity})`,
+            labelColor: (opacity) => `rgba(0, 0, 0, ${opacity})`,
             style: { borderRadius: 16 },
             propsForDots: {
                 r: "6",
                 strokeWidth: "2",
-                stroke: "#ffa726"
             },
             decimalPlaces: 0,
+            propsForLabels: {
+                fontSize: 12,
+                fontWeight: "bold",
+            }
         }}
-        yAxisSuffix={parameterunit}
         bezier
         onDataPointClick={({ index }) => {showParameterInfo(index);}}
         style={{ marginVertical: 8, borderRadius: 16 }}

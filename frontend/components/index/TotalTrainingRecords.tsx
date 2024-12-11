@@ -179,7 +179,6 @@ const TotalTrainingRecords = () => {
                     const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
                     showAlert(formattedDate, motion.weight[index]);
                   }}
-                  parameterunit="kg"
                 />
               </View>
             </View>
@@ -230,7 +229,6 @@ const styles = StyleSheet.create({
   container: { 
     width: width * 0.9,
     padding: 20, 
-    backgroundColor: "#FFFAF0",
     borderRadius: 10, 
     shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 }, 
@@ -242,13 +240,13 @@ const styles = StyleSheet.create({
   card: {
     width: width * 0.25,
     height: height * 0.1,
-    backgroundColor: "#FFDEAD",
+    backgroundColor: "#F5F5F5",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   motionBox: {
-    borderColor: "#FFA07A",
+    borderColor: "#000000",
     borderRadius: 8,
     padding: 10,
     width: width * 0.3,
@@ -279,7 +277,7 @@ const styles = StyleSheet.create({
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#ff5733',
+    backgroundColor: '#FFA07A',
     borderRadius: 5,
     width: width * 0.5,
     alignItems: 'center',

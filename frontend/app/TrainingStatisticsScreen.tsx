@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   toggleContainer: {
     marginTop: 20,
@@ -63,10 +64,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10, 
     alignItems: 'center', 
     justifyContent: 'center', 
-    backgroundColor: '#ddd', 
+    backgroundColor: '#FBE8D5',
   },
   selectedButton: {
-    backgroundColor: '#FFA07A',
+    backgroundColor: '#FFB77F',
   },
 });
 

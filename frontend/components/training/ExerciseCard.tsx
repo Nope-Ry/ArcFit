@@ -270,14 +270,10 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 <ThemedText type="default">
                   上次做此动作是在{formattedDate}
                 </ThemedText>
-                <ScrollView>
+                <ScrollView style={{marginTop: 20}}>
                   {motionHistory.groups[showindex].map((set, index) => (
-                    <View key={index} style={{ width: width * 0.8 }}>
-                      <ThemedText type="defaultBold">{index + 1}</ThemedText>
-                      <ThemedText type="default">
-                        重量：{set.weight}kg
-                      </ThemedText>
-                      <ThemedText type="default">次数：{set.reps}次</ThemedText>
+                    <View key={index} style={{ width: width * 0.8,height: height * 0.05 }}>
+                      <ThemedText type="default">{`${index + 1}         重量：${set.weight}kg         次数：${set.reps}次`}</ThemedText>
                     </View>
                   ))}
                 </ScrollView>
@@ -285,7 +281,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 <CustomLineChart
                   parameterData={maxWeights}
                   parameterLabels={motionHistory.days}
-                  parameterunit="kg"
                   showParameterInfo={(index) => {
                     setShowindex(index);
                     showAlert(formattedDate, maxWeights[index]);
@@ -297,7 +292,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <ThemedText type="defaultBold">关闭</ThemedText>
+              <ThemedText type="defaultBold" lightColor="black">关闭</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -426,7 +421,7 @@ const styles = StyleSheet.create({
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: "#ff5733",
+    backgroundColor: "#FFA07A",
     borderRadius: 5,
     width: width * 0.5,
     alignItems: "center",

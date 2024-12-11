@@ -166,7 +166,7 @@ export default function EquipmentScreen() {
       activeColor={activeColor}
       activeGroup={activeGroup}
       handleClick={handleClick}
-      width={width * 0.9}
+      width={width * 0.85}
       height={height * 0.8}
     />
   );
@@ -254,7 +254,7 @@ export default function EquipmentScreen() {
           </TouchableOpacity>
           <Divider />
           {loading && (
-            <View style={{ flex: 1, padding: 8 }}>
+            <View style={{ flex: 1, padding: 8, marginVertical:20 }}>
               <ActivityIndicator size="large" color="#000" />
               <ThemedText type="subtitle">正在分析中...</ThemedText>
             </View>
@@ -364,23 +364,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    // borderRadius: 10,
   },
   modalCloseButton: {
     position: "absolute",
     top: height * 0.06,
     right: width * 0.07,
-    backgroundColor: "#FFA07A",
     padding: 10,
     borderRadius: 10,
     zIndex: 1,
   },
   modalContent: {
-    width: "90%",
+    width: "93%",
     height: "90%",
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 20,
   },
 });
 

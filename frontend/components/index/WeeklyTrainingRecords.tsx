@@ -122,7 +122,7 @@ const WeeklyTrainingRecords = () => {
         <ScrollView>
             {/* 训练时长柱状图 */}
             <View style={styles.container}>
-                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长</ThemedText>
+                <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>训练时长(min)</ThemedText>
                     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <CustomLineChart
                         parameterData={weeklyRecord}
@@ -131,7 +131,6 @@ const WeeklyTrainingRecords = () => {
                             const previousDate = getPreviousDate(6 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
                             showAlertDuration(previousDate, weeklyRecord[index]);
                         }}
-                        parameterunit="mins"
                     />
                 </View>
             </View>
@@ -150,7 +149,7 @@ const WeeklyTrainingRecords = () => {
                         </TouchableOpacity>
                     </View>
                  </View>
-                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计</ThemedText>
+                 <ThemedText type="defaultBold" style={{ textAlign: 'center'}}>容量统计(kg)</ThemedText>
                  <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                     <CustomLineChart
                         parameterLabels={days}
@@ -159,7 +158,6 @@ const WeeklyTrainingRecords = () => {
                             const previousDate = getPreviousDate(6 - index).replace(/-/g, '年').replace(/年(\d{2})$/, '月$1日');
                             showAlertWeight(previousDate, weeklyBodyRecords[selected].weight[index]);
                         }}
-                        parameterunit="kg"
                     />
                  </View>
                  <ThemedText type="defaultBold" style={{ textAlign: 'center' }}>动作分布</ThemedText>
@@ -212,7 +210,6 @@ const styles = StyleSheet.create({
     container: { 
         width: width * 0.9,
         padding: 20, 
-        backgroundColor: '#FFFAF0',
         borderRadius: 10, 
         shadowColor: '#000', 
         shadowOffset: { width: 0, height: 2 }, 
@@ -222,7 +219,7 @@ const styles = StyleSheet.create({
         zIndex: 2,
       },
     motionBox: {
-        borderColor: "#FFA07A",
+        borderColor: "#000000",
         borderRadius: 8,
         padding: 10,
         width: width * 0.3,
@@ -253,7 +250,7 @@ const styles = StyleSheet.create({
       closeButton: {
         marginTop: 20,
         padding: 10,
-        backgroundColor: '#ff5733',
+        backgroundColor: '#FFA07A',
         borderRadius: 5,
         width: width * 0.5,
         alignItems: 'center',
