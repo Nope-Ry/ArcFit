@@ -1,25 +1,33 @@
-import React, { useState, useRef, useEffect } from "react";
-import { SafeAreaView, TouchableOpacity, TextInput, Modal, View, Animated, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import React, { useState, useRef } from "react";
+import {
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+  Animated,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "../ThemedText";
 import clfData from "@/res/bodypart/json/comb.json";
+import equipmentData from "@/res/equipment/json/comb.json";
 
-
-const EquipmentHeader = ({ OnSelect }) => {
+const EquipmentHeader = ({ OnSelect, OnSearch }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const slideAnim = useRef(new Animated.Value(-300)).current;
 
   const categories = ["全部", ...clfData.map((item) => item.name)];
 
   const toggleMenu = () => {
     if (isMenuVisible) {
-    
       Animated.timing(slideAnim, {
         toValue: -300,
         duration: 300,
         useNativeDriver: true,
       }).start(() => {
-        setIsMenuVisible(false); 
+        setIsMenuVisible(false);
       });
     } else {
       setIsMenuVisible(true);
@@ -30,7 +38,7 @@ const EquipmentHeader = ({ OnSelect }) => {
       }).start();
     }
   };
-  
+
   const handleCategoryClick = (index) => {
     // 根据不同的分类
     // toggleMenu();
@@ -38,8 +46,12 @@ const EquipmentHeader = ({ OnSelect }) => {
     OnSelect(index);
   };
 
-  return (
+  const handleSearch = (text) => {
+    setSearchText(text);
+    OnSearch(text);
+  }
 
+  return (
     <SafeAreaView style={styles.headerContainer}>
       {/* 左侧菜单按钮 */}
       <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
@@ -49,14 +61,12 @@ const EquipmentHeader = ({ OnSelect }) => {
       {/* 中间搜索框 */}
       <TextInput
         style={styles.searchInput}
-        placeholder="Search Equipment"
+        placeholder="搜索器械"
         placeholderTextColor="#888"
+        value={searchText}
+        onChangeText={text => handleSearch(text)}
       />
 
-      {/* 右侧相机按钮 */}
-      <TouchableOpacity style={styles.iconButton}>
-        <MaterialIcons name="camera-alt" size={30} color="black" onPress={() => alert("Camera")} />
-      </TouchableOpacity>
 
       {/* 菜单弹出框 */}
       <Modal
@@ -64,15 +74,23 @@ const EquipmentHeader = ({ OnSelect }) => {
         visible={isMenuVisible}
         animationType="none"
         onRequestClose={toggleMenu}
-        >
+      >
         <TouchableWithoutFeedback onPress={toggleMenu}>
-          <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)" }}>
-            <Animated.ScrollView style={[styles.menuContainer, { transform: [{ translateX: slideAnim }] }]}>
+          <SafeAreaView
+            style={{ flex: 1, backgroundColor: "rgba(240,248,255,0.2)" }}
+          >
+            <Animated.View
+              style={[
+                styles.menuContainer,
+                { transform: [{ translateX: slideAnim }] },
+              ]}
+            >
+              <Animated.ScrollView >
               {categories.map((category, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => handleCategoryClick(index)}
-                  style={{  }}
+                  style={{}}
                 >
                   <ThemedText
                     type="defaultBold"
@@ -82,8 +100,9 @@ const EquipmentHeader = ({ OnSelect }) => {
                   </ThemedText>
                 </TouchableOpacity>
               ))}
-            </Animated.ScrollView>
-          </View>
+              </Animated.ScrollView>
+            </Animated.View>
+          </SafeAreaView>
         </TouchableWithoutFeedback>
       </Modal>
     </SafeAreaView>
@@ -92,10 +111,10 @@ const EquipmentHeader = ({ OnSelect }) => {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff', 
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   iconButton: {
     padding: 10,
@@ -106,7 +125,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     paddingLeft: 20,
-    backgroundColor: '#f0f0f0',
+    marginRight: 15,
+    backgroundColor: "#f0f0f0",
   },
   menuContainer: {
     width: "50%",

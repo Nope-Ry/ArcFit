@@ -1,23 +1,19 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  Button,
   Dimensions,
   StyleSheet,
-  FlatList,
 } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, Modal } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text as SvgText } from "react-native-svg";
-import { LineChart, Grid, PieChart, YAxis } from "react-native-svg-charts";
-import { MaxEquation } from "three";
-import * as shape from "d3-shape";
-import { SelectList } from "react-native-dropdown-select-list";
-import * as FileSystem from "expo-file-system";
-import { data }from "../../app/(tabs)/index";
+import { data }from "../../app/(tabs)/profile";
+import { Alert } from "react-native";
+import CustomLineChart from "../statistic/CustomLineChart";
+import { Picker } from "@react-native-picker/picker";
+
+import motionData from "@/res/motion/json/comb.json";
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -32,6 +28,7 @@ const getTotalTrainingRecords = () => {
   const totalDays = new Set(data.map((item) => item.date));
   const totalDuration = Math.floor(data.reduce((acc, item) => acc + item.duration, 0));
   const avgDuration = Math.floor(totalDuration / totalDays.size);
+
   if (isNaN(avgDuration)) {
     return {
       totalDays: 0,
@@ -110,15 +107,22 @@ const getBodyWeightTrend = () => {
   });
   return bodyWeight;
 };
+const showAlert = (formattedDate, weight) => {
+  Alert.alert(
+    "继续加油💪",
+    `${formattedDate} 容量为 ${weight}kg`,
+    [{ text: "OK" }]
+  );
+};
 
-const TotalTrainingRecords: React.FC = () => {
+const TotalTrainingRecords = () => {
   const totalRecords = getTotalTrainingRecords();
   const bodyWeightTrend = getBodyWeightTrend();
-  const [selected, setSelected] = useState("1");
+  const [selected, setSelected] = useState(1);
+  const [isModalVisible, setModalVisible] = useState(false);
 
-
-  return (
-    <ScrollView style={{padding:10}}>
+  return( 
+    <ScrollView>
       {/* 预卡片总览 */}
       <View style={styles.container}>
         <ThemedText type="defaultBold" style={{ textAlign: "center", marginBottom: 10 }}>
@@ -142,7 +146,6 @@ const TotalTrainingRecords: React.FC = () => {
         </View>
       </View>
 
-      {/* 身体部位负重的趋势 */}
       <View style={styles.container}>
         <View style={{ flexDirection: "row", justifyContent: "space-around", zIndex: 2 }}>
           <ThemedText
@@ -155,112 +158,125 @@ const TotalTrainingRecords: React.FC = () => {
           >
             动作统计
           </ThemedText>
-          {/* 下拉框 */}
-          <SelectList
-            setSelected={(value) => setSelected(value)}
-            data={bodyWeightTrend
-              .slice(1)
-              .map((item) => ({ key: item.key, value: item.value }))}
-            placeholder="选择一个部位"
-            boxStyles={styles.motionBox}
-            dropdownStyles={styles.dropdown}
-            search={false}
-            defaultOption={{ key: "1", value: "胸部" }}
-          />
+          <View>
+            <TouchableOpacity
+              style={styles.motionBox}
+              onPress={() => setModalVisible(true)}>
+                <ThemedText type="default" style={{ textAlign: "center" }}>{bodyWeightTrend[selected].value}</ThemedText>
+            </TouchableOpacity>
+          </View>
         </View>
         <View>
           {bodyWeightTrend[selected].motions.map((motion, index) => (
-            <View key={index} style={{ marginVertical: 10 }}>
-              <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-              动作ID: {motion.m_id}
-              </ThemedText>
-                  <View style={{ flexDirection: 'row'}}>
-                    <YAxis
-                        data={motion.weight}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        svg={{ fill: 'grey', fontSize: 10 }}
-                        numberOfTicks={5} 
-                        formatLabel={(value) => `${value}`} 
-                        min={0}
-                        max={Math.max(...motion.weight)}
-                        width={100}
-                    />
-                    <LineChart
-                        style={{ height: 200, width: width * 0.75 }}
-                        data={motion.weight}
-                        svg={{ stroke: 'rgba(134, 65, 244, 0.8)', strokeWidth: 2 }}
-                        contentInset={{ top: 10, bottom: 10 }}
-                        gridMin={0}
-                        gridMax={Math.max(...motion.weight)}
-                    />
-                </View>
-              <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-              {motion.days.map((day, index) => (
-                <Text key={index} style={{ textAlign: "center", width: `${100 / motion.days.length}%` }}>
-                  {day}
-                </Text>
-              ))}
+            <View key={index}>
+              <ThemedText type="defaultBold" style={{ textAlign: "center" }}>{motionData[motion.m_id - 1].name}</ThemedText>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+                <CustomLineChart
+                  parameterLabels={motion.days}
+                  parameterData={motion.weight}
+                  showParameterInfo={(index) => {
+                    const date = new Date(firstDay);
+                    date.setDate(date.getDate() + motion.days[index] - 1);
+                    const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+                    showAlert(formattedDate, motion.weight[index]);
+                  }}
+                />
               </View>
             </View>
           ))}
         </View>
-
       </View>
 
-      {/* 容量统计 */}
-      <View style={[styles.container,{zIndex:0}]}>
-        <ThemedText type="defaultBold" style={{ textAlign: "center" }}>
-          容量统计
-        </ThemedText>
-      </View>
+      <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <ThemedText type="subtitle">选择部位</ThemedText>
+            <Picker
+              selectedValue={selected}
+              onValueChange={(itemValue) => setSelected(itemValue)}
+              style={{ width: "90%" }}
+            >
+              {bodyWeightTrend.slice(1).map((item) => (
+                <Picker.Item key={item.key} label={item.value} value={item.key} />
+              ))}
+            </Picker>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <ThemedText type="defaultBold">确认</ThemedText>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
 const styles = StyleSheet.create({
   totalcontainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "row", 
+    justifyContent: "space-between", 
   },
-  container: {
+  container: { 
     width: width * 0.9,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    padding: 20, 
+    borderRadius: 10, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    marginTop: 10,
+    marginTop: 10, 
     zIndex: 2,
   },
-  cardContainer: {
-    padding: 20,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 20,
-    backgroundColor: "grey",
-  },
   card: {
-    width: 100,
-    height: 100,
-    backgroundColor: "white",
+    width: width * 0.25,
+    height: height * 0.1,
+    backgroundColor: "#F5F5F5",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   motionBox: {
-    borderColor: "#007bff",
+    borderColor: "#000000",
     borderRadius: 8,
     padding: 10,
     width: width * 0.3,
+    borderWidth: 1,
   },
-  dropdown: {
-    borderColor: "#007bff",
-    borderRadius: 8,
-    top: 40,
-    zIndex: 2,
-    position: "absolute",
-    backgroundColor: '#f5f5f5',
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+    modalContainer: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 20,
+    width: width * 0.8,
+    alignItems: "center",
+    paddingBottom: 30,
+  },
+  modalItem: {
+    width: width * 0.4,
+    padding: 10,
+    margin: 10,
+    backgroundColor: "#FFDEAD",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "#FFA07A",
+    borderRadius: 10,
+    width: '85%',
+    alignItems: "center",
   },
 });
 

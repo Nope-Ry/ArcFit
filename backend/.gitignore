@@ -5,3 +5,5 @@ migrations
 settings_prod.py
 asset_files
 static
+scripts
+**/*.conf

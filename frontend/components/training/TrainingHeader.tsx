@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   Dimensions,
   StyleSheet,
@@ -24,7 +23,7 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
 
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (!isPaused) {
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1000); // Increment by 1000 milliseconds (1 second)
@@ -33,7 +32,7 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, time, setTime]);
 
   const formatTime = (milliseconds: number) => {
     const seconds = Math.floor(milliseconds / 1000);
@@ -65,7 +64,7 @@ export default function TrainingHeader({ onButtonPress, time, setTime }: Trainin
         <ThemedText type="defaultBold">
           {new Date().toLocaleDateString()}
         </ThemedText>
-        <ThemedText type="defaultBold">1/8</ThemedText>
+        <ThemedText type="defaultBold"></ThemedText>
       </View>
     </View>
   );
@@ -84,11 +83,11 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: width * 0.02,
-    backgroundColor: "#007BFF",
+    backgroundColor: "#FFA07A",
     borderRadius: width * 0.02,
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#260d01",
   },
   line2: {
     flexDirection: "row",

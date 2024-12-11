@@ -4,14 +4,12 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
-  TouchableOpacity,
   ScrollView,
   View,
   Dimensions,
 } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-import  MotionBar  from "@/components/motion/MotionBar";
+import MotionBar from "@/components/motion/MotionBar";
 
 import { useRoute } from "@react-navigation/native";
 import motionData from "@/res/motion/json/comb.json";
@@ -20,7 +18,7 @@ import cardData from "@/res/equipment/json/comb.json";
 import { RouteProp } from "@react-navigation/native";
 import { equipment_imgs } from "@/res/equipment/equipment_img";
 import Cart from "@/components/Cart";
-import { CartContext } from "@/components/CartContext";
+import { CartContext } from "@/contexts/CartContext";
 import { useContext } from "react";
 const { width, height } = Dimensions.get("window");
 
@@ -33,7 +31,7 @@ type RouteParams = {
 export default function EquipmentScreen() {
   const route = useRoute<RouteProp<RouteParams, "params">>();
   const { id } = route.params;
-  const {cart, incrementCart} = useContext(CartContext);
+  const { cart, incrementCart } = useContext(CartContext);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Cart />
@@ -62,7 +60,6 @@ export default function EquipmentScreen() {
           </ThemedText>
           {cardData[id].m_id.map((action, index) => {
             return (
-
               <MotionBar
                 key={index}
                 name={motionData[action - 1].name}
@@ -85,8 +82,8 @@ const styles = StyleSheet.create({
   picture: {
     width: width * 0.6,
     height: height * 0.3,
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: height * 0.04,
+    marginBottom: height * 0.03,
     alignSelf: "center",
 
     shadowColor: "#000",

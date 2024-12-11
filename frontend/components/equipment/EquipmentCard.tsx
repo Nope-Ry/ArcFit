@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   card: {
     width: width * 0.25,
     height: height * 0.2,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#fafaf9",
     borderRadius: width * 0.02, // 2% of screen width
     marginVertical: height * 0.003, // 1% of screen height
     shadowColor: "#000",

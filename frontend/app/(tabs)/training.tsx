@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { View, Button } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import TrainingHeader from "../../components/training/TrainingHeader";
 import ExerciseCard from "../../components/training/ExerciseCard";
 import HistoryRecordHeader from "@/components/training/HistoryRecordHeader";
@@ -8,11 +13,11 @@ import RecordList from "@/components/training/RecordCard";
 import MainRecord from "@/components/training/MainRecord";
 import { ThemedText } from "@/components/ThemedText";
 
-import { data } from "../../app/(tabs)/index";
+import { data } from "./profile";
 import * as FileSystem from "expo-file-system";
 
 import { useContext } from "react";
-import { CartContext } from "@/components/CartContext";
+import { CartContext } from "@/contexts/CartContext";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,11 +26,72 @@ import { motion_imgs } from "@/res/motion/motion_img";
 
 import { useNavigationState } from "@react-navigation/native";
 
+const { width, height } = Dimensions.get("window");
+
 let cnt = 0;
+
+const getMotionHistory = (m_id) => {
+  // 出来一个弹窗，显示该动作的m_id，并利用CustomLineChart展示历史记录
+  const firstDay = new Date(
+    Math.min(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  const lastDay = new Date(
+    Math.max(...data.map((item) => new Date(item.date).getTime()))
+  );
+
+  const intervalDays =
+    Math.floor(
+      (lastDay.getTime() - firstDay.getTime()) / (1000 * 60 * 60 * 24)
+    ) + 1;
+
+  const motionHistory = {
+    days: [],
+    groups: [],
+  };
+
+  data.forEach((item) => {
+    item.records.forEach((record) => {
+      const nowday =
+        Math.floor(
+          (new Date(item.date).getTime() - firstDay.getTime()) /
+            (1000 * 60 * 60 * 24)
+        ) + 1;
+
+      if (record.m_id === m_id) {
+        const dayIndex = motionHistory.days.indexOf(nowday);
+        if (dayIndex !== -1) {
+          record.group.forEach((group) => {
+            motionHistory.groups[dayIndex].push(
+              JSON.parse(JSON.stringify(group))
+            );
+          });
+        } else {
+          motionHistory.days.push(nowday);
+          motionHistory.groups.push(
+            record.group.map((group) => JSON.parse(JSON.stringify(group)))
+          );
+        }
+      }
+    });
+  });
+
+  // 要根据days进行排序，同时也要对groups根据days进行排序
+  const sortedIndices = motionHistory.days
+    .map((day, index) => ({ day, index }))
+    .sort((a, b) => a.day - b.day)
+    .map(({ index }) => index);
+
+  motionHistory.days = sortedIndices.map((index) => motionHistory.days[index]);
+  motionHistory.groups = sortedIndices.map(
+    (index) => motionHistory.groups[index]
+  );
+
+  return motionHistory;
+};
 
 export default function TrainingScreen() {
   const path = FileSystem.documentDirectory;
-  // console.log(path);
   // TODO: 更改为useContext
   const [isTraining, setIsTraining] = useState(false);
   const [time, setTime] = useState(0);
@@ -42,7 +108,6 @@ export default function TrainingScreen() {
   useEffect(() => {
     if (cart.length > 0 && currentRoute === "training" && isTraining) {
       setM_id_list((prevM_id_list) => [...prevM_id_list, ...cart]);
-      console.log("当前的m_id_list为：", m_id_list);
       setExerSetsMap((prevExerSetsMap) => ({
         ...prevExerSetsMap,
         ...cart.reduce((acc, id) => {
@@ -54,7 +119,6 @@ export default function TrainingScreen() {
           return acc;
         }, {}),
       }));
-      console.log("当前的exerSetsMap为：", exerSetsMap);
       setRatingMap((prevExerSetsMap) => ({
         ...prevExerSetsMap,
         ...cart.reduce((acc, id) => {
@@ -64,7 +128,7 @@ export default function TrainingScreen() {
       }));
       clearCart();
     }
-  }, [cart, currentRoute, isTraining]);
+  }, [cart, currentRoute, isTraining, clearCart]);
 
   const [exerSetsMap, setExerSetsMap] = useState(
     m_id_list.reduce((acc, id) => {
@@ -116,7 +180,7 @@ export default function TrainingScreen() {
         const records = {
           name: motionData[m_id_list[key] - 1].name,
           m_id: m_id_list[key],
-          b_id: b_id, // 寻找m_id到b_id的映射，未完成
+          b_id: b_id,
           group: exerSetsMap[m_id_list[key]],
           rating: ratingMap[m_id_list[key]],
         };
@@ -144,6 +208,20 @@ export default function TrainingScreen() {
     setIsTraining(!isTraining);
   };
 
+  const handleDelete = (item) => {
+    setM_id_list((prev) => prev.filter((id) => id !== item));
+    setExerSetsMap((prev) => {
+      const newMap = { ...prev };
+      delete newMap[item];
+      return newMap;
+    });
+    setRatingMap((prev) => {
+      const newMap = { ...prev };
+      delete newMap[item];
+      return newMap;
+    });
+  };
+
   if (isTraining) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -164,6 +242,7 @@ export default function TrainingScreen() {
               exercise={{
                 name: `${motionData[item - 1].name}`,
                 image: motion_imgs[item],
+                m_id: item,
               }}
               exerSets={exerSetsMap[item]}
               setExerSets={(newSets) =>
@@ -173,6 +252,10 @@ export default function TrainingScreen() {
               setRating={(newRating) =>
                 setRatingMap((prev) => ({ ...prev, [item]: newRating }))
               }
+              onDelete={() => {
+                handleDelete(item);
+              }}
+              motionHistory={getMotionHistory(item)}
             />
           ))}
         </ScrollView>
@@ -180,26 +263,32 @@ export default function TrainingScreen() {
     );
   } else {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <HistoryRecordHeader
-          date={date}
-          setDate={(newDate) => setDate(newDate)}
-        />
-        <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
-          <MainRecord date={date} />
-          <RecordList date={date} />
-        </ScrollView>
-        <View className="bg-white h-20 px-4 py-4">
-          <TouchableOpacity
-            className="w-full h-full flex justify-center items-center bg-[#007BFF] rounded-md"
-            onPress={toggleView}
-          >
-            <ThemedText type="default" lightColor="white">
-              开始训练
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <View style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+          <HistoryRecordHeader
+            date={date}
+            setDate={(newDate) => setDate(newDate)}
+          />
+          <ScrollView style={{ flex: 1, backgroundColor: "#fff" }}>
+            <MainRecord date={date} />
+            <RecordList date={date} />
+          </ScrollView>
+        </SafeAreaView>
+
+        <TouchableOpacity style={styles.button} onPress={toggleView}>
+          <ThemedText type="defaultBold">开始训练</ThemedText>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  button: {
+    height: height * 0.05,
+    width: width,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFA07A",
+  },
+});
