@@ -14,6 +14,12 @@ module.exports = {
     'build/',
     'coverage/',
     '*.config.js',
+    '*.d.ts',
+    'package.json',
+    'yarn.lock',
+    'tsconfig.json',
+    'app.json',
+    'eas.json',
   ],
 
   settings: {
