@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { ThemedText } from '../ThemedText';
+import { color } from '@mui/system';
 
 const { width, height } = Dimensions.get('window');
 
@@ -9,14 +10,16 @@ interface CustomPieChartProps {
     parameterdata: any[];
 }
 
-const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-};
+const colors = [
+    "#EEA599", 
+    "#FAC795", 
+    "#FFE9BE", 
+    "#E3EDE0", 
+    "#ABD3E1", 
+    "#92B4C8",
+    "#FBE8D5",
+    "#DCE9F4",
+];
 
 const CustomLegend = ({ data }) => {
     return (
@@ -38,10 +41,10 @@ const CustomLegend = ({ data }) => {
 const CustomPieChart: React.FC<CustomPieChartProps> = ({ parameterdata }) => {
     const totalValue = parameterdata.reduce((sum, item) => sum + item.value, 0);
 
-    const data = parameterdata.map((item) => ({
+    const data = parameterdata.map((item, index) => ({
         name: item.name,
         value: item.value,
-        color: getRandomColor(),
+        color: colors[index % colors.length],
         legendFontColor: "#7F7F7F",
         legendFontSize: 15,
         percentage: ((item.value / totalValue) * 100).toFixed(2),

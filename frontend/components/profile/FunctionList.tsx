@@ -48,10 +48,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: height * 0.02, // 2% of screen height
     paddingHorizontal: width * 0.05, // 5% of screen width
-    backgroundColor: "#FFFAF0",
+    backgroundColor: "#fafafa",
     borderRadius: width * 0.02, // 2% of screen width
     marginVertical: height * 0.006, // 1% of screen height
-    shadowColor: "#8B4513",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 }, 
     shadowOpacity: 0.1,
     shadowRadius: 2, // 2% of screen width
