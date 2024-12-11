@@ -10,6 +10,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { data }from "../../app/(tabs)/profile";
 import { Alert } from "react-native";
 import CustomLineChart from "../statistic/CustomLineChart";
+import { Picker } from "@react-native-picker/picker";
 
 import motionData from "@/res/motion/json/comb.json";
 
@@ -194,26 +195,21 @@ const TotalTrainingRecords = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <ThemedText type="defaultBold">选择一个部位</ThemedText>
-            <ScrollView>
-              {bodyWeightTrend.slice(1).map((part, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.modalItem}
-                  onPress={() => {
-                    setSelected(index + 1);
-                    setModalVisible(false);
-                  }}
-                >
-                  <ThemedText type="default">{part.value}</ThemedText>
-                </TouchableOpacity>
+            <ThemedText type="subtitle">选择部位</ThemedText>
+            <Picker
+              selectedValue={selected}
+              onValueChange={(itemValue) => setSelected(itemValue)}
+              style={{ width: "90%" }}
+            >
+              {bodyWeightTrend.slice(1).map((item) => (
+                <Picker.Item key={item.key} label={item.value} value={item.key} />
               ))}
-            </ScrollView>
+            </Picker>
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <ThemedText type="defaultBold">关闭</ThemedText>
+              <ThemedText type="defaultBold">确认</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -258,29 +254,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContainer: {
-    height: height * 0.65,
-    backgroundColor: '#fff',
+    modalContainer: {
+    backgroundColor: "#fff",
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
     width: width * 0.8,
-    alignItems: 'center',
+    alignItems: "center",
+    paddingBottom: 30,
   },
   modalItem: {
     width: width * 0.4,
     padding: 10,
     margin: 10,
-    backgroundColor: '#FFDEAD',
+    backgroundColor: "#FFDEAD",
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#FFA07A',
-    borderRadius: 5,
-    width: width * 0.5,
-    alignItems: 'center',
+    backgroundColor: "#FFA07A",
+    borderRadius: 10,
+    width: '85%',
+    alignItems: "center",
   },
 });
 

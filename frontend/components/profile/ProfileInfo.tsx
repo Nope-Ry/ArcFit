@@ -3,7 +3,7 @@ import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const ProfileInfo = ({ label, value, icon }) => {
   return (
@@ -14,7 +14,7 @@ const ProfileInfo = ({ label, value, icon }) => {
           {label}
         </ThemedText>
         <ThemedText type="default">
-          {value}
+          {value === "" ? '未设置' : value}
         </ThemedText>
       </View>
       <Ionicons
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    height: height * 0.08,
   },
   icon: {
     width: 30,
