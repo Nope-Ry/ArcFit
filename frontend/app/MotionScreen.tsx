@@ -9,13 +9,15 @@ import {
   View,
   Dimensions,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { useRoute } from "@react-navigation/native";
 import { useState } from "react";
 import { RouteProp } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-
+import Fontisto from "@expo/vector-icons/Fontisto";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Cart from "@/components/Cart";
 import { CartContext } from "@/contexts/CartContext";
 import { useContext } from "react";
@@ -53,6 +55,8 @@ export default function EquipmentScreen() {
   const [activeGroup, setActiveGroup] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [isModalVisible1, setModalVisible1] = useState(false);
+  const [isModalVisible2, setModalVisible2] = useState(false);
   // 百度API
   const AK = token["AK"];
   const SK = token["SK"];
@@ -156,6 +160,24 @@ export default function EquipmentScreen() {
     />
   );
 
+  const renderZoom = (Component: React.ElementType) => (
+    <Component
+      color={color}
+      activeColor={activeColor}
+      activeGroup={activeGroup}
+      handleClick={handleClick}
+      width={width * 0.9}
+      height={height * 0.8}
+    />
+  );
+
+  const toggleModal1 = () => {
+    setModalVisible1(!isModalVisible1);
+  };
+  const toggleModal2 = () => {
+    setModalVisible2(!isModalVisible2);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Cart />
@@ -200,6 +222,7 @@ export default function EquipmentScreen() {
         {/* baidu API 在 getInfor 里面编辑 prompt 调取有点慢 点击 baidu Button 直接显示返回结果 */}
         <View style={styles.correctBox}>
           <ThemedText type="defaultBold">点击发力点部位</ThemedText>
+
           <View style={styles.bodyBox}>
             {isMale
               ? renderComplex(FrontMaleComplex)
@@ -208,6 +231,22 @@ export default function EquipmentScreen() {
               ? renderComplex(BackMaleComplex)
               : renderComplex(BackFemaleComplex)}
           </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              width: width * 0.8,
+            }}
+          >
+            <TouchableOpacity onPress={toggleModal1}>
+              <Fontisto name="zoom-plus" size={width * 0.06} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleModal2}>
+              <Fontisto name="zoom-plus" size={width * 0.06} color="black" />
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity onPress={handlePress}>
             <ThemedText type="subtitle" style={styles.text}>
               开始分析
@@ -223,6 +262,45 @@ export default function EquipmentScreen() {
           <Markdown style={markdownStyles}>
             {responseData ? responseData.result : ""}
           </Markdown>
+
+          <Modal visible={isModalVisible1} transparent={true}>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity
+                onPress={toggleModal1}
+                style={styles.modalCloseButton}
+              >
+                <AntDesign
+                  name="closecircleo"
+                  size={width * 0.08}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <View style={styles.modalContent}>
+                {isMale
+                  ? renderZoom(FrontMaleComplex)
+                  : renderZoom(FrontFemaleComplex)}
+              </View>
+            </View>
+          </Modal>
+          <Modal visible={isModalVisible2} transparent={true}>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity
+                onPress={toggleModal2}
+                style={styles.modalCloseButton}
+              >
+                <AntDesign
+                  name="closecircleo"
+                  size={width * 0.08}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <View style={styles.modalContent}>
+                {isMale
+                  ? renderZoom(BackMaleComplex)
+                  : renderZoom(BackFemaleComplex)}
+              </View>
+            </View>
+          </Modal>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -281,6 +359,28 @@ const styles = StyleSheet.create({
   text: {
     margin: 10,
     padding: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+  },
+  modalCloseButton: {
+    position: "absolute",
+    top: height * 0.06,
+    right: width * 0.07,
+    backgroundColor: "#FFA07A",
+    padding: 10,
+    borderRadius: 10,
+    zIndex: 1,
+  },
+  modalContent: {
+    width: "90%",
+    height: "90%",
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
