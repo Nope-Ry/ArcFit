@@ -1,28 +1,30 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import EquipmentHeader from "../../components/equipment/EquipmentHeader";
 import EquipmentCard from "../../components/equipment/EquipmentCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import cardData from "../../res/equipment/json/comb.json";
 import bodypartData from "@/res/bodypart/json/comb.json";
-import Icon from "react-native-vector-icons/Ionicons";
-import { ThemedText } from "@/components/ThemedText";
-import Cart from "@/components/Cart";
 
 const { width, height } = Dimensions.get("window");
 
 export default function TrainingScreen() {
   const [selectedEquipment, setSelectedEquipment] = useState(0);
+  const [searchText, setSearchText] = useState("");
 
   const handleEquipmentSelect = (index) => {
     setSelectedEquipment(index);
+  };
+
+  const handleSearchText = (text) => {
+    setSearchText(text);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       {/* 上部容器 */}
       <View style={styles.upContainer}>
-        <EquipmentHeader OnSelect={handleEquipmentSelect} />
+        <EquipmentHeader OnSelect={handleEquipmentSelect} OnSearch={handleSearchText} />
       </View>
 
       {/* 图片卡片容器 */}
@@ -31,8 +33,8 @@ export default function TrainingScreen() {
           {cardData
             .filter(
               (card) =>
-                !selectedEquipment ||
-                bodypartData[selectedEquipment - 1].e_id.includes(card.e_id)
+                (!selectedEquipment ||
+                bodypartData[selectedEquipment - 1].e_id.includes(card.e_id)) && card.name.includes(searchText)
             )
             .map((card, index) => (
               <EquipmentCard key={index} information={card} />

@@ -1,14 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { Dimensions } from "react-native";
 import { data } from "../../app/(tabs)/profile";
 
 import { useGender } from "@/contexts/GenderContext";
-import { FrontMale } from "../statistic/body/FrontMale";
-import { BackMale } from "../statistic/body/BackMale";
-import { BackFemale } from "../statistic/body/BackFemale";
-import { FrontFemale } from "../statistic/body/FrontFemale";
+import { FrontMaleSimple } from "../body/FrontMaleSimple";
+import { BackMaleSimple } from "../body/BackMaleSimple";
+import { FrontFemaleSimple } from "../body/FrontFemaleSimple";
+import { BackFemaleSimple } from "../body/BackFemaleSimple";
+
 import motionData from "@/res/motion/json/comb.json";
 import bodypartData from "@/res/bodypart/json/comb.json";
 
@@ -45,8 +46,8 @@ const getDuration = (date: Date) => {
   return Math.floor(duration);
 };
 
-const getTimes = () => {
-  const today = new Date().toISOString().split("T")[0];
+const getTimes = (date: Date) => {
+  const today = date.toISOString().split("T")[0];
   const todayData = data.filter((item) => item.date === today);
   if (todayData.length === 0) {
     return "未开始";
@@ -74,7 +75,7 @@ interface MainRecordProps {
 }
 export default function MainRecord({ date }: MainRecordProps) {
   const duration = getDuration(date);
-  const times = getTimes();
+  const times = getTimes(date);
   const exerciseData = getExerciseData(date);
   const bodyParts = exerciseData.map((item) => motionData[item.m_id - 1].b_id);
   const activeGroup_id = bodyParts
@@ -88,47 +89,62 @@ export default function MainRecord({ date }: MainRecordProps) {
   const color = "#FFF5EE";
   const activeColor = "#FFA07A";
   return (
-    <View style={styles.container}>
-      {/* 左侧的图像 */}
-
-      {isMale ? (
-        <FrontMale
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-        />
-      ) : (
-        <FrontFemale
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-        />
-      )}
-
-      {/* 中间的锻炼信息 */}
+    <View style={{ flexDirection: "column", alignItems: "center" }}>
       <View style={styles.infoBoxContainer}>
         <View style={styles.infoBox}>
-          <ThemedText type="default">开始时间</ThemedText>
-          <ThemedText type="defaultBold">{times}</ThemedText>
+          <ThemedText type="defaultBold">开始时间</ThemedText>
+          <ThemedText type="default">{times}</ThemedText>
         </View>
         <View style={styles.infoBox}>
-          <ThemedText type="default">运动时长</ThemedText>
-          <ThemedText type="defaultBold">{duration}分钟</ThemedText>
+          <ThemedText type="defaultBold">运动时长</ThemedText>
+          <ThemedText type="default">{duration}分钟</ThemedText>
         </View>
       </View>
-      {isMale ? (
-        <BackMale
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-        />
-      ) : (
-        <BackFemale
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-        />
-      )}
+      <View style={styles.container}>
+        {/* 左侧的图像 */}
+
+        {isMale ? (
+          <FrontMaleSimple
+            color={color}
+            activeColor={activeColor}
+            activeGroup={activeGroup}
+            handleClick={() => {}}
+            width={width * 0.4}
+            height={height * 0.32}
+          />
+        ) : (
+          <FrontFemaleSimple
+            color={color}
+            activeColor={activeColor}
+            activeGroup={activeGroup}
+            handleClick={() => {}}
+            width={width * 0.4}
+            height={height * 0.32}
+          />
+        )}
+
+        {/* 中间的锻炼信息 */}
+
+        {isMale ? (
+          <BackMaleSimple
+            color={color}
+            activeColor={activeColor}
+            activeGroup={activeGroup}
+            handleClick={() => {}}
+            width={width * 0.4}
+            height={height * 0.32}
+          />
+        ) : (
+          <BackFemaleSimple
+            color={color}
+            activeColor={activeColor}
+            activeGroup={activeGroup}
+            handleClick={() => {}}
+            width={width * 0.4}
+            height={height * 0.32}
+          />
+        )}
+      </View>
     </View>
   );
 }
@@ -141,27 +157,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 30,
     gap: 30,
+    marginBottom: 10,
   },
   bodyImage: {
     width: width * 0.4,
   },
   infoBoxContainer: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    height: height * 0.24,
+    width: width * 0.82,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "#FFFAF0",
+    alignContent: "center",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    borderRadius: 10,
+    marginTop: 5,
+    marginBottom: 20,
+    paddingVertical: 6,
   },
   infoBox: {
-    backgroundColor: "#FFFAF0",
-    maxWidth: width * 0.2,
-    height: height * 0.1,
     alignContent: "center",
     justifyContent: "center",
-    borderRadius: 10,
-
-    elevation: 3,
-    shadowColor: "#8B4513",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    alignItems: "center",
   },
 });

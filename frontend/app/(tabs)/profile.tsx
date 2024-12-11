@@ -4,6 +4,7 @@ import AccountInfo from "@/components/profile/AccountInfo";
 import FunctionList from "@/components/profile/FunctionList"; 
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const path = FileSystem.documentDirectory;
 export let data: any[] = [];
@@ -13,7 +14,27 @@ FileSystem.readDirectoryAsync(path).then((files) => {
     files.map((file) => FileSystem.readAsStringAsync(path + file))
   ).then((contents) => {
     contents.forEach((content) => {
-      data.push(JSON.parse(content));
+      const parsedContent = JSON.parse(content);
+      const requiredFields = ["duration", "date", "time", "cnt", "records"];
+      const recordFields = ["name", "m_id", "group", "rating"];
+      const groupFields = ["weight", "reps"];
+
+      const hasRequiredFields = requiredFields.every(field => field in parsedContent);
+      if (!hasRequiredFields) return;
+
+      const hasValidRecords = parsedContent.records.every(record => {
+        const hasRecordFields = recordFields.every(field => field in record);
+        if (!hasRecordFields) return false;
+
+        const hasValidGroups = record.group.every(group => 
+          groupFields.every(field => field in group)
+        );
+        return hasValidGroups;
+      });
+
+      if (hasValidRecords) {
+        data.push(parsedContent);
+      }
     });
   });
 });
@@ -46,6 +67,11 @@ export default function ProfileScreen() {
                 icon: require("../../assets/images/statistics.png"),
                 text: "训练统计",
                 onPress: () => navigation.navigate("TrainingStatisticsScreen"),
+              },
+              {
+                icon: require("../../assets/images/calculator.png"),
+                text: "RM计算器",
+                onPress: () => navigation.navigate("CalculatorScreen"),
               },
             ]}
           />

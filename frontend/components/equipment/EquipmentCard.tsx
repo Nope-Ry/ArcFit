@@ -32,10 +32,10 @@ const styles = StyleSheet.create({
   card: {
     width: width * 0.25,
     height: height * 0.2,
-    backgroundColor: "#f5f2e9",
+    backgroundColor: "#fafaf9",
     borderRadius: width * 0.02, // 2% of screen width
     marginVertical: height * 0.003, // 1% of screen height
-    shadowColor: "#8B4513",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: height * 0.01 }, // 1% of screen height
     shadowOpacity: 0.1,
     shadowRadius: width * 0.02, // 2% of screen width

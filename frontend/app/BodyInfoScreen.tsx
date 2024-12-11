@@ -3,13 +3,10 @@ import React from "react";
 import {
   StyleSheet,
   SafeAreaView,
-  Image,
-  TouchableOpacity,
   ScrollView,
   View,
   Dimensions,
 } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import MotionBar from "@/components/motion/MotionBar";
 import { useRoute } from "@react-navigation/native";

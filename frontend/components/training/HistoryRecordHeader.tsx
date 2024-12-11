@@ -2,7 +2,6 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { Divider } from "@/components/ui/divider";
 import React, { useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { Dimensions } from "react-native";

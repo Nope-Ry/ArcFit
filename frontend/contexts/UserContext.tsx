@@ -1,12 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import * as FileSystem from 'expo-file-system';
-import { server } from '@/constants/APIs';
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from "expo-secure-store";
-import { Image } from "expo-image";
 import { ServerUserInfo, UserInfo } from '@/contexts/UserContext.types'
-import * as UserService from '@/services/UserService';
 
 export const serverUserInfoKeys: (keyof ServerUserInfo)[] = [
   "username",
@@ -20,70 +13,81 @@ export const serverUserInfoKeys: (keyof ServerUserInfo)[] = [
 ];
 
 type useStateRet = ReturnType<typeof useState<UserInfo>>;
-type UserInfoState = {
+type UserContextType = {
   user: useStateRet[0],
   setUser: useStateRet[1],
+  resetUser: () => void,
 };
 
-const UserContext = createContext<UserInfoState>(null);
+const UserContext = createContext<UserContextType>(null);
+let ctx: UserContextType = null;
 
-async function downloadAvatarAsync(url: string) {
-  const split = url.split(".");
-  const suffix = split[split.length - 1];
-  const localUri = FileSystem.documentDirectory + 'avatar.' + suffix;
+type CallbackType = ((ctx: UserContextType) => void) | ((ctx: UserContextType) => Promise<void>);
+const subscribers: Map<string, Set<CallbackType>> = new Map();
 
-  console.log("Trying to download avatar: remote URL", url, "local URI", localUri);
-  await FileSystem.downloadAsync(url, localUri);
-  console.log("Avatar downloaded.");
+export const subscribeUserEvents = (event: string | string[], callback: CallbackType) => {
+  const events = Array.isArray(event)? event : [event];
 
-  await Image.clearDiskCache();
-  return localUri;
-}
-
-export const setUpCallbacks = () => {
-  const unsubPrepareAvatar = UserService.subscribe(["userInited", "userAvatarChanged"], async (user) => {
-    console.log("Preparing avatar for user:", JSON.stringify(user));
-    if (user.avatarLocalUri === null && user.avatar_url) {
-      try {
-        const newAvatarLocalUri = await downloadAvatarAsync(`${server}/${user.avatar_url}`);
-        const newUser = {
-          ...user,
-          avatarLocalUri: newAvatarLocalUri,
-        };
-        UserService.setUser(newUser);
-      } catch (e) {
-        console.log('Failed to download avatar:', e);
-      }
+  const unsubs = events.map(e => {
+    if (!subscribers.has(e)) {
+      subscribers.set(e, new Set());
     }
-  });
-
-  const unsubLoginExpired = UserService.subscribe("loginExpired", async () => {
-    await SecureStore.deleteItemAsync('accessToken');
-    UserService.resetUser();
+    subscribers.get(e).add(callback);
+    return () => {
+      subscribers.get(e).delete(callback);
+    };
   });
 
   return () => {
-    unsubPrepareAvatar();
-    unsubLoginExpired();
+    unsubs.forEach(unsub => unsub());
   }
-}
+};
+
+export const emitUserEvent = (event: string) => {
+  console.log(`User event ${event} emitted`);
+  if (subscribers.has(event)) {
+    subscribers.get(event).forEach(callback => {
+      if (callback.constructor.name === "AsyncFunction") {
+        (callback(ctx) as Promise<void>).catch(console.error);
+      } else {
+        callback(ctx);
+      }
+    });
+  }
+};
+
+const defaultUserInfo: UserInfo = {
+  isLogin: false,
+  username: "未登录",
+  first_name: "",
+  last_name: "",
+  email: "",
+  age: 0,
+  gender: 2,
+  phone_number: "",
+  avatar_url: null,
+  avatarLocalUri: null,
+};
 
 export const UserProvider = ({children}) => {
-  const [user, setUser] = useState<UserInfo>(UserService.getUser());
+  const [user, setUser] = useState<UserInfo>(defaultUserInfo);
+
+  const resetUser = () => {
+    setUser(defaultUserInfo);
+  };
   
   useEffect(() => {
-    const unsubSetUser = UserService.subscribe("userChanged", async (user) => {
-      await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-      setUser(user);
-    });
+    const prevCtx = ctx;
+    ctx = {user, setUser, resetUser};
 
-    return () => {
-      unsubSetUser();
-    };
-  }, []);
+    if (prevCtx === null) {
+      emitUserEvent("userInited");
+    }
+    emitUserEvent("userChanged");
+  }, [user]);
 
   return (
-    <UserContext.Provider value={{user, setUser: UserService.setUser}}>
+    <UserContext.Provider value={{user, setUser, resetUser}}>
       {children}
     </UserContext.Provider>
   );
@@ -91,17 +95,14 @@ export const UserProvider = ({children}) => {
 
 export const useUser = () => useContext(UserContext);
 
+const genderOptions = ["男", "女", "保密"];
+
 export const translateGender = (gender: UserInfo['gender']) => {
-  switch (gender) {
-    case 0:
-      return "男";
-    case 1:
-      return "女";
-    case 2:
-      return "未设置";
-    default:
-      return "未知";
-  }
+  return genderOptions[gender];
+};
+
+export const reverseGender = (val: any) => {
+  return genderOptions.indexOf(val);
 };
 
 export const translateAge = (age: UserInfo['age']) => {

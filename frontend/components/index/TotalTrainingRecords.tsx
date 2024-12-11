@@ -1,25 +1,16 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  Button,
   Dimensions,
   StyleSheet,
-  FlatList,
 } from "react-native";
 import { ScrollView, TouchableOpacity, Modal } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text as SvgText } from "react-native-svg";
-import { LineChart, Grid, PieChart, YAxis } from "react-native-svg-charts";
-import { MaxEquation } from "three";
-import * as shape from "d3-shape";
-import { SelectList } from "react-native-dropdown-select-list";
-import * as FileSystem from "expo-file-system";
 import { data }from "../../app/(tabs)/profile";
-
+import { Alert } from "react-native";
 import CustomLineChart from "../statistic/CustomLineChart";
+import { Picker } from "@react-native-picker/picker";
 
 import motionData from "@/res/motion/json/comb.json";
 
@@ -37,6 +28,7 @@ const getTotalTrainingRecords = () => {
   const totalDays = new Set(data.map((item) => item.date));
   const totalDuration = Math.floor(data.reduce((acc, item) => acc + item.duration, 0));
   const avgDuration = Math.floor(totalDuration / totalDays.size);
+
   if (isNaN(avgDuration)) {
     return {
       totalDays: 0,
@@ -115,6 +107,13 @@ const getBodyWeightTrend = () => {
   });
   return bodyWeight;
 };
+const showAlert = (formattedDate, weight) => {
+  Alert.alert(
+    "继续加油💪",
+    `${formattedDate} 容量为 ${weight}kg`,
+    [{ text: "OK" }]
+  );
+};
 
 const TotalTrainingRecords = () => {
   const totalRecords = getTotalTrainingRecords();
@@ -176,9 +175,11 @@ const TotalTrainingRecords = () => {
                   parameterLabels={motion.days}
                   parameterData={motion.weight}
                   showParameterInfo={(index) => {
-                    alert(`第${index + 1}天的容量为${motion.weight[index]}kg`);
+                    const date = new Date(firstDay);
+                    date.setDate(date.getDate() + motion.days[index] - 1);
+                    const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+                    showAlert(formattedDate, motion.weight[index]);
                   }}
-                  parameterunit="kg"
                 />
               </View>
             </View>
@@ -194,26 +195,21 @@ const TotalTrainingRecords = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <ThemedText type="defaultBold">选择一个部位</ThemedText>
-            <ScrollView>
-              {bodyWeightTrend.slice(1).map((part, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.modalItem}
-                  onPress={() => {
-                    setSelected(index + 1);
-                    setModalVisible(false);
-                  }}
-                >
-                  <ThemedText type="default">{part.value}</ThemedText>
-                </TouchableOpacity>
+            <ThemedText type="subtitle">选择部位</ThemedText>
+            <Picker
+              selectedValue={selected}
+              onValueChange={(itemValue) => setSelected(itemValue)}
+              style={{ width: "90%" }}
+            >
+              {bodyWeightTrend.slice(1).map((item) => (
+                <Picker.Item key={item.key} label={item.value} value={item.key} />
               ))}
-            </ScrollView>
+            </Picker>
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <ThemedText type="defaultBold">关闭</ThemedText>
+              <ThemedText type="defaultBold">确认</ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -229,7 +225,6 @@ const styles = StyleSheet.create({
   container: { 
     width: width * 0.9,
     padding: 20, 
-    backgroundColor: '#f5f5f5',
     borderRadius: 10, 
     shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 }, 
@@ -241,13 +236,13 @@ const styles = StyleSheet.create({
   card: {
     width: width * 0.25,
     height: height * 0.1,
-    backgroundColor: "white",
+    backgroundColor: "#F5F5F5",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   motionBox: {
-    borderColor: "#007bff",
+    borderColor: "#000000",
     borderRadius: 8,
     padding: 10,
     width: width * 0.3,
@@ -259,29 +254,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContainer: {
-    height: height * 0.65,
-    backgroundColor: '#fff',
+    modalContainer: {
+    backgroundColor: "#fff",
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
     width: width * 0.8,
-    alignItems: 'center',
+    alignItems: "center",
+    paddingBottom: 30,
   },
   modalItem: {
     width: width * 0.4,
     padding: 10,
     margin: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: "#FFDEAD",
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: '#ff5733',
-    borderRadius: 5,
-    width: width * 0.5,
-    alignItems: 'center',
+    backgroundColor: "#FFA07A",
+    borderRadius: 10,
+    width: '85%',
+    alignItems: "center",
   },
 });
 

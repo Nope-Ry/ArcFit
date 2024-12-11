@@ -21,10 +21,10 @@ export default function AccountInfo() {
 
   return (
     <TouchableOpacity style={styles.container} onPress={onAccountInfoPress}>
-      <Avatar size={width * 0.24} />
+      <Avatar size={width * 0.16} />
       <View style={styles.infoContainer}>
         <ThemedText type="title">{user.username}</ThemedText>
-        <ThemedText type="medium">{user.email}</ThemedText>
+        <ThemedText type="default">{user.email}</ThemedText>
       </View>
     </TouchableOpacity>
   );
@@ -34,22 +34,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    height: height * 0.18,
+    height: height * 0.14,
     padding: width * 0.04, 
     marginHorizontal: width * 0.05, 
     marginVertical: height * 0.02,
-    backgroundColor: "#FAF0E6",
+    backgroundColor: "#fff7ed",
     borderRadius: width * 0.02, 
-    shadowColor: "#8B4513",
+    shadowColor: "#000",
     shadowOffset: { width: 1, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
-  },
-  avatar: {
-    width: width * 0.24, // 12% of screen width
-    height: width * 0.24, // 12% of screen width
-    borderRadius: (width * 0.24) / 2, // Half of avatar width
   },
   infoContainer: {
     marginLeft: width * 0.1, // 4% of screen width

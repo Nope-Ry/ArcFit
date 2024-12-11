@@ -1,5 +1,4 @@
 import {
-  DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
@@ -13,26 +12,10 @@ import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ContextProviders } from "@/contexts/ContextProviders";
-import { setUpCallbacks } from "@/contexts/UserContext";
-import * as UserService from "@/services/UserService";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setUpCallbacks } from "@/services/UserService";
 
 const appInit = async () => {
   const deInitUserCallbacks = setUpCallbacks();
-
-  console.log("Initializing user info");
-  try {
-    const userinfo = await AsyncStorage.getItem("userInfo");
-    if (userinfo !== null) {
-      const user = JSON.parse(userinfo);
-      console.log("User info loaded:", user);
-      UserService.notify("userInited");
-      UserService.setUser(user);
-    }
-  } catch (e) {
-    console.warn("Exception when loading user info:", e);
-  }
 
   return () => {
     deInitUserCallbacks();
@@ -104,6 +87,10 @@ export default function RootLayout() {
             <Stack.Screen
               name="MotionScreen"
               options={{ headerTitle: "动作详情", headerBackTitle: "返回" }}
+            />
+            <Stack.Screen
+              name="CalculatorScreen"
+              options={{ headerTitle: "RM计算器", headerBackTitle: "返回" }}
             />
           </Stack>
         </ThemeProvider>

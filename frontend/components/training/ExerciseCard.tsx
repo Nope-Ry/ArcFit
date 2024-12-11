@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
-  Image,
   Dimensions,
   StyleSheet,
   TextInput,
@@ -16,10 +15,10 @@ import Slider from "@react-native-community/slider";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import CustomLineChart from "../statistic/CustomLineChart";
-import data from "../../app/(tabs)/index";
+import { data } from "../../app/(tabs)/profile";
+import { Alert } from "react-native";
 
 import { ThemedText } from "../ThemedText";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 const { width, height } = Dimensions.get("window");
 
 interface ExerciseCardProps {
@@ -49,15 +48,30 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [showindex, setShowindex] = useState(1);
+  const [showindex, setShowindex] = useState(0);
   // const [rating, setRating] = useState(3);
 
   const navigation = useNavigation();
+
+  const showAlert = (formattedDate, weight) => {
+    Alert.alert("继续加油💪", `${formattedDate} 容量为 ${weight}kg`, [
+      { text: "OK" },
+    ]);
+  };
   const getSliderColor = (value) => {
     if (value <= 2) return "#4CAF50"; // 绿色
     if (value <= 4) return "#FFC107"; // 黄色
     return "#FF5252"; // 红色
   };
+
+  const firstDay = new Date(
+    Math.min(...data.map((item) => new Date(item.date).getTime()))
+  );
+  const date = new Date(firstDay);
+  date.setDate(date.getDate() + showindex);
+  const formattedDate = `${date.getFullYear()}年${
+    date.getMonth() + 1
+  }月${date.getDate()}日`;
 
   const handleWeightChange = (text, index) => {
     let numericText = text.replace(/[^0-9.]/g, "");
@@ -247,34 +261,52 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <ThemedText type="defaultBold">历史记录</ThemedText>
+            <ThemedText type="subtitle" style={{ padding: 10 }}>
+              历史记录
+            </ThemedText>
             {motionHistory.days.length === 0 ? (
               <ThemedText type="default">没有当前动作历史记录</ThemedText>
             ) : (
               <>
                 {/* 上次做此动作的信息 */}
                 <ThemedText type="default">
-                  上次做此动作是在{motionHistory.days[showindex]}
+                  上次做此动作是在{formattedDate}
                 </ThemedText>
-                <ScrollView>
+                <ScrollView
+                  style={{
+                    marginTop: 20,
+                    maxHeight: height * 0.2,
+                    marginBottom: 10,
+                  }}
+                >
                   {motionHistory.groups[showindex].map((set, index) => (
-                    <View key={index} style={{ width: width * 0.8 }}>
-                      <ThemedText type="defaultBold">{index + 1}</ThemedText>
-                      <ThemedText type="default">
-                        重量：{set.weight}kg
-                      </ThemedText>
-                      <ThemedText type="default">次数：{set.reps}次</ThemedText>
+                    <View
+                      key={index}
+                      style={{ width: width * 0.8, height: height * 0.05 }}
+                    >
+                      <ThemedText
+                        type="default"
+                        style={{ textAlign: "center" }}
+                      >{`${index + 1}         重量：${
+                        set.weight
+                      }kg         次数：${set.reps}次`}</ThemedText>
                     </View>
                   ))}
                 </ScrollView>
+                <Divider />
                 {/* 动作历史记录 */}
+                <ThemedText
+                  type="subtitle"
+                  style={{ marginTop: 20, marginBottom: 10 }}
+                >
+                  重量记录
+                </ThemedText>
                 <CustomLineChart
                   parameterData={maxWeights}
                   parameterLabels={motionHistory.days}
-                  parameterunit="kg"
                   showParameterInfo={(index) => {
                     setShowindex(index);
-                    console.log(showindex);
+                    showAlert(formattedDate, maxWeights[index]);
                   }}
                 />
               </>
@@ -283,7 +315,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <ThemedText type="defaultBold">关闭</ThemedText>
+              <ThemedText type="defaultBold" lightColor="black">
+                关闭
+              </ThemedText>
             </TouchableOpacity>
           </View>
         </View>
@@ -403,16 +437,16 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     width: width * 0.9,
-    height: height * 0.9,
+    height: height * 0.8,
     backgroundColor: "#fff",
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: "center",
   },
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: "#ff5733",
+    backgroundColor: "#FFA07A",
     borderRadius: 5,
     width: width * 0.5,
     alignItems: "center",

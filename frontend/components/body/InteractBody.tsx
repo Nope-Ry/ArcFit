@@ -1,24 +1,22 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Alert,
-  Switch,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
+import { Alert } from "react-native";
 
 import { Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
-
 import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
 import { FrontFemaleSimple } from "./FrontFemaleSimple";
 import { BackFemaleSimple } from "./BackFemaleSimple";
+import { FrontMaleComplex } from "./FrontMaleComplex";
+import { BackMaleComplex } from "./BackMaleComplex";
+import { FrontFemaleComplex } from "./FrontFemaleComplex";
+import { BackFemaleComplex } from "./BackFemaleComplex";
 import { useGender } from "@/contexts/GenderContext";
-
+import PagerView from "react-native-pager-view";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 const { width, height } = Dimensions.get("window");
 
 const mapBodyPart = (group) => {
@@ -45,68 +43,50 @@ const mapBodyPart = (group) => {
 };
 
 const InteractBody = () => {
-  const [pageView, setPageView] = useState("FrontMaleSimple");
-  // const [isMale, setIsMale] = useState(true);
-  const { isMale, setIsMale } = useGender();
+  const [pageView, setPageView] = useState("MaleSimple");
+  const { isMale } = useGender();
   const [isSimple, setIsSimple] = useState(true);
-  const [isFront, setIsFront] = useState(true);
   const [activeGroup, setActiveGroup] = useState("chest");
   const color = "#FFF5EE";
   const activeColor = "#FFA07A";
   useEffect(() => {
     const gender = isMale ? "Male" : "Female";
     const complexity = isSimple ? "Simple" : "Complex";
-    const side = isFront ? "Front" : "Back";
-    setPageView(`${side}${gender}${complexity}`);
-  }, [isMale, isSimple, isFront]);
+    setPageView(`${gender}${complexity}`);
+  }, [isMale, isSimple]);
 
   const handleClick = (group) => {
     // Alert.alert(`Clicked on ${group}`);
     setActiveGroup(group);
   };
-
   const navigation = useNavigation();
 
   const currentPage = () => {
-    if (pageView === "FrontMaleSimple") {
+    const componentsMap = {
+      FrontMaleSimple,
+      BackMaleSimple,
+      FrontFemaleSimple,
+      BackFemaleSimple,
+      FrontMaleComplex,
+      BackMaleComplex,
+      FrontFemaleComplex,
+      BackFemaleComplex,
+    };
+
+    return ["Front", "Back"].map((item, index) => {
+      const SelectedComponent = componentsMap[`${item}${pageView}`];
       return (
-        <FrontMaleSimple
+        <SelectedComponent
+          key={index}
           color={color}
           activeColor={activeColor}
           activeGroup={activeGroup}
           handleClick={handleClick}
+          width={width * 0.79}
+          height={height * 0.7}
         />
       );
-    } else if (pageView === "BackMaleSimple") {
-      return (
-        <BackMaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-        />
-      );
-    } else if (pageView === "FrontFemaleSimple") {
-      return (
-        <FrontFemaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-        />
-      );
-    } else if (pageView === "BackFemaleSimple") {
-      return (
-        <BackFemaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-        />
-      );
-    } else {
-      return <Text>Not Found</Text>;
-    }
+    });
   };
 
   return (
@@ -116,47 +96,35 @@ const InteractBody = () => {
           flexDirection: "row",
           justifyContent: "space-around",
         }}
-      >
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">{isMale ? "男性" : "女性"}</ThemedText>
-            <Switch
-              value={isMale}
-              onValueChange={setIsMale}
-              thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
-              trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-            />
-        </View>
-        {/* <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">
-            {isSimple ? "简单" : "复杂"}
-          </ThemedText>
-          <Switch
-            value={isSimple}
-            onValueChange={setIsSimple}
-            disabled
-            thumbColor={isSimple ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View> */}
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">
-            {isFront ? "前面" : "后面"}
-          </ThemedText>
-          <Switch
-            value={isFront}
-            onValueChange={setIsFront}
-            thumbColor={isFront ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View>
-      </SafeAreaView>
-      {currentPage()}
+      ></SafeAreaView>
+
+      <PagerView style={{ flex: 1 }} initialPage={0}>
+        {currentPage()}
+      </PagerView>
+      <View style={{ flexDirection: "row-reverse" }}>
+        <TouchableOpacity
+          onPress={() => setIsSimple(!isSimple)}
+          style={styles.modeButton}
+        >
+          <FontAwesome name="modx" size={width * 0.06} color="white" />
+        </TouchableOpacity>
+      </View>
       <View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("BodyInfoScreen", {
-              name: mapBodyPart(activeGroup),
-            });
+            const bodypart = mapBodyPart(activeGroup);
+            if (bodypart) {
+              navigation.navigate("BodyInfoScreen", {
+                name: bodypart,
+              });
+            } else {
+              Alert.alert(
+                "敬请期待！", // 弹窗标题
+                "", // 弹窗内容
+                [{ text: "确定", onPress: () => console.log("确定 Pressed") }],
+                { cancelable: false }
+              );
+            }
           }}
           style={{
             backgroundColor: "#FFA07A",
@@ -164,11 +132,12 @@ const InteractBody = () => {
             height: height * 0.05,
             alignItems: "center",
             justifyContent: "center",
-            marginTop: height * 0.04,
           }}
         >
-          <ThemedText type="defaultBold">{mapBodyPart(activeGroup)}</ThemedText>
-          {/* <ThemedText type="defaultBold">{activeGroup}</ThemedText> */}
+          <ThemedText type="defaultBold">
+            {mapBodyPart(activeGroup) && mapBodyPart(activeGroup)}
+            {!mapBodyPart(activeGroup) && activeGroup}
+          </ThemedText>
         </TouchableOpacity>
       </View>
     </View>
@@ -181,6 +150,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff",
+  },
+  modeButton: {
+    backgroundColor: "#FFA07A",
+    width: width * 0.12,
+    height: width * 0.12,
+    borderRadius: width * 0.06,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: width * 0.04,
+    marginBottom: width * 0.04,
   },
 });
 
