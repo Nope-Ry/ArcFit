@@ -20,7 +20,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Equipment",
+          title: "器械",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "barbell" : "barbell-outline"}
@@ -32,7 +32,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="body"
         options={{
-          title: "Body",
+          title: "身体",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "body" : "body-outline"}
@@ -44,7 +44,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="training"
         options={{
-          title: "Training",
+          title: "训练",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "bar-chart" : "bar-chart-outline"}
@@ -56,7 +56,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: "我的",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "person" : "person-outline"}

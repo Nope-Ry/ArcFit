@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
+import { CheckBox } from "react-native-elements";
 
 import { Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
-
+import Entypo from "@expo/vector-icons/Entypo";
 import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
 import { FrontFemaleSimple } from "./FrontFemaleSimple";
@@ -50,7 +51,7 @@ const mapBodyPart = (group) => {
 
 const InteractBody = () => {
   const [pageView, setPageView] = useState("FrontMaleSimple");
-  // const [isMale, setIsMale] = useState(true);
+  // TODO: set gender in settings
   const { isMale, setIsMale } = useGender();
   const [isSimple, setIsSimple] = useState(true);
   const [isFront, setIsFront] = useState(true);
@@ -68,99 +69,35 @@ const InteractBody = () => {
     // Alert.alert(`Clicked on ${group}`);
     setActiveGroup(group);
   };
-
+  const clickArrow = () => {
+    setIsFront(!isFront);
+  };
   const navigation = useNavigation();
 
   const currentPage = () => {
-    if (pageView === "FrontMaleSimple") {
-      return (
-        <FrontMaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackMaleSimple") {
-      return (
-        <BackMaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "FrontFemaleSimple") {
-      return (
-        <FrontFemaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackFemaleSimple") {
-      return (
-        <BackFemaleSimple
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "FrontMaleComplex") {
-      return (
-        <FrontMaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackMaleComplex") {
-      return (
-        <BackMaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "FrontFemaleComplex") {
-      return (
-        <FrontFemaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    } else if (pageView === "BackFemaleComplex") {
-      return (
-        <BackFemaleComplex
-          color={color}
-          activeColor={activeColor}
-          activeGroup={activeGroup}
-          handleClick={handleClick}
-          width={width * 0.8}
-          height={height * 0.7}
-        />
-      );
-    }
+    const componentsMap = {
+      FrontMaleSimple,
+      BackMaleSimple,
+      FrontFemaleSimple,
+      BackFemaleSimple,
+      FrontMaleComplex,
+      BackMaleComplex,
+      FrontFemaleComplex,
+      BackFemaleComplex,
+    };
+
+    const SelectedComponent = componentsMap[pageView];
+
+    return (
+      <SelectedComponent
+        color={color}
+        activeColor={activeColor}
+        activeGroup={activeGroup}
+        handleClick={handleClick}
+        width={width * 0.8}
+        height={height * 0.7}
+      />
+    );
   };
 
   return (
@@ -171,79 +108,56 @@ const InteractBody = () => {
           justifyContent: "space-around",
         }}
       >
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">{isMale ? "男性" : "女性"}</ThemedText>
-          <Switch
-            value={isMale}
-            onValueChange={setIsMale}
-            thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">
-            {isSimple ? "简单" : "复杂"}
-          </ThemedText>
-          <Switch
-            value={isSimple}
-            onValueChange={setIsSimple}
-            // disabled
-            thumbColor={isSimple ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">
-            {isFront ? "前面" : "后面"}
-          </ThemedText>
-          <Switch
-            value={isFront}
-            onValueChange={setIsFront}
-            thumbColor={isFront ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View>
       </SafeAreaView>
       {currentPage()}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: height * 0.02,
+        }}
+      >
+        <TouchableOpacity onPress={clickArrow} style={styles.leftArrow}>
+          <Entypo name="arrow-bold-left" size={width * 0.06} color="white" />
+        </TouchableOpacity>
+        <CheckBox
+          checked={isSimple}
+          onPress={() => setIsSimple(!isSimple)}
+          checkedColor="#FFA07A"
+          uncheckedColor="#FFA07A"
+          size={width * 0.07}
+          checkedIcon="dot-circle-o"
+          uncheckedIcon="circle-o"
+        />
+        <TouchableOpacity onPress={clickArrow} style={styles.rightArrow}>
+          <Entypo name="arrow-bold-right" size={width * 0.06} color="white" />
+        </TouchableOpacity>
+      </View>
       <View>
-        {isSimple && (
-          <TouchableOpacity
-            onPress={() => {
+        <TouchableOpacity
+          onPress={() => {
+            const bodypart = mapBodyPart(activeGroup);
+            if (bodypart) {
               navigation.navigate("BodyInfoScreen", {
-                name: mapBodyPart(activeGroup),
+                name: bodypart,
               });
-            }}
-            style={{
-              backgroundColor: "#FFA07A",
-              width: width,
-              height: height * 0.05,
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: height * 0.04,
-            }}
-          >
-            <ThemedText type="defaultBold">
-              {mapBodyPart(activeGroup)}
-            </ThemedText>
-          </TouchableOpacity>
-        )}
-        {!isSimple && (
-          <TouchableOpacity
-            onPress={() => {
-              alert("暂时不支持复杂模式动作");
-            }}
-            style={{
-              backgroundColor: "#FFA07A",
-              width: width,
-              height: height * 0.05,
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: height * 0.04,
-            }}
-          >
-            <ThemedText type="defaultBold">{activeGroup}</ThemedText>
-          </TouchableOpacity>
-        )}
+            } else {
+              alert("敬请期待！");
+            }
+          }}
+          style={{
+            backgroundColor: "#FFA07A",
+            width: width,
+            height: height * 0.05,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ThemedText type="defaultBold">
+            {mapBodyPart(activeGroup) && mapBodyPart(activeGroup)}
+            {!mapBodyPart(activeGroup) && activeGroup}
+          </ThemedText>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -255,6 +169,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff",
+  },
+  leftArrow: {
+    backgroundColor: "#FFA07A",
+    width: width * 0.1,
+    height: height * 0.05,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: width * 0.12,
+  },
+  rightArrow: {
+    backgroundColor: "#FFA07A",
+    width: width * 0.1,
+    height: height * 0.05,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: width * 0.12,
   },
 });
 

@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import { View, Modal, Button, Dimensions, StyleSheet, FlatList } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import * as shape from "d3-shape";
+
 import { Alert } from "react-native";
 
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text as SvgText } from 'react-native-svg';
-import { MaxEquation } from "three";
-import { SelectList } from 'react-native-dropdown-select-list';
+
 import { data }from "../../app/(tabs)/profile";
 
 import motionData from "@/res/motion/json/comb.json";

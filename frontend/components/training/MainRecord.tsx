@@ -46,8 +46,8 @@ const getDuration = (date: Date) => {
   return Math.floor(duration);
 };
 
-const getTimes = () => {
-  const today = new Date().toISOString().split("T")[0];
+const getTimes = (date: Date) => {
+  const today = date.toISOString().split("T")[0];
   const todayData = data.filter((item) => item.date === today);
   if (todayData.length === 0) {
     return "未开始";
@@ -75,7 +75,7 @@ interface MainRecordProps {
 }
 export default function MainRecord({ date }: MainRecordProps) {
   const duration = getDuration(date);
-  const times = getTimes();
+  const times = getTimes(date);
   const exerciseData = getExerciseData(date);
   const bodyParts = exerciseData.map((item) => motionData[item.m_id - 1].b_id);
   const activeGroup_id = bodyParts

@@ -10,13 +10,6 @@ import {
 import { ScrollView, TouchableOpacity, Modal } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text as SvgText } from "react-native-svg";
-import { LineChart, Grid, PieChart, YAxis } from "react-native-svg-charts";
-import { MaxEquation } from "three";
-import * as shape from "d3-shape";
-import { SelectList } from "react-native-dropdown-select-list";
-import * as FileSystem from "expo-file-system";
 import { data }from "../../app/(tabs)/profile";
 import { Alert } from "react-native";
 import CustomLineChart from "../statistic/CustomLineChart";

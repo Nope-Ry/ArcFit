@@ -95,17 +95,14 @@ export const UserProvider = ({children}) => {
 
 export const useUser = () => useContext(UserContext);
 
+const genderOptions = ["男", "女", "保密"];
+
 export const translateGender = (gender: UserInfo['gender']) => {
-  switch (gender) {
-    case 0:
-      return "男";
-    case 1:
-      return "女";
-    case 2:
-      return "未设置";
-    default:
-      return "未知";
-  }
+  return genderOptions[gender];
+};
+
+export const reverseGender = (val: any) => {
+  return genderOptions.indexOf(val);
 };
 
 export const translateAge = (age: UserInfo['age']) => {
