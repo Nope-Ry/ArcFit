@@ -8,7 +8,7 @@ import json
 import numpy as np
 
 equipment_cnt = 35
-motion_cnt = 91
+motion_cnt = 90
 bodypart_cnt = 17
 
 e_id_list_all = np.empty((equipment_cnt, 0)).tolist()
