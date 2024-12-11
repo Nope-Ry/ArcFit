@@ -349,6 +349,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 5,
     marginBottom: 20,
+    paddingTop: 20,
   },
   bodyBox: {
     flexDirection: "row",
@@ -369,7 +370,7 @@ const styles = StyleSheet.create({
   },
   modalCloseButton: {
     position: "absolute",
-    top: height * 0.06,
+    top: height * 0.08,
     right: width * 0.07,
     padding: 10,
     borderRadius: 10,
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "93%",
-    height: "90%",
+    height: height * 0.87,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",

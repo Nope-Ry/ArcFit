@@ -129,12 +129,12 @@ export default function AccountScreen() {
           <Avatar size={styles.avatarContainer.width} />
         </TouchableOpacity>
         {/* 用户名区域 */}
-        <ThemedText type="title">{user.username}</ThemedText>
+        <ThemedText style={{textAlign:'center',marginBottom:10}} type="title">{user.username}</ThemedText>
         {/* 个人资料详情区域 */}
         <InfoGroup groupName={"基本信息"}>
           {basicInfo.map((item: InfoItem, index) => {
             return (
-              <TouchableOpacity key={index} onPress={() => setVisible(item)}>
+              <TouchableOpacity key={index} onPress={() => setVisible(item)} >
                 <ProfileInfo label={item.label} value={item.value} icon={item.icon} />
               </TouchableOpacity>
             );
