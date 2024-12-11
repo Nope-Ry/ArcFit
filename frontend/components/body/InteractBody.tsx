@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
+import { CheckBox } from "react-native-elements";
 
 import { Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
-
+import Entypo from "@expo/vector-icons/Entypo";
 import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
 import { FrontFemaleSimple } from "./FrontFemaleSimple";
@@ -50,7 +51,7 @@ const mapBodyPart = (group) => {
 
 const InteractBody = () => {
   const [pageView, setPageView] = useState("FrontMaleSimple");
-  // const [isMale, setIsMale] = useState(true);
+  // TODO: set gender in settings
   const { isMale, setIsMale } = useGender();
   const [isSimple, setIsSimple] = useState(true);
   const [isFront, setIsFront] = useState(true);
@@ -68,7 +69,9 @@ const InteractBody = () => {
     // Alert.alert(`Clicked on ${group}`);
     setActiveGroup(group);
   };
-
+  const clickArrow = () => {
+    setIsFront(!isFront);
+  };
   const navigation = useNavigation();
 
   const currentPage = () => {
@@ -105,40 +108,31 @@ const InteractBody = () => {
           justifyContent: "space-around",
         }}
       >
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">{isMale ? "男性" : "女性"}</ThemedText>
-          <Switch
-            value={isMale}
-            onValueChange={setIsMale}
-            thumbColor={isMale ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">
-            {isSimple ? "简单" : "复杂"}
-          </ThemedText>
-          <Switch
-            value={isSimple}
-            onValueChange={setIsSimple}
-            // disabled
-            thumbColor={isSimple ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <ThemedText type="defaultBold">
-            {isFront ? "前面" : "后面"}
-          </ThemedText>
-          <Switch
-            value={isFront}
-            onValueChange={setIsFront}
-            thumbColor={isFront ? "#FFFFFF" : "#FFA07A"}
-            trackColor={{ false: "#FFA07A", true: "#FFA07A" }}
-          />
-        </View>
       </SafeAreaView>
       {currentPage()}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: height * 0.02,
+        }}
+      >
+        <TouchableOpacity onPress={clickArrow} style={styles.leftArrow}>
+          <Entypo name="arrow-bold-left" size={width * 0.06} color="white" />
+        </TouchableOpacity>
+        <CheckBox
+          checked={isSimple}
+          onPress={() => setIsSimple(!isSimple)}
+          checkedColor="#FFA07A"
+          uncheckedColor="#FFA07A"
+          size={width * 0.07}
+          checkedIcon="dot-circle-o"
+          uncheckedIcon="circle-o"
+        />
+        <TouchableOpacity onPress={clickArrow} style={styles.rightArrow}>
+          <Entypo name="arrow-bold-right" size={width * 0.06} color="white" />
+        </TouchableOpacity>
+      </View>
       <View>
         <TouchableOpacity
           onPress={() => {
@@ -157,7 +151,6 @@ const InteractBody = () => {
             height: height * 0.05,
             alignItems: "center",
             justifyContent: "center",
-            marginTop: height * 0.04,
           }}
         >
           <ThemedText type="defaultBold">
@@ -176,6 +169,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#ffffff",
+  },
+  leftArrow: {
+    backgroundColor: "#FFA07A",
+    width: width * 0.1,
+    height: height * 0.05,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: width * 0.12,
+  },
+  rightArrow: {
+    backgroundColor: "#FFA07A",
+    width: width * 0.1,
+    height: height * 0.05,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: width * 0.12,
   },
 });
 
