@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  Button,
   Dimensions,
   StyleSheet,
-  FlatList,
 } from "react-native";
 import { ScrollView, TouchableOpacity, Modal } from "react-native";
 import { ThemedText } from "@/components/ThemedText";

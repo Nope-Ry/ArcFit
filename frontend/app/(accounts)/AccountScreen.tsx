@@ -1,6 +1,6 @@
 import { UserInfo, ServerUserInfo } from "@/contexts/UserContext.types";
 import { useUser, translateGender, translateAge, reverseGender } from "@/contexts/UserContext";
-import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Alert } from "react-native";
 import Avatar from "@/components/Avatar";
 import InfoGroup from "@/components/profile/InfoGroup";
 import { ThemedText } from "@/components/ThemedText";
@@ -12,7 +12,6 @@ import * as ImagePicker from "expo-image-picker";
 import { emitUserEvent } from "@/contexts/UserContext";
 import { useNavigation } from "@react-navigation/native";
 import { Dimensions } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
