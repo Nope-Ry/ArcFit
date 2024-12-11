@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
+import { useUser } from "./UserContext";
+import { UserInfo } from "./UserContext.types";
 
 interface GenderContextType {
   isMale: boolean;
@@ -8,7 +10,13 @@ interface GenderContextType {
 const GenderContext = createContext<GenderContextType | undefined>(undefined);
 
 export const GenderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isMale, setIsMale] = useState(true);
+  const { user, setUser } = useUser();
+  const isMale = user.gender !== 1;
+  
+  const setIsMale = (isMale: boolean) => {
+    const newUser: UserInfo = { ...user, gender: isMale ? 0 : 1 };
+    setUser(newUser);
+  };
 
   return (
     <GenderContext.Provider value={{ isMale, setIsMale }}>

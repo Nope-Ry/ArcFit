@@ -1,5 +1,5 @@
 import { UserInfo, ServerUserInfo } from "@/contexts/UserContext.types";
-import { useUser, translateGender, translateAge } from "@/contexts/UserContext";
+import { useUser, translateGender, translateAge, reverseGender } from "@/contexts/UserContext";
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from "react-native";
 import Avatar from "@/components/Avatar";
 import InfoGroup from "@/components/profile/InfoGroup";
@@ -20,10 +20,11 @@ type InfoItem = InfoType & {
   label: string;
   field: keyof ServerUserInfo;
   icon: any;
+  valMapper?: (val: string) => any;
 };
 
 export default function AccountScreen() {
-  const { user, setUser } = useUser();
+  const { user, setUser, resetUser } = useUser();
   const navigation = useNavigation();
 
   const [isVisible, setIsVisible] = useState(false);
@@ -47,6 +48,9 @@ export default function AccountScreen() {
   })();
 
   const onEdit = (value: string) => {
+    if (curItem.valMapper) {
+      value = curItem.valMapper(value);
+    }
     const tryUpdateUser = async () => {
       try {
         const newServerUser = await API.call(API.Account.update, { [field]: value });
@@ -111,17 +115,16 @@ export default function AccountScreen() {
     }
   };
 
+  const basicInfo: InfoItem[] = [
+    { label: "性别", field: "gender", value: translateGender(user.gender), type: "select", options: ["男", "女", "保密"], icon: require("../../assets/images/gender.png"), valMapper: reverseGender },
+    { label: "年龄", field: "age", value: translateAge(user.age), type: "text", icon: require("../../assets/images/age.png") },
+    { label: "邮箱", field: "email", value: user.email, type: "text", icon: require("../../assets/images/email.png") },
+    { label: "手机", field: "phone_number", value: user.phone_number, type: "text", icon: require("../../assets/images/phone.png") },
+  ];
+
   return (
     <View style={styles.container}>
-      {/* 封面区域 */}
-      <View>
-        <Image source={require("../../coverimage/image.png")} style={styles.cover} />
-        <TouchableOpacity style={styles.coverButton}>
-          <Ionicons name="image" size={24} color="white" />
-          <ThemedText style={{ color: "white" }}> 更换封面</ThemedText>
-        </TouchableOpacity>
-      </View>
-      <View style={{ padding: 15, marginTop: -85 }}>
+      <View style={{ padding: 15 }}>
         {/* 用户头像区域 */}
         <TouchableOpacity style={styles.avatarContainer} onPress={uploadAvatar}>
           <Avatar size={styles.avatarContainer.width} />
@@ -130,12 +133,7 @@ export default function AccountScreen() {
         <ThemedText type="title">{user.username}</ThemedText>
         {/* 个人资料详情区域 */}
         <InfoGroup groupName={"基本信息"}>
-          {[
-            { label: "性别", field: "gender", value: translateGender(user.gender), type: "select", options: ["男", "女", "保密"], icon: require("../../assets/images/gender.png") },
-            { label: "年龄", field: "age", value: translateAge(user.age), type: "text", icon: require("../../assets/images/age.png") },
-            { label: "邮箱", field: "email", value: user.email, type: "text", icon: require("../../assets/images/email.png") },
-            { label: "手机", field: "phone_number", value: user.phone_number, type: "text", icon: require("../../assets/images/phone.png") },
-          ].map((item: InfoItem, index) => {
+          {basicInfo.map((item: InfoItem, index) => {
             return (
               <TouchableOpacity key={index} onPress={() => setVisible(item)}>
                 <ProfileInfo label={item.label} value={item.value} icon={item.icon} />
@@ -163,20 +161,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-  },
-  cover: {
-    width: width,
-    height: 200,
-  },
-  coverButton: {
-    // 水平排列
-    flexDirection: "row",
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10,
-    borderRadius: 20,
   },
   title: {
     fontSize: 32,
