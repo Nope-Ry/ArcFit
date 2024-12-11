@@ -88,6 +88,10 @@ export default function RootLayout() {
               name="MotionScreen"
               options={{ headerTitle: "动作详情", headerBackTitle: "返回" }}
             />
+            <Stack.Screen
+              name="CalculatorScreen"
+              options={{ headerTitle: "RM计算器", headerBackTitle: "返回" }}
+            />
           </Stack>
         </ThemeProvider>
       </ContextProviders>
