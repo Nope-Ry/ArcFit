@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
-  Image,
   Dimensions,
   StyleSheet,
   TextInput,
@@ -20,7 +19,6 @@ import { data } from "../../app/(tabs)/profile";
 import { Alert } from "react-native";
 
 import { ThemedText } from "../ThemedText";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 const { width, height } = Dimensions.get("window");
 
 interface ExerciseCardProps {

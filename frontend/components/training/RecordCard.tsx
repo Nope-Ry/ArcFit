@@ -1,9 +1,7 @@
 import React from "react";
 import {
   View,
-  Text,
   StyleSheet,
-  ScrollView,
   ImageBackground,
 } from "react-native";
 import { ThemedText } from "../ThemedText";

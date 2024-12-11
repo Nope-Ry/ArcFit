@@ -2,10 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import React from "react";
 import {
   StyleSheet,
-  SafeAreaView,
-  Image,
   TouchableOpacity,
-  ScrollView,
   View,
   Dimensions,
 } from "react-native";

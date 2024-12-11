@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Modal, Button, Dimensions, StyleSheet, FlatList } from "react-native";
+import { View, Modal, Dimensions, StyleSheet } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 
@@ -9,14 +9,8 @@ import { Alert } from "react-native";
 import { data }from "../../app/(tabs)/profile";
 
 import motionData from "@/res/motion/json/comb.json";
-import {
-    LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
-  } from "react-native-chart-kit";
+
+
 import CustomLineChart from "../statistic/CustomLineChart";
 import CustomPieChart from "../statistic/CustomPieChart";
 const { width, height } = Dimensions.get("window");

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import EquipmentHeader from "../../components/equipment/EquipmentHeader";
 import EquipmentCard from "../../components/equipment/EquipmentCard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import cardData from "../../res/equipment/json/comb.json";
 import bodypartData from "@/res/bodypart/json/comb.json";
-import Icon from "react-native-vector-icons/Ionicons";
-import { ThemedText } from "@/components/ThemedText";
-import Cart from "@/components/Cart";
 
 const { width, height } = Dimensions.get("window");
 

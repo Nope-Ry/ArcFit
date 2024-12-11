@@ -1,17 +1,11 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
-  TextInput,
-  Button,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   SafeAreaView,
   Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import Slider from '@react-native-community/slider';
 import { ThemedText } from "@/components/ThemedText";
 import WeeklyTrainingRecords from "../components/index/WeeklyTrainingRecords";
 import TotalTrainingRecords from "../components/index/TotalTrainingRecords";

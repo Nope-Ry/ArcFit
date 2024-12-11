@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { Dimensions } from "react-native";
 import { data } from "../../app/(tabs)/profile";
