@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import { CheckBox } from "react-native-elements";
+import { Alert } from "react-native";
 
 import { Dimensions } from "react-native";
 import { ThemedText } from "../ThemedText";
-import Entypo from "@expo/vector-icons/Entypo";
 import { FrontMaleSimple } from "./FrontMaleSimple";
 import { BackMaleSimple } from "./BackMaleSimple";
 import { FrontFemaleSimple } from "./FrontFemaleSimple";
@@ -20,7 +15,8 @@ import { BackMaleComplex } from "./BackMaleComplex";
 import { FrontFemaleComplex } from "./FrontFemaleComplex";
 import { BackFemaleComplex } from "./BackFemaleComplex";
 import { useGender } from "@/contexts/GenderContext";
-
+import PagerView from "react-native-pager-view";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 const { width, height } = Dimensions.get("window");
 
 const mapBodyPart = (group) => {
@@ -47,27 +43,21 @@ const mapBodyPart = (group) => {
 };
 
 const InteractBody = () => {
-  const [pageView, setPageView] = useState("FrontMaleSimple");
-  // TODO: set gender in settings
-  const { isMale, setIsMale } = useGender();
+  const [pageView, setPageView] = useState("MaleSimple");
+  const { isMale } = useGender();
   const [isSimple, setIsSimple] = useState(true);
-  const [isFront, setIsFront] = useState(true);
   const [activeGroup, setActiveGroup] = useState("chest");
   const color = "#FFF5EE";
   const activeColor = "#FFA07A";
   useEffect(() => {
     const gender = isMale ? "Male" : "Female";
     const complexity = isSimple ? "Simple" : "Complex";
-    const side = isFront ? "Front" : "Back";
-    setPageView(`${side}${gender}${complexity}`);
-  }, [isMale, isSimple, isFront]);
+    setPageView(`${gender}${complexity}`);
+  }, [isMale, isSimple]);
 
   const handleClick = (group) => {
     // Alert.alert(`Clicked on ${group}`);
     setActiveGroup(group);
-  };
-  const clickArrow = () => {
-    setIsFront(!isFront);
   };
   const navigation = useNavigation();
 
@@ -83,18 +73,20 @@ const InteractBody = () => {
       BackFemaleComplex,
     };
 
-    const SelectedComponent = componentsMap[pageView];
-
-    return (
-      <SelectedComponent
-        color={color}
-        activeColor={activeColor}
-        activeGroup={activeGroup}
-        handleClick={handleClick}
-        width={width * 0.8}
-        height={height * 0.7}
-      />
-    );
+    return ["Front", "Back"].map((item, index) => {
+      const SelectedComponent = componentsMap[`${item}${pageView}`];
+      return (
+        <SelectedComponent
+          key={index}
+          color={color}
+          activeColor={activeColor}
+          activeGroup={activeGroup}
+          handleClick={handleClick}
+          width={width * 0.79}
+          height={height * 0.7}
+        />
+      );
+    });
   };
 
   return (
@@ -104,30 +96,17 @@ const InteractBody = () => {
           flexDirection: "row",
           justifyContent: "space-around",
         }}
-      >
-      </SafeAreaView>
-      {currentPage()}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: height * 0.02,
-        }}
-      >
-        <TouchableOpacity onPress={clickArrow} style={styles.leftArrow}>
-          <Entypo name="arrow-bold-left" size={width * 0.06} color="white" />
-        </TouchableOpacity>
-        <CheckBox
-          checked={isSimple}
+      ></SafeAreaView>
+
+      <PagerView style={{ flex: 1 }} initialPage={0}>
+        {currentPage()}
+      </PagerView>
+      <View style={{ flexDirection: "row-reverse" }}>
+        <TouchableOpacity
           onPress={() => setIsSimple(!isSimple)}
-          checkedColor="#FFA07A"
-          uncheckedColor="#FFA07A"
-          size={width * 0.07}
-          checkedIcon="dot-circle-o"
-          uncheckedIcon="circle-o"
-        />
-        <TouchableOpacity onPress={clickArrow} style={styles.rightArrow}>
-          <Entypo name="arrow-bold-right" size={width * 0.06} color="white" />
+          style={styles.modeButton}
+        >
+          <FontAwesome name="modx" size={width * 0.06} color="white" />
         </TouchableOpacity>
       </View>
       <View>
@@ -139,7 +118,12 @@ const InteractBody = () => {
                 name: bodypart,
               });
             } else {
-              alert("敬请期待！");
+              Alert.alert(
+                "敬请期待！", // 弹窗标题
+                "", // 弹窗内容
+                [{ text: "确定", onPress: () => console.log("确定 Pressed") }],
+                { cancelable: false }
+              );
             }
           }}
           style={{
@@ -167,21 +151,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#ffffff",
   },
-  leftArrow: {
+  modeButton: {
     backgroundColor: "#FFA07A",
-    width: width * 0.1,
-    height: height * 0.05,
+    width: width * 0.12,
+    height: width * 0.12,
+    borderRadius: width * 0.06,
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: width * 0.12,
-  },
-  rightArrow: {
-    backgroundColor: "#FFA07A",
-    width: width * 0.1,
-    height: height * 0.05,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: width * 0.12,
+    marginRight: width * 0.04,
+    marginBottom: width * 0.04,
   },
 });
 

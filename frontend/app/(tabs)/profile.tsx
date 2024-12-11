@@ -4,6 +4,7 @@ import AccountInfo from "@/components/profile/AccountInfo";
 import FunctionList from "@/components/profile/FunctionList"; 
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const path = FileSystem.documentDirectory;
 export let data: any[] = [];
@@ -66,6 +67,11 @@ export default function ProfileScreen() {
                 icon: require("../../assets/images/statistics.png"),
                 text: "训练统计",
                 onPress: () => navigation.navigate("TrainingStatisticsScreen"),
+              },
+              {
+                icon: require("../../assets/images/calculator.png"),
+                text: "RM计算器",
+                onPress: () => navigation.navigate("CalculatorScreen"),
               },
             ]}
           />
