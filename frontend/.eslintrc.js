@@ -1,4 +1,3 @@
-// https://docs.expo.dev/guides/using-eslint/
 module.exports = {
   extends: 'expo',
 
@@ -6,7 +5,11 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'off',
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error', // 检测并删除未使用的 import
+    'unused-imports/no-unused-vars': 'off'
   },
+
+  plugins: ['unused-imports'], // 添加插件
 
   ignorePatterns: [
     'node_modules/',
@@ -34,5 +37,4 @@ module.exports = {
       },
     ],
   },
-
 };
