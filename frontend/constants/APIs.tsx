@@ -73,6 +73,24 @@ export namespace API {
       needsAuth: true,
       fieldName: "image",
     };
+
+    export const uploadHistoryRecord: APISpec<{
+      start_time: string,
+      duration_seconds: number,
+      records: {
+        m_id: number,
+        group: {
+          weight: number,
+          reps: number,
+        }[],
+        rating: number,
+      }[],
+     }> = {
+      url: `${api}/training/create`,
+      method: "POST",
+      contentType: "application/json",
+      needsAuth: true,
+    };
   }
 
   interface RequestResult {
@@ -129,6 +147,7 @@ export namespace API {
       if (token) {
         headers["Authorization"] = `Token ${token}`;
       } else {
+        emitUserEvent("loginExpired");
         throw new Error("Not logged in");
       }
     }

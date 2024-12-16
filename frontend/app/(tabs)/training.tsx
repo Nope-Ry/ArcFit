@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Button } from "react-native";
+import { View, Button, Alert } from "react-native";
 import {
   ScrollView,
   TouchableOpacity,
@@ -25,6 +25,8 @@ import motionData from "@/res/motion/json/comb.json";
 import { motion_imgs } from "@/res/motion/motion_img";
 
 import { useNavigationState } from "@react-navigation/native";
+import { API } from "@/constants/APIs";
+
 
 const { width, height } = Dimensions.get("window");
 
@@ -166,6 +168,7 @@ export default function TrainingScreen() {
         duration: mins,
         date: new Date().toISOString().split("T")[0],
         time: new Date().toLocaleTimeString(),
+        dateTime: new Date().toISOString(),
         cnt: cnt,
         records: [],
       };
@@ -203,6 +206,32 @@ export default function TrainingScreen() {
         });
       data.push(hist);
       setTime(0);
+
+      const postHistoryRrcord = async () => {
+        try {
+          console.log(hist);
+          const response = await API.call(API.Account.uploadHistoryRecord, {
+            start_time: hist["dateTime"],
+            duration_seconds: hist["duration"],
+            records: hist["records"].map((record) => ({
+              m_id: record.m_id,
+              group: record.group.map((group) => ({
+                weight: parseInt(group.weight),
+                reps: parseInt(group.reps),
+              })),
+              rating: record.rating,
+            })
+            )
+          });
+          console.log(response);
+        }
+        catch (e) {
+          console.error(e);
+          Alert.alert("上传失败，请稍后再试");
+        }
+      }
+
+      postHistoryRrcord();
     }
 
     setIsTraining(!isTraining);
