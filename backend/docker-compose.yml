@@ -1,13 +1,13 @@
 services:
   app:
-    restart: always
+    restart: unless-stopped
     build: .
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     command: >
       bash -c
       "export DJANGO_SETTINGS_MODULE=app.settings_prod &&
-      python3 manage.py makemigrations accounts &&
+      python3 manage.py makemigrations &&
       python3 manage.py migrate &&
       gunicorn --timeout=30 --workers=4 --bind 0.0.0.0:8000 app.wsgi:application"
     volumes:
@@ -15,7 +15,10 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
+      - web_network
       - db_network
 
   mysql:
@@ -24,11 +27,11 @@ services:
       - /home/ubuntu/mysql:/var/lib/mysql
     expose:
       - "3306"
-    restart: always
+    restart: unless-stopped
     env_file: .env
     environment:
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+      - MYSQL_DATABASE=$DB_NAME
       - TZ=Asia/Shanghai
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
     networks:
@@ -39,6 +42,39 @@ services:
       interval: 10s
       retries: 5
 
+  nginx:
+    restart: unless-stopped
+    image: nginx:latest
+    ports:
+      - "443:443"
+    volumes:
+      - ./asset_files:/assets
+      - ./static:/static
+      - ./nginx/app.conf:/etc/nginx/conf.d/nginx.conf
+      - /etc/letsencrypt:/cert
+    depends_on:
+      - app
+    networks:
+      - web_network
+  
+  redis:
+    image: redis:latest
+    expose:
+      - "6379"
+    volumes:
+      - /home/ubuntu/redis:/data
+      - ./redis-conf/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - db_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
+  web_network:
+    driver: bridge
   db_network:
     driver: bridge
