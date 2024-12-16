@@ -86,7 +86,7 @@ export namespace API {
         rating: number,
       }[],
      }> = {
-      url: `${api}/api/training/create`,
+      url: `${api}/training/create`,
       method: "POST",
       contentType: "application/json",
       needsAuth: true,

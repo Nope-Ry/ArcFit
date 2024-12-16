@@ -168,6 +168,7 @@ export default function TrainingScreen() {
         duration: mins,
         date: new Date().toISOString().split("T")[0],
         time: new Date().toLocaleTimeString(),
+        dateTime: new Date().toISOString(),
         cnt: cnt,
         records: [],
       };
@@ -208,13 +209,21 @@ export default function TrainingScreen() {
 
       const postHistoryRrcord = async () => {
         try {
+          console.log(hist);
           const response = await API.call(API.Account.uploadHistoryRecord, {
-            start_time: hist["time"],
+            start_time: hist["dateTime"],
             duration_seconds: hist["duration"],
-            records: hist["records"],
+            records: hist["records"].map((record) => ({
+              m_id: record.m_id,
+              group: record.group.map((group) => ({
+                weight: parseInt(group.weight),
+                reps: parseInt(group.reps),
+              })),
+              rating: record.rating,
+            })
+            )
           });
-          const result = await response.json();
-          console.log(result);
+          console.log(response);
         }
         catch (e) {
           console.error(e);
