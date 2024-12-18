@@ -7,3 +7,5 @@ asset_files
 static
 scripts
 **/*.conf
+.coverage
+.coveragerc
