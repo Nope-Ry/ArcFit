@@ -33,7 +33,6 @@ const { width, height } = Dimensions.get("window");
 let cnt = 0;
 
 const getMotionHistory = (m_id) => {
-  // 出来一个弹窗，显示该动作的m_id，并利用CustomLineChart展示历史记录
   const firstDay = new Date(
     Math.min(...data.map((item) => new Date(item.date).getTime()))
   );
