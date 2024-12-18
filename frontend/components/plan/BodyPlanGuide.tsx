@@ -108,6 +108,7 @@ const BodyPlanGuide = () => {
         });
     });
     prompt += "那么我今天应该做的动作是？回答仅给出什么动作以及它的次数以及每次的重量和组数。";
+    console.log(data);
 
     // 百度API
   const AK = token["AK"];
@@ -183,7 +184,7 @@ const BodyPlanGuide = () => {
             {/* 描述方框 */}
             <View style={styles.descriptionBox}>
               <ThemedText type="defaultBold" style={styles.text}>
-                  {123}
+                  基本的锻炼方法应综合有氧、力量和协调性训练，以实现增肌和燃脂的目标。在增肌时，力量训练需要以适当的负荷和重复次数为基础，重视肌肉的逐渐适应与增长；而燃脂则依赖于持续的有氧运动和全身性的力量训练，帮助提升心率和增加卡路里消耗，促进脂肪燃烧。协调性训练则通过增强身体的稳定性和灵活性，帮助提高运动表现并降低受伤风险。总体原则是保持训练多样化，合理安排强度和恢复周期，同时确保每个肌群得到充分锻炼，避免过度训练或失衡。
               </ThemedText>
             </View>
 
@@ -269,6 +270,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         marginBottom: height * 0.03,
         marginTop: height * 0.02,
+        elevation: 10,
     },
     text: {
         margin: 10,
@@ -312,7 +314,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 10,
         width: "50%",
-        height: 45,
+        height: 50,
         borderWidth: 1,
       },
       correctBox: {
@@ -330,6 +332,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         marginBottom: 20,
         paddingTop: 20,
+        elevation: 10,
       },
 });
 

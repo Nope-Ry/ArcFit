@@ -7,8 +7,8 @@ import {
   Dimensions,
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import WeeklyTrainingRecords from "../components/index/WeeklyTrainingRecords";
-import TotalTrainingRecords from "../components/index/TotalTrainingRecords";
+import WeeklyTrainingRecords from "../components/record/WeeklyTrainingRecords";
+import TotalTrainingRecords from "../components/record/TotalTrainingRecords";
 
 const {width, height} = Dimensions.get("window");
 

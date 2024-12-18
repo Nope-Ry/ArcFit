@@ -89,11 +89,12 @@ export default function RecordCard({ date }: ExerciseItemProps) {
           duration: record.duration_seconds,
           records: record.records,
           cnt: record.id,
-          dataTime: record.start_time,
+          dateTime: record.start_time,
         }));
         today_record.map((record) => {
           record.records.map((r) => {
             r.name = motionData[r.m_id - 1].name;
+            r.b_id = motionData[r.m_id - 1].b_id;
           });
         });
         today_record.map((record) => {
