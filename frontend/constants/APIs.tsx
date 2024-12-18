@@ -175,10 +175,10 @@ export namespace API {
         emitUserEvent("loginExpired");
         throw new Error("Login expired");
       } else {
-        throw new Error(result.response);
+        throw new Error(JSON.stringify(result.response));
       }
     } catch (error) {
-      console.error(`API call failed: ${error}`);
+      console.error(`API call failed: ${error.message}`);
       if (error instanceof TypeError) {
         // Indicates a network error
         throw new Error("Network error");
