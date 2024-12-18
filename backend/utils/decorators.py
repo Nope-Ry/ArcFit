@@ -10,8 +10,8 @@ def json_request(func):
             data = request.data
             return func(request, data, *args, **kwargs)
         except JSONDecodeError:
-            return Response({"message": "Bad arguments"}, status=HTTP_400_BAD_REQUEST)
-        except:
-            return Response({"message": "Bad arguments"}, status=HTTP_400_BAD_REQUEST)
+            return Response({"message": f"{request.body} is not valid json"}, status=HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({"message": f"Bad request, reason: {e}"}, status=HTTP_400_BAD_REQUEST)
 
     return wrapped
