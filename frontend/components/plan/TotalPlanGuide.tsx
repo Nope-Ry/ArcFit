@@ -14,16 +14,52 @@ import { Picker } from "@react-native-picker/picker";
 import motionData from "@/res/motion/json/comb.json";
 import token from "@/token.json";
 import axios from "axios";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const { width, height } = Dimensions.get("window");
 
+const getHistory = () => {
+  // 获取前三天的训练记录
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const beforeYesterday = new Date(today);
+  beforeYesterday.setDate(beforeYesterday.getDate() - 2);
 
+  // 获取前三天的训练记录
+  const todayData = data.filter((item) => item.date === today.toISOString().split("T")[0]);
+  const yesterdayData = data.filter((item) => item.date === yesterday.toISOString().split("T")[0]);
+  const beforeYesterdayData = data.filter((item) => item.date === beforeYesterday.toISOString().split("T")[0]);
+  return [beforeYesterdayData, yesterdayData, todayData];
+};
 const BodyPlanGuide = () => {
     const [loading, setLoading] = useState(false);
     const [responseData, setResponseData] = useState(null);
-    const [isModalVisible, setModalVisible] = useState(false);
     
     let prompt = "你好";
+    const hist = getHistory();
+    console.log(hist);
+
+    // 将hist全部转化为字符串
+    for (let i = 0; i < hist.length; i++) {
+        const today = new Date();
+        prompt += "在" + new Date(today.setDate(today.getDate() - i)).toISOString().split("T")[0] + "日，";
+        if (hist[i].length === 0) {
+            prompt += "你没有进行训练。";
+        } else {
+          for (let j = 0; j < hist[i].length; j++) {
+            for (let k = 0; k < hist[i][j].records.length; k++) {
+                prompt += hist[i][j].records[k].name;
+                for (let l = 0; l < hist[i][j].records[k].group.length; l++) {
+                    prompt += "第" + (l + 1) + "次";
+                    prompt += hist[i][j].records[k].group[l].weight + "kg";
+                    prompt += hist[i][j].records[k].group[l].reps + "组";
+                }
+            }
+        }
+      }
+    }
+    prompt += "请据此生成今日的训练计划。"
 
     // 百度API
   const AK = token["AK"];
@@ -99,7 +135,10 @@ const BodyPlanGuide = () => {
             {/* 描述方框 */}
             <View style={styles.descriptionBox}>
               <ThemedText type="defaultBold" style={styles.text}>
-                  {123}
+              三分化训练：这种训练方法将一周的训练分为三天，每天集中训练不同的肌肉群。常见的分配方式是胸背腿，即分别在不同的日子训练胸部、背部和腿部。这种训练方式的基本原则是通过高频率的训练，让每个肌群得到足够的刺激，促使其增长。在这种方法中，运动员通常每周训练三次，每次专注于一个大肌群，间隔时间可以让肌肉得到恢复。三分化的好处是能够避免过度训练某一肌群，同时能让每个肌群得到充分的训练刺激。
+              </ThemedText>
+              <ThemedText type="defaultBold" style={styles.text}>
+              五分化训练将一周的训练分为五天，每天训练不同的肌肉群，常见的分配方式是：胸部、背部、腿部、肩部、手臂（包括肱二头肌和肱三头肌）。这种方法的基本原则是通过更多的训练天数，让每个肌群得到更多的专注和细致的训练，同时也能有效避免疲劳积累。五分化适合那些已经有一定基础的运动员或健身者，目的是通过更细化的训练计划，提高每个肌群的力量和体型塑造。
               </ThemedText>
             </View>
 
@@ -152,6 +191,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         marginBottom: height * 0.03,
         marginTop: height * 0.02,
+        elevation: 10,
     },
     text: {
         margin: 10,
@@ -213,6 +253,7 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         marginBottom: 20,
         paddingTop: 20,
+        elevation: 10,
       },
 });
 

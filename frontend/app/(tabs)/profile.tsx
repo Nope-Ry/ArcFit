@@ -39,6 +39,15 @@ FileSystem.readDirectoryAsync(path).then((files) => {
   });
 });
 
+console.log(data);
+
+// 删去path下的所有文件
+// FileSystem.readDirectoryAsync(path).then((files) => {
+//   files.forEach((file) => {
+//     FileSystem.deleteAsync(path + file);
+//   });
+// });
+
 export default function ProfileScreen() {
   const navigation = useNavigation();
   const path = FileSystem.documentDirectory;
