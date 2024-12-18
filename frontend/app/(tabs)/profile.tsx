@@ -60,8 +60,8 @@ export default function ProfileScreen() {
               },
               {
                 icon: require("../../assets/images/images.png"),
-                text: "照片时刻",
-                onPress: () => { },
+                text: "计划指导",
+                onPress: () => navigation.navigate("PlanGuideScreen"),
               },
               {
                 icon: require("../../assets/images/statistics.png"),
