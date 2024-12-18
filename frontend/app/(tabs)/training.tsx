@@ -197,14 +197,16 @@ export default function TrainingScreen() {
         hist["cnt"] +
         ".json";
       console.log(path);
-      FileSystem.writeAsStringAsync(path, JSON.stringify(hist))
-        .then(() => {
-          console.log("写到了", path);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      data.push(hist);
+      if(hist["records"].length > 0){
+        FileSystem.writeAsStringAsync(path, JSON.stringify(hist))
+          .then(() => {
+            console.log("写到了", path);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        data.push(hist);
+      }
       setTime(0);
 
       const postHistoryRrcord = async () => {
@@ -230,8 +232,8 @@ export default function TrainingScreen() {
           Alert.alert("上传失败，请稍后再试");
         }
       }
-
-      postHistoryRrcord();
+      if(hist["records"].length > 0)  
+        postHistoryRrcord();
     }
 
     setIsTraining(!isTraining);
