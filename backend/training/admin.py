@@ -7,6 +7,7 @@ from .models import (
     ExerciseMuscleRelationship,
     ExerciseEquipmentRelationship,
     MuscleEquipmentRelationship,
+    TrainingSession
 )
 
 admin.site.register(Exercise)
@@ -15,3 +16,4 @@ admin.site.register(Equipment)
 admin.site.register(ExerciseMuscleRelationship)
 admin.site.register(ExerciseEquipmentRelationship)
 admin.site.register(MuscleEquipmentRelationship)
+admin.site.register(TrainingSession)
