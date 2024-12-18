@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
+    elevation: 10,
     marginBottom: height * 0.03,
     marginTop: height * 0.02,
   },
@@ -134,6 +135,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
+    elevation: 10,
   },
   recommendedAction: {
     flexDirection: "row",

@@ -91,6 +91,16 @@ export namespace API {
       contentType: "application/json",
       needsAuth: true,
     };
+
+    export const getHistoryRecord: APISpec<{
+      start_time: string,
+      end_time: string,
+     }> = {
+      url: `${api}/training/list`,
+      method: "GET",
+      contentType: "application/json",
+      needsAuth: true,
+    };
   }
 
   interface RequestResult {
@@ -109,6 +119,24 @@ export namespace API {
       method,
       headers,
       body: JSON.stringify(data),
+    });
+    return {
+      status: response.status,
+      response: await response.json(),
+    };
+  }
+
+  async function makeGetRequestWithQuery(
+    url: string,
+    queryParams: { [key: string]: string },
+    headers: { [key: string]: string } = {}
+  ): Promise<RequestResult> {
+    const queryString = new URLSearchParams(queryParams).toString();
+    console.log(`GET request to ${url}?${queryString}`);
+    const fullUrl = `${url}?${queryString}`;
+    const response = await fetch(fullUrl, {
+      method: "GET",
+      headers,
     });
     return {
       status: response.status,
@@ -156,7 +184,13 @@ export namespace API {
 
     const dispatchRequest = async () => {
       if (api.contentType === "application/json") {
-        return await makeJsonRequest(api.url, api.method, headers, args as object);
+        if (api.method === "GET") {
+          return await makeGetRequestWithQuery(api.url, args, headers);
+        }
+        else
+        {
+          return await makeJsonRequest(api.url, api.method, headers, args as object);
+        }
       } else if (api.contentType === "multipart/form-data") {
         if (api.method !== "POST" && api.method !== "PUT") {
           throw new Error(`${api.method} method not supported for multipart/form-data`);
