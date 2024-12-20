@@ -1,12 +1,21 @@
+from django.views.decorators.cache import cache_page
+
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, CreateAPIView, GenericAPIView
-from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
+from rest_framework.decorators import api_view
 
 from knox.auth import TokenAuthentication
 
-from .models import TrainingSession
-from .serializers import TrainingSessionSerializer, TrainingSessionIdSerializer
+from .models import TrainingSession, Exercise, Muscle, Equipment
+from .serializers import (
+    TrainingSessionSerializer,
+    TrainingSessionIdSerializer,
+    ExerciseSerializer,
+    MuscleSerializer,
+    EquipmentSerializer,
+)
 
 
 class TrainingSessionListView(ListAPIView):
@@ -56,3 +65,27 @@ class TrainingSessionBulkDeleteView(GenericAPIView):
 
     def perform_bulk_destroy(self, objects):
         objects.delete()
+
+
+@cache_page(60 * 15)
+@api_view(["GET"])
+def get_exercise_list(request):
+    return Response(
+        ExerciseSerializer(Exercise.objects.all(), many=True).data, status=HTTP_200_OK
+    )
+
+
+@cache_page(60 * 15)
+@api_view(["GET"])
+def get_muscle_list(request):
+    return Response(
+        MuscleSerializer(Muscle.objects.all(), many=True).data, status=HTTP_200_OK
+    )
+
+
+@cache_page(60 * 15)
+@api_view(["GET"])
+def get_equipment_list(request):
+    return Response(
+        EquipmentSerializer(Equipment.objects.all(), many=True).data, status=HTTP_200_OK
+    )
