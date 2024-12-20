@@ -310,6 +310,15 @@ class AccountTestCase(TestCase):
         json_data = response.json()
         token = json_data["token"]
 
+        # invalid data
+        response = self.client.post(
+            reverse(user_update),
+            data={"age": -20},
+            content_type="application/json",
+            headers={"Authorization": f"Token {token}"},
+        )
+        self.assertEqual(response.status_code, 400)
+
         # allow no-op (all fields optional)
         response = self.client.post(
             reverse(user_update),
@@ -385,6 +394,11 @@ class UploadImageTestCase(TestCase):
             content=self.create_test_image((100, 100), (30, 50, 40, 80)),
             content_type="image/jpeg",
         )
+        self.small_image2 = SimpleUploadedFile(
+            name="small_image2.jpg",
+            content=self.create_test_image((100, 100), (30, 50, 40, 80)),
+            content_type="image/jpeg",
+        )
         self.large_image = SimpleUploadedFile(
             name="large_image.jpg",
             content=self.create_test_image((3000, 3000), (400, 700, 600, 1200)),
@@ -400,6 +414,18 @@ class UploadImageTestCase(TestCase):
         response = self.client.post(
             reverse(user_upload_avatar),
             data={"image": self.small_image},
+            headers=self.auth_headers,
+        )
+        self.assertEqual(response.status_code, 201)
+        data = response.json()
+        self.assertSetEqual(set(data.keys()), {"avatar_url"})
+        self.assertTrue(data["avatar_url"].startswith("test_static"))
+        self.assertTrue(data["avatar_url"].endswith(".jpeg"))
+
+        # Update user's avatar
+        response = self.client.post(
+            reverse(user_upload_avatar),
+            data={"image": self.small_image2},
             headers=self.auth_headers,
         )
         self.assertEqual(response.status_code, 201)

@@ -285,6 +285,16 @@ class TrainingSessionViewTests(TestCase):
         self.assertEqual(data["id"], queryset.first().id)  # type: ignore
 
     def test_bulk_delete_sessions(self):
+        # Invalid request body
+        data = {"ids": "not_a_list"}
+        response = self.client.delete(
+            reverse("trainingsession_delete"),
+            data,
+            content_type="application/json",
+            headers=self.auth_headers1,
+        )
+        self.assertEqual(response.status_code, 400)
+
         # User1 tries to delete non-existent sessions
         data = {"ids": [999]}
         response = self.client.delete(
