@@ -65,7 +65,7 @@ export default function ProfileScreen() {
               {
                 icon: require("../../assets/images/setting.png"),
                 text: "偏好设置",
-                onPress: () => { },
+                onPress: () => {navigation.navigate("SettingScreen")},
               },
               {
                 icon: require("../../assets/images/images.png"),
