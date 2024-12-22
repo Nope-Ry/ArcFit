@@ -100,6 +100,10 @@ export default function RootLayout() {
               name="PlanGuideScreen"
               options={{ headerTitle: "计划指导", headerBackTitle: "返回" }}
             />
+            <Stack.Screen
+              name="SettingScreen"
+              options={{ headerTitle: "偏好设置", headerBackTitle: "返回" }}
+            />
           </Stack>
         </ThemeProvider>
       </ContextProviders>
