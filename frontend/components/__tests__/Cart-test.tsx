@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import { render } from "@testing-library/react-native";
 import Cart from "../Cart"; // 替换为实际路径
 import { CartContext } from "@/contexts/CartContext";
 import { NavigationContainer } from "@react-navigation/native";

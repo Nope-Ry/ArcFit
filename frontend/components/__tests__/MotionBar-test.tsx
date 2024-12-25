@@ -1,9 +1,7 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import { render } from "@testing-library/react-native";
 import MotionBar from "../motion/MotionBar";
 import { CartContext } from "@/contexts/CartContext"; 
-import { ThemedText } from "@/components/ThemedText";
-import { useNavigation } from "@react-navigation/native";
 
 // Mock navigation hook
 jest.mock("@react-navigation/native", () => ({

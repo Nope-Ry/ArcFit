@@ -11,7 +11,6 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { ThemedText } from "../ThemedText";
 import clfData from "@/res/bodypart/json/comb.json";
-import equipmentData from "@/res/equipment/json/comb.json";
 
 const EquipmentHeader = ({ OnSelect, OnSearch }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);

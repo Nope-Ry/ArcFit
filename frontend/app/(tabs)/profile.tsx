@@ -4,7 +4,6 @@ import AccountInfo from "@/components/profile/AccountInfo";
 import FunctionList from "@/components/profile/FunctionList"; 
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 const path = FileSystem.documentDirectory;
 export let data: any[] = [];

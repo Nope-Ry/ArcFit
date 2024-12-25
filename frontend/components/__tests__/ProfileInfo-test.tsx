@@ -1,8 +1,6 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 import ProfileInfo from "../profile/ProfileInfo";
-import { Ionicons } from "@expo/vector-icons";
-import { ThemedText } from "../ThemedText";
 
 // 模拟 Ionicons 以避免图标的实际渲染
 jest.mock("@expo/vector-icons", () => ({

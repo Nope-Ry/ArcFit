@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { ThemedText } from '../ThemedText';
-import { color } from '@mui/system';
 
 const { width, height } = Dimensions.get('window');
 
