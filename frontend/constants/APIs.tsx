@@ -73,6 +73,34 @@ export namespace API {
       needsAuth: true,
       fieldName: "image",
     };
+
+    export const uploadHistoryRecord: APISpec<{
+      start_time: string,
+      duration_seconds: number,
+      records: {
+        m_id: number,
+        group: {
+          weight: number,
+          reps: number,
+        }[],
+        rating: number,
+      }[],
+     }> = {
+      url: `${api}/training/create`,
+      method: "POST",
+      contentType: "application/json",
+      needsAuth: true,
+    };
+
+    export const getHistoryRecord: APISpec<{
+      start_time: string,
+      end_time: string,
+     }> = {
+      url: `${api}/training/list`,
+      method: "GET",
+      contentType: "application/json",
+      needsAuth: true,
+    };
   }
 
   interface RequestResult {
@@ -91,6 +119,24 @@ export namespace API {
       method,
       headers,
       body: JSON.stringify(data),
+    });
+    return {
+      status: response.status,
+      response: await response.json(),
+    };
+  }
+
+  async function makeGetRequestWithQuery(
+    url: string,
+    queryParams: { [key: string]: string },
+    headers: { [key: string]: string } = {}
+  ): Promise<RequestResult> {
+    const queryString = new URLSearchParams(queryParams).toString();
+    console.log(`GET request to ${url}?${queryString}`);
+    const fullUrl = `${url}?${queryString}`;
+    const response = await fetch(fullUrl, {
+      method: "GET",
+      headers,
     });
     return {
       status: response.status,
@@ -129,6 +175,7 @@ export namespace API {
       if (token) {
         headers["Authorization"] = `Token ${token}`;
       } else {
+        emitUserEvent("loginExpired");
         throw new Error("Not logged in");
       }
     }
@@ -137,7 +184,13 @@ export namespace API {
 
     const dispatchRequest = async () => {
       if (api.contentType === "application/json") {
-        return await makeJsonRequest(api.url, api.method, headers, args as object);
+        if (api.method === "GET") {
+          return await makeGetRequestWithQuery(api.url, args, headers);
+        }
+        else
+        {
+          return await makeJsonRequest(api.url, api.method, headers, args as object);
+        }
       } else if (api.contentType === "multipart/form-data") {
         if (api.method !== "POST" && api.method !== "PUT") {
           throw new Error(`${api.method} method not supported for multipart/form-data`);
@@ -156,10 +209,10 @@ export namespace API {
         emitUserEvent("loginExpired");
         throw new Error("Login expired");
       } else {
-        throw new Error(result.response);
+        throw new Error(JSON.stringify(result.response));
       }
     } catch (error) {
-      console.error(`API call failed: ${error}`);
+      console.error(`API call failed: ${error.message}`);
       if (error instanceof TypeError) {
         // Indicates a network error
         throw new Error("Network error");

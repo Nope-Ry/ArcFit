@@ -35,7 +35,7 @@ class Equipment(models.Model):
         through="ExerciseEquipmentRelationship",
     )
     muscles = models.ManyToManyField(
-        Muscle, related_name="targeted_muscles", through="MuscleEquipmentRelationship"
+        Muscle, related_name="required_equipment", through="MuscleEquipmentRelationship"
     )
 
     def __str__(self) -> str:

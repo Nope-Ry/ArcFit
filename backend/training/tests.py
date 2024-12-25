@@ -5,7 +5,15 @@ from django.utils.timezone import now, timedelta
 from knox.models import get_token_model
 
 from accounts.models import User
-from .models import Exercise, TrainingSession
+from .models import (
+    Exercise,
+    TrainingSession,
+    Muscle,
+    Equipment,
+    ExerciseEquipmentRelationship,
+    ExerciseMuscleRelationship,
+    MuscleEquipmentRelationship,
+)
 
 
 class TrainingSessionViewTests(TestCase):
@@ -277,6 +285,16 @@ class TrainingSessionViewTests(TestCase):
         self.assertEqual(data["id"], queryset.first().id)  # type: ignore
 
     def test_bulk_delete_sessions(self):
+        # Invalid request body
+        data = {"ids": "not_a_list"}
+        response = self.client.delete(
+            reverse("trainingsession_delete"),
+            data,
+            content_type="application/json",
+            headers=self.auth_headers1,
+        )
+        self.assertEqual(response.status_code, 400)
+
         # User1 tries to delete non-existent sessions
         data = {"ids": [999]}
         response = self.client.delete(
@@ -313,3 +331,185 @@ class TrainingSessionViewTests(TestCase):
         self.assertEqual(response.status_code, 204)
         # Verify nothing is deleted
         self.assertEqual(TrainingSession.objects.filter(user=self.user2).count(), 2)
+
+
+class GetStaticDataViewTests(TestCase):
+    def setUp(self):
+        # Add sample data: 3 exercises, 3 muscles, 2 equipments
+        Exercise.objects.create(
+            id=10001,
+            name="Exercise1",
+            description="ExDesc1",
+            steps=["ExStep1", "ExStep2"],
+            img_path="ExPath1",
+        )
+        Exercise.objects.create(
+            id=10002,
+            name="Exercise2",
+            description="ExDesc2",
+            steps=["ExStep1", "ExStep2"],
+            img_path="ExPath2",
+        )
+        Exercise.objects.create(
+            id=10003,
+            name="Exercise3",
+            description="ExDesc3",
+            steps=["ExStep1", "ExStep2"],
+            img_path="ExPath3",
+        )
+
+        Muscle.objects.create(
+            id=10001,
+            name="Muscle1",
+            description="MDesc1",
+            img_path="MPath1",
+        )
+        Muscle.objects.create(
+            id=10002,
+            name="Muscle2",
+            description="MDesc2",
+            img_path="MPath2",
+        )
+        Muscle.objects.create(
+            id=10003,
+            name="Muscle3",
+            description="MDesc3",
+            img_path="MPath3",
+        )
+
+        Equipment.objects.create(
+            id=10001,
+            name="Equipment1",
+            description="EqDesc1",
+            img_path="EqPath1",
+        )
+        Equipment.objects.create(
+            id=10002,
+            name="Equipment2",
+            description="EqDesc2",
+            img_path="EqPath2",
+        )
+
+        ExerciseMuscleRelationship.objects.create(
+            exercise_id=10001, muscle_id=10001
+        )
+        ExerciseMuscleRelationship.objects.create(
+            exercise_id=10001, muscle_id=10002
+        )
+        ExerciseMuscleRelationship.objects.create(
+            exercise_id=10002, muscle_id=10003
+        )
+        ExerciseMuscleRelationship.objects.create(
+            exercise_id=10003, muscle_id=10001
+        )
+
+        ExerciseEquipmentRelationship.objects.create(
+            exercise_id=10001, equipment_id=10002
+        )
+        ExerciseEquipmentRelationship.objects.create(
+            exercise_id=10002, equipment_id=10001
+        )
+        ExerciseEquipmentRelationship.objects.create(
+            exercise_id=10003, equipment_id=10002
+        )
+
+        MuscleEquipmentRelationship.objects.create(
+            muscle_id=10001, equipment_id=10001
+        )
+        MuscleEquipmentRelationship.objects.create(
+            muscle_id=10001, equipment_id=10002
+        )
+        MuscleEquipmentRelationship.objects.create(
+            muscle_id=10003, equipment_id=10002
+        )
+
+    def test_get_exercise_list(self):
+        response = self.client.get(reverse("get_exercise_list"))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 3)
+
+        self.assertEqual(data[0], {
+            "m_id": 10001,
+            "name": "Exercise1",
+            "description": "ExDesc1",
+            "steps": ["ExStep1", "ExStep2"],
+            "img_path": "ExPath1",
+            "b_id": [10001, 10002],
+            "e_id": [10002],
+        })
+        
+        self.assertEqual(data[1], {
+            "m_id": 10002,
+            "name": "Exercise2",
+            "description": "ExDesc2",
+            "steps": ["ExStep1", "ExStep2"],
+            "img_path": "ExPath2",
+            "b_id": [10003],
+            "e_id": [10001],
+        })
+
+        self.assertEqual(data[2], {
+            "m_id": 10003,
+            "name": "Exercise3",
+            "description": "ExDesc3",
+            "steps": ["ExStep1", "ExStep2"],
+            "img_path": "ExPath3",
+            "b_id": [10001],
+            "e_id": [10002],
+        })
+
+    def test_get_muscle_list(self):
+        response = self.client.get(reverse("get_muscle_list"))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 3)
+        
+        self.assertEqual(data[0], {
+            "b_id": 10001,
+            "name": "Muscle1",
+            "description": "MDesc1",
+            "img_path": "MPath1",
+            "m_id": [10001, 10003],
+            "e_id": [10001, 10002],
+        })
+        
+        self.assertEqual(data[1], {
+            "b_id": 10002,
+            "name": "Muscle2",
+            "description": "MDesc2",
+            "img_path": "MPath2",
+            "m_id": [10001],
+            "e_id": [],
+        })
+
+        self.assertEqual(data[2], {
+            "b_id": 10003,
+            "name": "Muscle3",
+            "description": "MDesc3",
+            "img_path": "MPath3",
+            "m_id": [10002],
+            "e_id": [10002],
+        })
+
+    def test_get_equipment_list(self):
+        response = self.client.get(reverse("get_equipment_list"))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(len(data), 2)
+        
+        self.assertEqual(data[0], {
+            "e_id": 10001,
+            "name": "Equipment1",
+            "description": "EqDesc1",
+            "img_path": "EqPath1",
+            "m_id": [10002],
+        })
+        
+        self.assertEqual(data[1], {
+            "e_id": 10002,
+            "name": "Equipment2",
+            "description": "EqDesc2",
+            "img_path": "EqPath2",
+            "m_id": [10001, 10003],
+        })

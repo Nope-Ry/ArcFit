@@ -42,9 +42,18 @@ export const setUpCallbacks = () => {
     ctx.resetUser();
   });
 
+  const unsubSaveUser = subscribeUserEvents("userChanged", async (ctx) => {
+    try {
+      await AsyncStorage.setItem("userInfo", JSON.stringify(ctx.user));
+    } catch (e) {
+      console.warn("Exception when saving user info:", e);
+    }
+  });
+
   return () => {
     unsubLoadUser();
     unsubPrepareAvatar();
     unsubLoginExpired();
+    unsubSaveUser();
   }
 }

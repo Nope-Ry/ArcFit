@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate
 from django.utils import timezone
 from django.conf import settings
 from django.utils.crypto import get_random_string
+from django_ratelimit.decorators import ratelimit
 
 from rest_framework.decorators import (
     api_view,
@@ -39,6 +40,7 @@ def user_register(request, json_data):
     return Response({}, status=HTTP_200_OK)
 
 
+@ratelimit(key="ip", rate="10/m", block=True)
 @api_view(["POST"])
 @json_request
 def user_login(request, json_data):
