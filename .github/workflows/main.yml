@@ -29,10 +29,9 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: Build Docker images and Push to Docker Hub (Optional)
+    - name: Build Docker images
       run: |
-        docker-compose -f docker-compose.yml build  # Build images
-        docker-compose -f docker-compose.yml push   # Optionally push to Docker Hub (if using public/private registry)
+        docker compose -f docker-compose.yml build  # Build images
 
     - name: Deploy to remote server
       run: |
