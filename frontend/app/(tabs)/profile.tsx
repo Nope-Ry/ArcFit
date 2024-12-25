@@ -4,7 +4,6 @@ import AccountInfo from "@/components/profile/AccountInfo";
 import FunctionList from "@/components/profile/FunctionList"; 
 import * as FileSystem from "expo-file-system";
 import { useNavigation } from "@react-navigation/native";
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 const path = FileSystem.documentDirectory;
 export let data: any[] = [];
@@ -39,6 +38,15 @@ FileSystem.readDirectoryAsync(path).then((files) => {
   });
 });
 
+console.log(data);
+
+// 删去path下的所有文件
+// FileSystem.readDirectoryAsync(path).then((files) => {
+//   files.forEach((file) => {
+//     FileSystem.deleteAsync(path + file);
+//   });
+// });
+
 export default function ProfileScreen() {
   const navigation = useNavigation();
   const path = FileSystem.documentDirectory;
@@ -56,12 +64,12 @@ export default function ProfileScreen() {
               {
                 icon: require("../../assets/images/setting.png"),
                 text: "偏好设置",
-                onPress: () => { },
+                onPress: () => {navigation.navigate("SettingScreen")},
               },
               {
                 icon: require("../../assets/images/images.png"),
-                text: "照片时刻",
-                onPress: () => { },
+                text: "计划指导",
+                onPress: () => navigation.navigate("PlanGuideScreen"),
               },
               {
                 icon: require("../../assets/images/statistics.png"),

@@ -9,6 +9,9 @@ import { data } from "../../app/(tabs)/profile";
 import { motion_imgs } from "@/res/motion/motion_img";
 
 import { Dimensions } from "react-native";
+import { API } from "@/constants/APIs";
+import motionData from "@/res/motion/json/comb.json";
+import * as FileSystem from "expo-file-system";
 
 const { width, height } = Dimensions.get("window");
 
@@ -61,7 +64,67 @@ interface ExerciseItemProps {
   date: Date;
 }
 export default function RecordCard({ date }: ExerciseItemProps) {
-  const ExerciseData = getExerciseData(date);
+  const [refresh, setRefresh] = React.useState(false);
+  var ExerciseData = getExerciseData(date);
+  if (ExerciseData.length === 0) {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const start_time = startOfDay.toISOString();
+    const end_time = endOfDay.toISOString();
+
+    const getRecord = async () => {
+      try {
+        const response = await API.call(API.Account.getHistoryRecord, {
+          start_time,
+          end_time,
+        });
+        console.log(response);
+        const today_record = response.map((record) => ({
+          date: record.start_time.split("T")[0],
+          time: record.start_time.split("T")[1].split(".")[0],
+          duration: record.duration_seconds,
+          records: record.records,
+          cnt: record.id,
+          dateTime: record.start_time,
+        }));
+        today_record.map((record) => {
+          record.records.map((r) => {
+            r.name = motionData[r.m_id - 1].name;
+            r.b_id = motionData[r.m_id - 1].b_id;
+          });
+        });
+        today_record.map((record) => {
+          const path =
+            FileSystem.documentDirectory +
+            record["date"] +
+            "_" +
+            record["cnt"] +
+            ".json";
+          console.log(path);
+          if(record.records.length > 0){
+            FileSystem.writeAsStringAsync(path, JSON.stringify(record))
+              .then(() => {
+                console.log("写到了", path);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            data.push(record);
+            setRefresh(true);
+          }
+        });
+
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    getRecord();
+  }
+  ExerciseData = getExerciseData(date);
   return (
     <View style={styles.container}>
       {ExerciseData.map((exercise, index) => (

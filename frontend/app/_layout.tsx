@@ -73,6 +73,10 @@ export default function RootLayout() {
               options={{ headerTitle: "登录/注册", headerBackTitle: "返回" }}
             />
             <Stack.Screen
+              name="(accounts)/RegisterScreen"
+              options={{ headerTitle: "注册", headerBackTitle: "返回" }}
+            />
+            <Stack.Screen
               name="EquipmentScreen"
               options={{ headerTitle: "器材详情", headerBackTitle: "器械" }}
             />
@@ -91,6 +95,14 @@ export default function RootLayout() {
             <Stack.Screen
               name="CalculatorScreen"
               options={{ headerTitle: "RM计算器", headerBackTitle: "返回" }}
+            />
+            <Stack.Screen
+              name="PlanGuideScreen"
+              options={{ headerTitle: "计划指导", headerBackTitle: "返回" }}
+            />
+            <Stack.Screen
+              name="SettingScreen"
+              options={{ headerTitle: "偏好设置", headerBackTitle: "返回" }}
             />
           </Stack>
         </ThemeProvider>

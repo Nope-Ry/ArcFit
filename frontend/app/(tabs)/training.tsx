@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Button } from "react-native";
+import { View, Alert } from "react-native";
 import {
   ScrollView,
   TouchableOpacity,
@@ -25,13 +25,14 @@ import motionData from "@/res/motion/json/comb.json";
 import { motion_imgs } from "@/res/motion/motion_img";
 
 import { useNavigationState } from "@react-navigation/native";
+import { API } from "@/constants/APIs";
+
 
 const { width, height } = Dimensions.get("window");
 
 let cnt = 0;
 
 const getMotionHistory = (m_id) => {
-  // 出来一个弹窗，显示该动作的m_id，并利用CustomLineChart展示历史记录
   const firstDay = new Date(
     Math.min(...data.map((item) => new Date(item.date).getTime()))
   );
@@ -166,6 +167,7 @@ export default function TrainingScreen() {
         duration: mins,
         date: new Date().toISOString().split("T")[0],
         time: new Date().toLocaleTimeString(),
+        dateTime: new Date().toISOString(),
         cnt: cnt,
         records: [],
       };
@@ -194,15 +196,43 @@ export default function TrainingScreen() {
         hist["cnt"] +
         ".json";
       console.log(path);
-      FileSystem.writeAsStringAsync(path, JSON.stringify(hist))
-        .then(() => {
-          console.log("写到了", path);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      data.push(hist);
+      if(hist["records"].length > 0){
+        FileSystem.writeAsStringAsync(path, JSON.stringify(hist))
+          .then(() => {
+            console.log("写到了", path);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        data.push(hist);
+      }
       setTime(0);
+
+      const postHistoryRrcord = async () => {
+        try {
+          console.log(hist);
+          const response = await API.call(API.Account.uploadHistoryRecord, {
+            start_time: hist["dateTime"],
+            duration_seconds: hist["duration"],
+            records: hist["records"].map((record) => ({
+              m_id: record.m_id,
+              group: record.group.map((group) => ({
+                weight: parseInt(group.weight),
+                reps: parseInt(group.reps),
+              })),
+              rating: record.rating,
+            })
+            )
+          });
+          console.log(response);
+        }
+        catch (e) {
+          console.error(e);
+          Alert.alert("上传失败，请稍后再试");
+        }
+      }
+      if(hist["records"].length > 0)  
+        postHistoryRrcord();
     }
 
     setIsTraining(!isTraining);

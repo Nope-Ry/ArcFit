@@ -7,38 +7,38 @@ import {
   Dimensions,
 } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import WeeklyTrainingRecords from "../components/record/WeeklyTrainingRecords";
-import TotalTrainingRecords from "../components/record/TotalTrainingRecords";
+import BodyPlanGuide from "../components/plan/BodyPlanGuide";
+import TotalPlanGuide from "../components/plan/TotalPlanGuide";
 
 const {width, height} = Dimensions.get("window");
 
 const TrainingStatistics: React.FC = () => {
 
-    const [selectedMode, setSelectedMode] = useState('week'); // 默认选择 "7天"
+    const [selectedMode, setSelectedMode] = useState('body'); // 默认选择 "部位计划"
   
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.toggleContainer}>
           <TouchableOpacity
-            style={[styles.toggleButton, selectedMode === 'week' && styles.selectedButton]}
-            onPress={() => setSelectedMode('week')}
-          >
-            <ThemedText type="default">7天</ThemedText>
-          </TouchableOpacity>
-  
-          <TouchableOpacity
             style={[styles.toggleButton, selectedMode === 'all' && styles.selectedButton]}
             onPress={() => setSelectedMode('all')}
           >
-            <ThemedText type="default">总览</ThemedText>
+            <ThemedText type="default">全身计划</ThemedText>
+          </TouchableOpacity>
+  
+          <TouchableOpacity
+            style={[styles.toggleButton, selectedMode === 'body' && styles.selectedButton]}
+            onPress={() => setSelectedMode('body')}
+          >
+            <ThemedText type="default">部位计划</ThemedText>
           </TouchableOpacity>
         </View>
   
         {/* 根据选择的模式显示不同的内容 */}
-        {selectedMode === 'week' ? (
-            <WeeklyTrainingRecords />
+        {selectedMode === 'body' ? (
+            <BodyPlanGuide />
         ) : (
-            <TotalTrainingRecords />
+            <TotalPlanGuide />
         )}
       </SafeAreaView>
     );
