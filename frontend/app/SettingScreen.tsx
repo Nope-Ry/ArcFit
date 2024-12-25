@@ -6,7 +6,9 @@ import {
   SafeAreaView,
   Dimensions,
   Alert,
+  ScrollView,
 } from "react-native";
+import FunctionList from "@/components/profile/FunctionList"; 
 import { ThemedText } from "@/components/ThemedText";
 import * as FileSystem from "expo-file-system";
 import motionData from "@/res/motion/json/comb.json"; // Adjust the import path as necessary
@@ -92,34 +94,31 @@ const Setting = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => removeAllFiles()}
-            >
-                <ThemedText>清除所有数据</ThemedText>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => getAllFiles()}
-            >
-                <ThemedText>同步远程数据</ThemedText>
-            </TouchableOpacity>
-        </SafeAreaView>
+            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                <View style={{ flex: 1 }}>
+                <FunctionList
+                    items={[
+                    {
+                        icon: require("../assets/images/delete.png"),
+                        text: "删除所有数据",
+                        onPress: removeAllFiles,
+                    },
+                    {
+                        icon: require("../assets/images/download.png"),
+                        text: "同步所有数据",
+                        onPress: getAllFiles,
+                    },
+                    ]}
+                />
+                </View>
+            </ScrollView>
+      </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-    toggleButton: {
-        padding: 10,
-        backgroundColor: '#FFA07A',
-        borderRadius: 10,
-        marginBottom: 10,
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
     },
 });
 
