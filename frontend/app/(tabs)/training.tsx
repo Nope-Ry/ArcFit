@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Button, Alert } from "react-native";
+import { View, Alert } from "react-native";
 import {
   ScrollView,
   TouchableOpacity,

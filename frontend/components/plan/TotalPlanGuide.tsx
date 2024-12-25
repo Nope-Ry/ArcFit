@@ -6,15 +6,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { ScrollView, TouchableOpacity, Modal } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native";
 import { Divider } from "@/components/ui/divider";
 import { ThemedText } from "@/components/ThemedText";
 import { data } from "../../app/(tabs)/profile";
-import { Picker } from "@react-native-picker/picker";
-import motionData from "@/res/motion/json/comb.json";
 import token from "@/token.json";
 import axios from "axios";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const { width, height } = Dimensions.get("window");
 

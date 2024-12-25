@@ -1,7 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import FunctionList from "../profile/FunctionList"; // 组件路径
-import { Ionicons } from "@expo/vector-icons";
 
 jest.mock("@expo/vector-icons", () => ({
   Ionicons: "Ionicons", // 模拟 Ionicons

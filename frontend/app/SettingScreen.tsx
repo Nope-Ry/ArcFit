@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
   SafeAreaView,
-  Dimensions,
   Alert,
   ScrollView,
 } from "react-native";
 import FunctionList from "@/components/profile/FunctionList"; 
-import { ThemedText } from "@/components/ThemedText";
 import * as FileSystem from "expo-file-system";
 import motionData from "@/res/motion/json/comb.json"; // Adjust the import path as necessary
 import { data } from "./(tabs)/profile";
