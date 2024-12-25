@@ -1,0 +1,55 @@
+name: Deploy Dockerized Web Server
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Cache Docker layers
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/docker
+        key: ${{ runner.os }}-docker-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-docker-
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Build Docker images
+      run: |
+        docker compose -f backend/docker-compose.yml build  # Build images
+
+    - name: Deploy to remote server
+      run: |
+        ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${SERVER_IP} << 'EOF'
+          cd /home/ubuntu/ArcFit/backend
+          git pull origin main  # Pull the latest code
+          docker compose down  # Stop and remove old containers
+          docker compose up --build -d  # Start the new containers in detached mode
+        EOF
+      env:
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        SERVER_IP: ${{ secrets.SERVER_IP }}
+
+    - name: Verify deployment
+      run: |
+        ssh -o StrictHostKeyChecking=no ${DEPLOY_USER}@${SERVER_IP} << 'EOF'
+          docker ps  # Verify if the containers are up and running
+        EOF
+      env:
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        SERVER_IP: ${{ secrets.SERVER_IP }}
